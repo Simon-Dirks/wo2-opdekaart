@@ -3,7 +3,7 @@ import {PreviewItemModel} from "../models/preview-item.model";
 import {PropType} from "vue";
 
 const props = defineProps({
-  item: {type: Object as PropType<PreviewItemModel>, required: true}
+  item: {type: Object as PropType<PreviewItemModel | null>, required: true}
 })
 
 </script>
