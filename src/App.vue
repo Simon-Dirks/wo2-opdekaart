@@ -8,7 +8,7 @@ const themeOverrides: GlobalThemeOverrides = {
     primaryColor: '#D72F19',
     // baseColor: '#D72F19',
     // borderColor: '#D72F19',
-    primaryColorPressed: 'red',
+    // primaryColorPressed: '#D72F19',
     primaryColorHover: 'rgb(215,47,25, 0.1)'
   }
 }
@@ -16,17 +16,20 @@ const themeOverrides: GlobalThemeOverrides = {
 </script>
 
 <template>
-  <n-loading-bar-provider>
-    <n-message-provider>
-      <n-notification-provider>
-        <n-dialog-provider>
-          <n-config-provider :theme-overrides="themeOverrides" class="h-full">
-            <Map></Map>
-          </n-config-provider>
-        </n-dialog-provider>
-      </n-notification-provider>
-    </n-message-provider>
-  </n-loading-bar-provider>
+  <IconConfigProvider>
+    <n-loading-bar-provider>
+      <n-message-provider>
+        <n-notification-provider>
+          <n-dialog-provider>
+            <n-config-provider :theme-overrides="themeOverrides" class="h-full">
+              <Map></Map>
+            </n-config-provider>
+          </n-dialog-provider>
+        </n-notification-provider>
+      </n-message-provider>
+    </n-loading-bar-provider>
+  </IconConfigProvider>
+
 </template>
 
 <style scoped>

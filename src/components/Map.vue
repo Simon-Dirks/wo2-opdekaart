@@ -55,7 +55,7 @@ const onMapLoaded = (map: any) => {
         </mapbox-map>
       </div>
     </div>
-    <div class="md:col-span-1 bg-slate-500 p-4 overflow-y-auto h-[50vh] md:h-full" id="preview-items-container">
+    <div class="md:col-span-1 bg-slate-600 p-4 overflow-y-auto h-[50vh] md:h-full" id="preview-items-container">
       <PreviewItem
           :item="selectedItem"></PreviewItem>
     </div>

@@ -5,9 +5,12 @@ import App from './App.vue'
 import VueMapboxTs from "vue-mapbox-ts";
 import {store} from "./store";
 import naive from "naive-ui";
+import {Icon, IconConfigProvider} from "@vicons/utils";
 
 const app = createApp(App);
 app.use(store);
 app.use(VueMapboxTs);
 app.use(naive);
+app.component('Icon', Icon);
+app.component('IconConfigProvider', IconConfigProvider);
 app.mount('#app');
