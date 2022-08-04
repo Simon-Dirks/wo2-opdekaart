@@ -1,5 +1,6 @@
 interface MapState {
     geoJson: any | null;
+    isInitialized: boolean;
     // streetFilter: string;
     // filteredGeoJson: any | null;
 }
@@ -9,6 +10,7 @@ export const mapStoreModule = {
     state() {
         return {
             geoJson: null,
+            isInitialized: false
             // streetFilter: ''
             // filteredGeoJson: null
         };
@@ -17,6 +19,9 @@ export const mapStoreModule = {
         getGeoJson(state: MapState) {
             return state.geoJson;
         },
+        getIsInitialized(state: MapState) {
+            return state.isInitialized;
+        }
         // getStreetFilter(state: MapState) {
         //     return state.streetFilter;
         // }
@@ -24,6 +29,9 @@ export const mapStoreModule = {
     mutations: {
         setGeoJson: (state: MapState, geoJson: any) => {
             state.geoJson = geoJson;
+        },
+        setIsInitialized: (state: MapState, isInitialized: boolean) => {
+            state.isInitialized = isInitialized;
         },
         // setStreetFilter: (state: MapState, streetFilter: string) => {
         //     state.streetFilter = streetFilter;

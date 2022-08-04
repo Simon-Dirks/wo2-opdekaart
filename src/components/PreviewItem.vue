@@ -11,7 +11,7 @@ const props = defineProps({
 
 <template>
   <Transition>
-    <n-card :title="props.item?.label" v-if="props.item" hoverable>
+    <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
       <template #cover class="w-full">
         <n-image
             :src="props.item?.img.url"

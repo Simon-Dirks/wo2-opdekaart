@@ -1,6 +1,7 @@
-import mapboxgl from "mapbox-gl";
+import mapboxgl, {LngLatBounds} from "mapbox-gl";
 import {MarkerPropertiesModel} from "../models/marker-properties.model";
 import {store} from "../store";
+import {PreviewItemModel} from "../models/preview-item.model";
 
 export class MapService {
     private static _instance: MapService;
@@ -8,26 +9,21 @@ export class MapService {
     // @ts-ignore
     private _map: mapboxgl.Map;
     private readonly _geoJsonUrl = '/adressen.geojson';
+    private readonly _maxPreviewItemsToShow = 50;
 
     constructor() {
-        if(MapService._instance) {
+        if (MapService._instance) {
             return MapService._instance
         }
         MapService._instance = this;
     }
 
-    private async _getGeoJsonFromUrl(url: string): Promise<any> {
-        const geoJsonResponse: Response = await fetch(url);
-        const geoJson = await geoJsonResponse.json();
-        return Promise.resolve(geoJson);
-    }
-
-    async initialize(map: mapboxgl.Map): Promise<void> {
+    public async initialize(map: mapboxgl.Map): Promise<void> {
         this._map = map;
 
         const geoJson = await this._getGeoJsonFromUrl(this._geoJsonUrl);
         store.commit("map/setGeoJson", geoJson);
-        console.log(geoJson);
+        console.log("Loaded GeoJSON", geoJson);
 
         // @ts-ignore
         this._map.addSource('markers-source', {
@@ -117,17 +113,13 @@ export class MapService {
             this._map.getCanvas().style.cursor = '';
         });
 
-
         this._map.on('click', 'unclustered-point', (e: any) => {
             e.preventDefault();
 
             this._onMapMarkerClicked(e);
 
             const markerProperties: MarkerPropertiesModel = this._getMarkerProperties(e);
-            store.commit("selectItem", {
-                img: {url: "https://via.placeholder.com/1000x200", alt: "Alt"},
-                label: markerProperties.straatnaam
-            })
+            store.commit("selectItem", this._getPreviewItemFromMarker(markerProperties))
         });
 
         this._map.on('click', (e: any) => {
@@ -136,9 +128,43 @@ export class MapService {
             }
             store.commit("deselectItem");
         });
+
+        store.commit("map/setIsInitialized", true);
     }
 
-    _onMapMarkerClicked(e: any) {
+    public async updateStreetFilter(streetFilter: string) {
+        const geoJson = store.getters["map/getGeoJson"];
+        const filteredGeoJson: any = {"type": "FeatureCollection", "features": []};
+        for (const feature of geoJson["features"]) {
+            const street: string = feature?.properties?.straatnaam.toLowerCase()
+            if (street.includes(streetFilter.toLowerCase())) {
+                filteredGeoJson.features.push(feature);
+            }
+        }
+        (this._map.getSource('markers-source') as any).setData(filteredGeoJson);
+    }
+
+    public getShownPreviewItems(): PreviewItemModel[] {
+        const geoJson = store.getters["map/getGeoJson"];
+        if (!geoJson || !this._map || !('features' in geoJson)) {
+            return [];
+        }
+
+        const mapBounds: LngLatBounds = this._map.getBounds();
+        const filteredGeoJson = geoJson['features'].filter((feature: any) => {
+            return mapBounds.contains(feature['geometry']['coordinates']);
+        })
+        const previewItems: PreviewItemModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => this._getPreviewItemFromMarker(feature.properties));
+        return previewItems;
+    }
+
+    private async _getGeoJsonFromUrl(url: string): Promise<any> {
+        const geoJsonResponse: Response = await fetch(url);
+        const geoJson = await geoJsonResponse.json();
+        return Promise.resolve(geoJson);
+    }
+
+    private _onMapMarkerClicked(e: any) {
         const coordinates = e.features[0].geometry.coordinates.slice();
         const streetName: string = this._getMarkerProperties(e).straatnaam;
 
@@ -161,15 +187,10 @@ export class MapService {
         return e.features[0].properties;
     }
 
-    async updateStreetFilter(streetFilter: string) {
-        const geoJson = store.getters["map/getGeoJson"];
-        const filteredGeoJson: any = {"type": "FeatureCollection", "features": []};
-        for (const feature of geoJson["features"]) {
-            const street: string = feature?.properties?.straatnaam.toLowerCase()
-            if(street.includes(streetFilter.toLowerCase())) {
-                filteredGeoJson.features.push(feature);
-            }
+    private _getPreviewItemFromMarker(markerProperties: MarkerPropertiesModel): PreviewItemModel {
+        return {
+            img: {url: "https://via.placeholder.com/1000x200", alt: "Alt"},
+            label: markerProperties.straatnaam + ' ' + markerProperties?.huisnummer
         }
-        (this._map.getSource('markers-source') as any).setData(filteredGeoJson);
     }
 }
