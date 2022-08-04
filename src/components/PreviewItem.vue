@@ -9,10 +9,22 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="bg-white rounded-md text-black p-2 mb-2 drop-shadow" v-if="props.item?.img">
-    <img :src="props.item.img.url" :alt="props.item.img.alt"/>
-    <p>{{ props.item.label }}</p>
-  </div>
+  <n-card :title="props.item?.label" v-if="props.item">
+    <template #cover class="w-full">
+      <n-image
+          :src="props.item?.img.url"
+          width="100%"
+          fallback-src="https://via.placeholder.com/200x200"
+      />
+    </template>
+
+    <p>Beschrijving hier...</p>
+
+
+    <template #action>
+      &#169; Copyright
+    </template>
+  </n-card>
 </template>
 
 <style scoped>

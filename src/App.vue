@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Map from "./components/Map.vue";
-import {GlobalThemeOverrides, lightTheme} from 'naive-ui'
+import {GlobalThemeOverrides} from 'naive-ui'
 
 
 const themeOverrides: GlobalThemeOverrides = {
@@ -16,9 +16,17 @@ const themeOverrides: GlobalThemeOverrides = {
 </script>
 
 <template>
-  <n-config-provider :theme-overrides="themeOverrides" class="h-full">
-    <Map></Map>
-  </n-config-provider>
+  <n-loading-bar-provider>
+    <n-message-provider>
+      <n-notification-provider>
+        <n-dialog-provider>
+          <n-config-provider :theme-overrides="themeOverrides" class="h-full">
+            <Map></Map>
+          </n-config-provider>
+        </n-dialog-provider>
+      </n-notification-provider>
+    </n-message-provider>
+  </n-loading-bar-provider>
 </template>
 
 <style scoped>

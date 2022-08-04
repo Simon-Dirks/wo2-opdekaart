@@ -101,7 +101,7 @@ export class MapHelper {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
 
-        new mapboxgl.Popup()
+        new mapboxgl.Popup({closeButton: false, closeOnClick: true, closeOnMove: false})
             .setLngLat(coordinates)
             .setHTML(
                 `${streetName}`
