@@ -9,11 +9,19 @@ const sources: SourceModel[] = [
 </script>
 
 <template>
-  <div class="bg-white rounded px-4 py-2 drop-shadow">
-    <div v-for="source in sources">
-      <input type="checkbox" :name="source.id" :id="source.id">
-      <label :for="source.id" class="pl-2">{{ source.label }}</label>
-    </div>
+
+
+  <div class="">
+    <n-card>
+      <n-collapse>
+        <n-collapse-item title="Bronnen" class="pr-4">
+          <div v-for="source in sources">
+            <n-checkbox :id="source.id">
+              {{ source.label }}
+            </n-checkbox>
+          </div>
+        </n-collapse-item>
+      </n-collapse>  </n-card>
   </div>
 </template>
 

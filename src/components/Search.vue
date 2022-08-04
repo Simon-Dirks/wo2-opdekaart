@@ -4,7 +4,7 @@
 
 <template>
   <div class="drop-shadow">
-    <input type="text" placeholder="Zoeken..." class="pl-4 px-2 py-2 rounded-full">
+    <n-input size="large" round placeholder="Zoeken..." />
   </div>
 </template>
 
