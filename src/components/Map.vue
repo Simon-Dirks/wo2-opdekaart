@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed} from "vue";
 import {MapboxMap, MapboxNavigationControl} from "vue-mapbox-ts";
-import {MapHelper} from "../helpers/mapHelper";
+import {MapService} from "../services/map.service";
 import PreviewItem from "./PreviewItem.vue";
 import Search from "./Search.vue";
 import {useStore} from "vuex";
@@ -14,27 +14,9 @@ const MAPBOX_STYLE: string = 'mapbox://styles/simondirks/ckggjvjq90ewx19pbojtgnr
 const store = useStore();
 const selectedItem = computed(() => store.getters.getSelectedItem);
 
-const onMapLoaded = (map: any) => {
-  MapHelper.initializeFromGeoJson(map, "/adressen.geojson");
-
-  map.on('click', 'unclustered-point', (e: any) => {
-    e.preventDefault();
-
-    MapHelper.onMapMarkerClicked(map, e);
-
-    const markerProperties: MarkerPropertiesModel = MapHelper.getMarkerProperties(e);
-    store.commit("selectItem", {
-      img: {url: "https://via.placeholder.com/1000x200", alt: "Alt"},
-      label: markerProperties.straatnaam
-    })
-  });
-
-  map.on('click', (e: any) => {
-    if (e.defaultPrevented) {
-      return;
-    }
-    store.commit("deselectItem");
-  });
+const onMapLoaded = (map: mapboxgl.Map) => {
+  const mapService: MapService = new MapService();
+  mapService.initialize(map);
 };
 </script>
 
