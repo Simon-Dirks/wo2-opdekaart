@@ -1,5 +1,5 @@
 import mapboxgl from "mapbox-gl";
-import {MarkerProperties} from "../models/markerProperties";
+import {MarkerPropertiesModel} from "../models/marker-properties.model";
 
 export class MapHelper {
     static initializeFromGeoJson(map: any, geoJsonUrl: string): void {
@@ -109,7 +109,7 @@ export class MapHelper {
             .addTo(map);
     }
 
-    static getMarkerProperties(e: any): MarkerProperties {
+    static getMarkerProperties(e: any): MarkerPropertiesModel {
         return e.features[0].properties;
     }
 }

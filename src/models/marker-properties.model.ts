@@ -1,4 +1,4 @@
-export type MarkerProperties = {
+export type MarkerPropertiesModel = {
     "marker-color": string;
     "invoer_adres": string;
     "straatnaam": string;

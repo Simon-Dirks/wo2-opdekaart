@@ -5,7 +5,8 @@ import {MapHelper} from "../helpers/mapHelper";
 import PreviewItem from "./PreviewItem.vue";
 import Search from "./Search.vue";
 import {useStore} from "vuex";
-import {MarkerProperties} from "../models/markerProperties";
+import {MarkerPropertiesModel} from "../models/marker-properties.model";
+import SourceSelect from "./SourceSelect.vue";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/simondirks/ckggjvjq90ewx19pbojtgnrel';
@@ -21,7 +22,7 @@ const onMapLoaded = (map: any) => {
 
     MapHelper.onMapMarkerClicked(map, e);
 
-    const markerProperties: MarkerProperties = MapHelper.getMarkerProperties(e);
+    const markerProperties: MarkerPropertiesModel = MapHelper.getMarkerProperties(e);
     store.commit("selectItem", {
       img: {url: "https://via.placeholder.com/1000x200", alt: "Alt"},
       label: markerProperties.straatnaam
@@ -42,6 +43,8 @@ const onMapLoaded = (map: any) => {
     <div class="md:col-span-5 h-full">
 <!--      <Search class="absolute top-2 left-2 z-10"></Search>-->
       <div class="h-full">
+        <Search class="absolute top-4 left-4 z-20"></Search>
+        <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
         <mapbox-map :accessToken="MAPBOX_TOKEN" :mapStyle="MAPBOX_STYLE"
                     :center="[4.897, 52.377]"
                     :maxZoom="15"
