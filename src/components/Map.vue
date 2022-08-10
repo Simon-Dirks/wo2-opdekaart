@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, Ref} from "vue";
+import {computed, ref, Ref, watch} from "vue";
 import {MapboxMap, MapboxNavigationControl} from "vue-mapbox-ts";
 import {MapService} from "../services/map.service";
 import PreviewItem from "./PreviewItem.vue";
@@ -8,6 +8,7 @@ import {useStore} from "vuex";
 import SourceSelect from "./SourceSelect.vue";
 import {DataService} from "../services/data.service";
 import {MarkerModel} from "../models/marker.model";
+import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/simondirks/ckggjvjq90ewx19pbojtgnrel';
@@ -22,14 +23,15 @@ const onMapLoaded = (map: mapboxgl.Map) => {
   const dataService: DataService = new DataService();
   void dataService.updateMarkersFromServer();
   updateShownPreviewItems(map);
+
+  watch(() => store.getters["getSearchTerm"],  (searchTerm: string) => {
+    console.log(searchTerm);
+    updateShownPreviewItems(map);
+  });
 };
 
 const updateShownPreviewItems = (map: mapboxgl.Map) => {
-  shownPreviewItems.value = getAllPreviewItems();
-}
-
-const getAllPreviewItems = () => {
-  return mapService.getShownPreviewItems();
+  shownPreviewItems.value = mapService.getShownPreviewItems();
 }
 </script>
 
@@ -41,7 +43,7 @@ const getAllPreviewItems = () => {
         <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
         <mapbox-map :accessToken="MAPBOX_TOKEN" :mapStyle="MAPBOX_STYLE"
                     :center="[4.897, 52.377]"
-                    :maxZoom="15"
+                    :maxZoom="20"
                     :minZoom="4"
                     :zoom="10"
                     @loaded="onMapLoaded"

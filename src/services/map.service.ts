@@ -134,15 +134,24 @@ export class MapService {
     }
 
     public async updateFilter(filter: string) {
+        store.commit("updateSearchTerm", filter);
+
         const geoJson = store.getters["map/getGeoJson"];
         const filteredGeoJson: MarkersGeoJsonModel = {"type": "FeatureCollection", "features": []};
         for (const feature of geoJson["features"]) {
-            const label: string = feature?.properties?.label.toLowerCase()
-            if (label.includes(filter.toLowerCase())) {
+            if (this._markerIsShownWithFilter(feature?.properties)) {
                 filteredGeoJson.features.push(feature);
             }
         }
         this._updateSourceData(filteredGeoJson);
+    }
+
+    private _markerIsShownWithFilter(marker: MarkerModel): boolean {
+        const filter: string = store.getters.getSearchTerm;
+        if(!filter) {
+            return true;
+        }
+        return marker.label.toLowerCase().includes(filter.toLowerCase());
     }
 
     public getShownPreviewItems(): MarkerModel[] {
@@ -153,7 +162,7 @@ export class MapService {
 
         const mapBounds: LngLatBounds = this._map.getBounds();
         const filteredGeoJson = geoJson['features'].filter((feature: any) => {
-            return mapBounds.contains(feature['geometry']['coordinates']);
+            return this._markerIsShownWithFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
         })
         const previewItems: MarkerModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => feature.properties);
         return previewItems;

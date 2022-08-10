@@ -14,9 +14,8 @@ const props = defineProps({
     <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
       <template #cover class="w-full">
         <n-image
-            :src="props.item?.imgUrl"
+            :src="props.item?.imgUrl ?? 'https://via.placeholder.com/1000x200'"
             width="100%"
-            fallback-src="https://via.placeholder.com/1000x200"
         />
       </template>
 
