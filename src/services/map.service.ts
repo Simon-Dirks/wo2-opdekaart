@@ -2,13 +2,14 @@ import mapboxgl, {LngLatBounds} from "mapbox-gl";
 import {MarkerPropertiesModel} from "../models/marker-properties.model";
 import {store} from "../store";
 import {PreviewItemModel} from "../models/preview-item.model";
+import {watch} from "vue";
+import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
 
 export class MapService {
     private static _instance: MapService;
 
     // @ts-ignore
     private _map: mapboxgl.Map;
-    private readonly _geoJsonUrl = '/adressen.geojson';
     private readonly _maxPreviewItemsToShow = 50;
 
     constructor() {
@@ -16,19 +17,20 @@ export class MapService {
             return MapService._instance
         }
         MapService._instance = this;
+
+        watch(() => store.getters["map/getGeoJson"],  (geoJson: MarkersGeoJsonModel) => {
+            console.log('GeoJson updated:', geoJson);
+            this._updateSourceData(geoJson);
+        });
     }
 
     public async initialize(map: mapboxgl.Map): Promise<void> {
         this._map = map;
 
-        const geoJson = await this._getGeoJsonFromUrl(this._geoJsonUrl);
-        store.commit("map/setGeoJson", geoJson);
-        console.log("Loaded GeoJSON", geoJson);
-
         // @ts-ignore
         this._map.addSource('markers-source', {
             type: 'geojson',
-            data: geoJson,
+            data: undefined,
             cluster: true,
             clusterMaxZoom: 14, // Max zoom to cluster points on
             clusterRadius: 50 // Radius of each cluster when clustering points
@@ -134,14 +136,23 @@ export class MapService {
 
     public async updateStreetFilter(streetFilter: string) {
         const geoJson = store.getters["map/getGeoJson"];
-        const filteredGeoJson: any = {"type": "FeatureCollection", "features": []};
+        const filteredGeoJson: MarkersGeoJsonModel = {"type": "FeatureCollection", "features": []};
         for (const feature of geoJson["features"]) {
             const street: string = feature?.properties?.straatnaam.toLowerCase()
             if (street.includes(streetFilter.toLowerCase())) {
                 filteredGeoJson.features.push(feature);
             }
         }
-        (this._map.getSource('markers-source') as any).setData(filteredGeoJson);
+        this._updateSourceData(filteredGeoJson);
+    }
+
+    private _updateSourceData(geoJson: MarkersGeoJsonModel): void {
+        if(!this._map) {
+            console.warn("Tried to update source data while map was not (yet) initialized");
+            return;
+        }
+
+        (this._map.getSource('markers-source') as any).setData(geoJson);
     }
 
     public getShownPreviewItems(): PreviewItemModel[] {
@@ -156,12 +167,6 @@ export class MapService {
         })
         const previewItems: PreviewItemModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => this._getPreviewItemFromMarker(feature.properties));
         return previewItems;
-    }
-
-    private async _getGeoJsonFromUrl(url: string): Promise<any> {
-        const geoJsonResponse: Response = await fetch(url);
-        const geoJson = await geoJsonResponse.json();
-        return Promise.resolve(geoJson);
     }
 
     private _onMapMarkerClicked(e: any) {

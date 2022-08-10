@@ -7,6 +7,7 @@ import Search from "./Search.vue";
 import {useStore} from "vuex";
 import SourceSelect from "./SourceSelect.vue";
 import {PreviewItemModel} from "../models/preview-item.model";
+import {DataService} from "../services/data.service";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/simondirks/ckggjvjq90ewx19pbojtgnrel';
@@ -18,6 +19,8 @@ const shownPreviewItems: Ref<PreviewItemModel[]> = ref([]);
 
 const onMapLoaded = (map: mapboxgl.Map) => {
   mapService.initialize(map);
+  const dataService: DataService = new DataService();
+  void dataService.updateMarkersFromServer();
   updateShownPreviewItems(map);
 };
 

@@ -1,8 +1,8 @@
+import {MarkersGeoJsonModel} from "../../models/markers-geo-json.model";
+
 interface MapState {
-    geoJson: any | null;
+    geoJson: MarkersGeoJsonModel | null;
     isInitialized: boolean;
-    // streetFilter: string;
-    // filteredGeoJson: any | null;
 }
 
 export const mapStoreModule = {
@@ -11,8 +11,6 @@ export const mapStoreModule = {
         return {
             geoJson: null,
             isInitialized: false
-            // streetFilter: ''
-            // filteredGeoJson: null
         };
     },
     getters: {
@@ -22,22 +20,13 @@ export const mapStoreModule = {
         getIsInitialized(state: MapState) {
             return state.isInitialized;
         }
-        // getStreetFilter(state: MapState) {
-        //     return state.streetFilter;
-        // }
     },
     mutations: {
-        setGeoJson: (state: MapState, geoJson: any) => {
+        setGeoJson: (state: MapState, geoJson: MarkersGeoJsonModel) => {
             state.geoJson = geoJson;
         },
         setIsInitialized: (state: MapState, isInitialized: boolean) => {
             state.isInitialized = isInitialized;
-        },
-        // setStreetFilter: (state: MapState, streetFilter: string) => {
-        //     state.streetFilter = streetFilter;
-        // },
-        // setFilteredGeoJson: (state: MapState, geoJson: any) => {
-        //     state.filteredGeoJson = geoJson;
-        // },
+        }
     }
 };
