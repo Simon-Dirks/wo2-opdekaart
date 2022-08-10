@@ -6,4 +6,5 @@ export type TripleStoreMarkerModel = {
     obj: string;
     sub: string;
     type: string;
+    depicts: string;
 }

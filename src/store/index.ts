@@ -1,8 +1,8 @@
 import {createStore} from 'vuex'
-import {PreviewItemModel} from "../models/preview-item.model";
 import {mapStoreModule} from "./map";
+import {MarkerModel} from "../models/marker.model";
 interface State {
-    selectedItem: PreviewItemModel | null,
+    selectedItem: MarkerModel | null,
     searchTerm: string
 }
 
@@ -25,7 +25,7 @@ export const store = createStore<State>({
         updateSearchTerm(state, searchTerm: string) {
           state.searchTerm = searchTerm;
         },
-        selectItem(state, item: PreviewItemModel) {
+        selectItem(state, item: MarkerModel) {
             state.selectedItem = item;
         },
         deselectItem(state) {

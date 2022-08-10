@@ -1,14 +1,14 @@
 import {TripleStoreMarkerModel} from "../models/triple-store-marker.model";
 import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
-import {MarkerPropertiesModel} from "../models/marker-properties.model";
+import {MarkerModel} from "../models/marker.model";
 import {LngLatLike} from "mapbox-gl";
 import {store} from "../store";
-import {useDialog} from "naive-ui";
 
 export class DataService {
     private static _instance: DataService;
     private readonly TRIPLY_TOKEN: string = import.meta.env.VITE_TRIPLY_TOKEN;
     private readonly MARKERS_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/Query-3/run?zoekterm=';
+
     constructor() {
         if (DataService._instance) {
             return DataService._instance
@@ -20,18 +20,21 @@ export class DataService {
     public async updateMarkersFromServer(searchTerm: string = 'Jan'): Promise<void> {
         console.log("Retrieving markers...");
         const headers: Headers = new Headers({
-           'Authorization': this.TRIPLY_TOKEN
+            'Authorization': this.TRIPLY_TOKEN
         });
-        const rawResponse: void | Response = await fetch(this.MARKERS_QUERY_URL + searchTerm, {method: 'get', headers: headers}).catch((err) => {
+        const rawResponse: void | Response = await fetch(this.MARKERS_QUERY_URL + searchTerm, {
+            method: 'get',
+            headers: headers
+        }).catch((err) => {
             console.error(err);
         });
-        if(!rawResponse) {
+        if (!rawResponse) {
             // TODO: Use more beautiful alert box
             alert("ERROR: Could not retrieve data.");
             return Promise.reject();
         }
         const response: any = await rawResponse.json();
-        if('message' in response) {
+        if ('message' in response) {
             // TODO: Use more beautiful alert box
             alert("ERROR: " + response.message);
             return Promise.reject();
@@ -49,11 +52,12 @@ export class DataService {
             "features": []
         };
 
-        for(const marker of markers) {
-            const markerProperties: MarkerPropertiesModel = {
-                "marker-color": 'purple',
-                "straatnaam": 'straat',
-                "huisnummer": 'nummer'
+        for (const marker of markers) {
+            console.log(marker);
+            const markerProperties: MarkerModel = {
+                "markerColor": '#D72F19',
+                "label": marker.label,
+                "imgUrl": marker.depicts
             }
             const coordinates: LngLatLike = [parseFloat(marker.long), parseFloat(marker.lat)];
             markersGeoJson['features'].push({

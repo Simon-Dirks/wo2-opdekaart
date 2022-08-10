@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {PreviewItemModel} from "../models/preview-item.model";
 import {PropType} from "vue";
 import {InsertLinkSharp} from "@vicons/material";
+import {MarkerModel} from "../models/marker.model";
 
 const props = defineProps({
-  item: {type: Object as PropType<PreviewItemModel | null>, required: true}
+  item: {type: Object as PropType<MarkerModel | null>, required: true}
 })
 
 </script>
@@ -14,13 +14,13 @@ const props = defineProps({
     <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
       <template #cover class="w-full">
         <n-image
-            :src="props.item?.img.url"
+            :src="props.item?.imgUrl"
             width="100%"
             fallback-src="https://via.placeholder.com/200x200"
         />
       </template>
 
-      <p>Beschrijving hier...</p>
+<!--      <p>Beschrijving hier...</p>-->
 
 
       <template #action>

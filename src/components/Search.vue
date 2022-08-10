@@ -6,7 +6,7 @@ const mapService: MapService = new MapService();
 const search: Ref<string> = ref('');
 
 const onUpdate = (search: string) => {
-  mapService.updateStreetFilter(search);
+  mapService.updateFilter(search);
 }
 </script>
 

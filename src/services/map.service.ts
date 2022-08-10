@@ -1,7 +1,6 @@
 import mapboxgl, {LngLatBounds} from "mapbox-gl";
-import {MarkerPropertiesModel} from "../models/marker-properties.model";
+import {MarkerModel} from "../models/marker.model";
 import {store} from "../store";
-import {PreviewItemModel} from "../models/preview-item.model";
 import {watch} from "vue";
 import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
 
@@ -81,7 +80,7 @@ export class MapService {
             source: 'markers-source',
             filter: ['!', ['has', 'point_count']],
             paint: {
-                'circle-color': ['get', 'marker-color'],
+                'circle-color': ['get', 'markerColor'],
                 'circle-radius': 7,
                 'circle-stroke-width': 1,
                 'circle-stroke-color': '#fff'
@@ -120,8 +119,8 @@ export class MapService {
 
             this._onMapMarkerClicked(e);
 
-            const markerProperties: MarkerPropertiesModel = this._getMarkerProperties(e);
-            store.commit("selectItem", this._getPreviewItemFromMarker(markerProperties))
+            const markerProperties: MarkerModel = this._getMarkerProperties(e);
+            store.commit("selectItem", markerProperties);
         });
 
         this._map.on('click', (e: any) => {
@@ -134,16 +133,30 @@ export class MapService {
         store.commit("map/setIsInitialized", true);
     }
 
-    public async updateStreetFilter(streetFilter: string) {
+    public async updateFilter(filter: string) {
         const geoJson = store.getters["map/getGeoJson"];
         const filteredGeoJson: MarkersGeoJsonModel = {"type": "FeatureCollection", "features": []};
         for (const feature of geoJson["features"]) {
-            const street: string = feature?.properties?.straatnaam.toLowerCase()
-            if (street.includes(streetFilter.toLowerCase())) {
+            const label: string = feature?.properties?.label.toLowerCase()
+            if (label.includes(filter.toLowerCase())) {
                 filteredGeoJson.features.push(feature);
             }
         }
         this._updateSourceData(filteredGeoJson);
+    }
+
+    public getShownPreviewItems(): MarkerModel[] {
+        const geoJson = store.getters["map/getGeoJson"];
+        if (!geoJson || !this._map || !('features' in geoJson)) {
+            return [];
+        }
+
+        const mapBounds: LngLatBounds = this._map.getBounds();
+        const filteredGeoJson = geoJson['features'].filter((feature: any) => {
+            return mapBounds.contains(feature['geometry']['coordinates']);
+        })
+        const previewItems: MarkerModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => feature.properties);
+        return previewItems;
     }
 
     private _updateSourceData(geoJson: MarkersGeoJsonModel): void {
@@ -155,23 +168,9 @@ export class MapService {
         (this._map.getSource('markers-source') as any).setData(geoJson);
     }
 
-    public getShownPreviewItems(): PreviewItemModel[] {
-        const geoJson = store.getters["map/getGeoJson"];
-        if (!geoJson || !this._map || !('features' in geoJson)) {
-            return [];
-        }
-
-        const mapBounds: LngLatBounds = this._map.getBounds();
-        const filteredGeoJson = geoJson['features'].filter((feature: any) => {
-            return mapBounds.contains(feature['geometry']['coordinates']);
-        })
-        const previewItems: PreviewItemModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => this._getPreviewItemFromMarker(feature.properties));
-        return previewItems;
-    }
-
     private _onMapMarkerClicked(e: any) {
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const streetName: string = this._getMarkerProperties(e).straatnaam;
+        const label: string = this._getMarkerProperties(e).label;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -183,19 +182,13 @@ export class MapService {
         new mapboxgl.Popup({closeButton: false, closeOnClick: true, closeOnMove: false})
             .setLngLat(coordinates)
             .setHTML(
-                `${streetName}`
+                `${label}`
             )
             .addTo(this._map);
     }
 
-    private _getMarkerProperties(e: any): MarkerPropertiesModel {
+    private _getMarkerProperties(e: any): MarkerModel {
         return e.features[0].properties;
     }
 
-    private _getPreviewItemFromMarker(markerProperties: MarkerPropertiesModel): PreviewItemModel {
-        return {
-            img: {url: "https://via.placeholder.com/1000x200", alt: "Alt"},
-            label: markerProperties.straatnaam + ' ' + markerProperties?.huisnummer
-        }
-    }
 }
