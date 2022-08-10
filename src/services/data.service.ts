@@ -17,8 +17,16 @@ export class DataService {
     }
 
     // TODO: Make query return all items without search term
-    public async updateMarkersFromServer(searchTerm: string = 'Jan'): Promise<void> {
+    // TODO: Actually use search term
+    public async updateMarkersFromServer(searchTerm: string = 'Jan', mock: boolean = true): Promise<void> {
         console.log("Retrieving markers...");
+
+        if(mock) {
+            const geoJsonResponse: Response = await fetch('/adressen.geojson');
+            const geoJson: MarkersGeoJsonModel = await geoJsonResponse.json();
+            store.commit("map/setGeoJson", geoJson)
+            return Promise.resolve();
+        }
         const headers: Headers = new Headers({
             'Authorization': this.TRIPLY_TOKEN
         });
