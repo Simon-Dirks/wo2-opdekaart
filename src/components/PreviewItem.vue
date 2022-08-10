@@ -16,7 +16,7 @@ const props = defineProps({
         <n-image
             :src="props.item?.imgUrl"
             width="100%"
-            fallback-src="https://via.placeholder.com/200x200"
+            fallback-src="https://via.placeholder.com/1000x200"
         />
       </template>
 
