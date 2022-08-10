@@ -45,7 +45,8 @@ const getAllPreviewItems = () => {
                     :minZoom="4"
                     :zoom="10"
                     @loaded="onMapLoaded"
-                    @zoom="updateShownPreviewItems">
+                    @zoom="updateShownPreviewItems"
+                    @move="updateShownPreviewItems">
           <mapbox-navigation-control position="bottom-right"/>
         </mapbox-map>
       </div>
