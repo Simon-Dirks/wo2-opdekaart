@@ -22,7 +22,7 @@ export class DataService {
         console.log("Retrieving markers...");
 
         if(mock) {
-            const geoJsonResponse: Response = await fetch('/adressen.geojson');
+            const geoJsonResponse: Response = await fetch('https://wo2kaart.hualab.nl/api/locations.php');
             const geoJson: MarkersGeoJsonModel = await geoJsonResponse.json();
             store.commit("map/setGeoJson", geoJson)
             return Promise.resolve();

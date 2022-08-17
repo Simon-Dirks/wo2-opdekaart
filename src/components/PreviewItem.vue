@@ -14,7 +14,9 @@ const props = defineProps({
     <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
       <template #cover class="w-full">
         <n-image
-            :src="props.item?.imgUrl ?? 'https://via.placeholder.com/1000x200'"
+            :src="props.item?.scans[0] ? 'https://proxy.archieven.nl/thumb/39/' + props.item?.scans[0] : 'https://via.placeholder.com/1000x200'"
+            :preview-src="props.item?.scans[0] ? 'https://proxy.archieven.nl/download/39/' + props.item?.scans[0] : 'https://via.placeholder.com/1000x200'"
+            lazy
             width="100%"
         />
       </template>

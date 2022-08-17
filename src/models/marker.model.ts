@@ -1,5 +1,6 @@
 export type MarkerModel = {
-    markerColor: string;
+    count: number;
     label: string;
-    imgUrl: string;
+    scans: string[];
+    wd: string;
 }

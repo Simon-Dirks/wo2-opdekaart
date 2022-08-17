@@ -17,7 +17,7 @@ export class MapService {
         }
         MapService._instance = this;
 
-        watch(() => store.getters["map/getGeoJson"],  (geoJson: MarkersGeoJsonModel) => {
+        watch(() => store.getters["map/getGeoJson"], (geoJson: MarkersGeoJsonModel) => {
             console.log('GeoJson updated:', geoJson);
             this._updateSourceData(geoJson);
         });
@@ -32,8 +32,12 @@ export class MapService {
             data: undefined,
             cluster: true,
             clusterMaxZoom: 14, // Max zoom to cluster points on
-            clusterRadius: 50 // Radius of each cluster when clustering points
+            clusterRadius: 50, // Radius of each cluster when clustering points,
+            clusterProperties: {
+                "document_count": ["+", ["get", "count"]]
+            }
         });
+
 
         this._map.addLayer({
             id: 'clusters',
@@ -66,9 +70,9 @@ export class MapService {
             id: 'cluster-count',
             type: 'symbol',
             source: 'markers-source',
-            filter: ['has', 'point_count'],
+            filter: ['has', 'document_count'],
             layout: {
-                'text-field': '{point_count_abbreviated}',
+                'text-field': '{document_count}',
                 'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
                 'text-size': 12
             }
@@ -80,7 +84,7 @@ export class MapService {
             source: 'markers-source',
             filter: ['!', ['has', 'point_count']],
             paint: {
-                'circle-color': ['get', 'markerColor'],
+                'circle-color': '#D72F19',
                 'circle-radius': 7,
                 'circle-stroke-width': 1,
                 'circle-stroke-color': '#fff'
@@ -148,7 +152,7 @@ export class MapService {
 
     private _markerIsShownWithFilter(marker: MarkerModel): boolean {
         const filter: string = store.getters.getSearchTerm;
-        if(!filter) {
+        if (!filter) {
             return true;
         }
         return marker.label.toLowerCase().includes(filter.toLowerCase());
@@ -169,7 +173,7 @@ export class MapService {
     }
 
     private _updateSourceData(geoJson: MarkersGeoJsonModel): void {
-        if(!this._map) {
+        if (!this._map) {
             console.warn("Tried to update source data while map was not (yet) initialized");
             return;
         }
