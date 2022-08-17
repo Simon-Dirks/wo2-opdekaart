@@ -11,7 +11,7 @@ import {MarkerModel} from "../models/marker.model";
 import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
-const MAPBOX_STYLE: string = 'mapbox://styles/simondirks/ckggjvjq90ewx19pbojtgnrel';
+const MAPBOX_STYLE: string = 'mapbox://styles/kverdult/cl6eris3u002115qgz3vg5l1n';
 
 const store = useStore();
 const selectedItem = computed(() => store.getters.getSelectedItem);
@@ -41,11 +41,12 @@ const updateShownPreviewItems = (map: mapboxgl.Map) => {
       <div class="h-full">
         <Search class="absolute top-4 left-4 z-20"></Search>
         <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
-        <mapbox-map :accessToken="MAPBOX_TOKEN" :mapStyle="MAPBOX_STYLE"
+        <mapbox-map :accessToken="MAPBOX_TOKEN"
                     :center="[4.897, 52.377]"
                     :maxZoom="20"
                     :minZoom="4"
                     :zoom="10"
+                    :mapStyle="MAPBOX_STYLE"
                     @loaded="onMapLoaded"
                     @zoom="updateShownPreviewItems"
                     @move="updateShownPreviewItems">
