@@ -9,6 +9,7 @@ import SourceSelect from "./SourceSelect.vue";
 import {DataService} from "../services/data.service";
 import {MarkerModel} from "../models/marker.model";
 import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
+import PreviewItemModal from "./PreviewItemModal.vue";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/kverdult/cl6eris3u002115qgz3vg5l1n';
@@ -36,8 +37,10 @@ const updateShownPreviewItems = (map: mapboxgl.Map) => {
 </script>
 
 <template>
+  <preview-item-modal></preview-item-modal>
+
   <div class="md:grid md:grid-cols-6 h-[50vh] md:h-full">
-    <div class="md:col-span-5 h-full">
+    <div class="md:col-span-4 h-full">
       <div class="h-full">
         <Search class="absolute top-4 left-4 z-20"></Search>
         <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
@@ -54,7 +57,7 @@ const updateShownPreviewItems = (map: mapboxgl.Map) => {
         </mapbox-map>
       </div>
     </div>
-    <div class="md:col-span-1 bg-slate-600 p-4 overflow-y-auto h-[50vh] md:h-full text-white"
+    <div class="md:col-span-2 bg-slate-600 p-4 overflow-y-auto h-[50vh] md:h-full text-white"
          id="preview-items-container">
       <template v-if="selectedItem">
         <PreviewItem

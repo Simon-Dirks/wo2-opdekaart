@@ -21,10 +21,18 @@ export class DataService {
     public async updateMarkersFromServer(searchTerm: string = 'Jan', mock: boolean = true): Promise<void> {
         console.log("Retrieving markers...");
 
-        if(mock) {
+        if (mock) {
             const geoJsonResponse: Response = await fetch('https://wo2kaart.hualab.nl/api/locations.php');
-            const geoJson: MarkersGeoJsonModel = await geoJsonResponse.json();
-            store.commit("map/setGeoJson", geoJson)
+            const geoJson: any = await geoJsonResponse.json();
+            const parsedFeatures = geoJson.features.map((feature: any) => {
+                feature.properties.scans = feature.properties.scans.map((scan: string) => {
+                    return {id: scan, title: "SCAN TITLE"}
+                })
+                return feature;
+            })
+            const geoJsonMarkers: MarkersGeoJsonModel = geoJson;
+            geoJsonMarkers.features = parsedFeatures;
+            store.commit("map/setGeoJson", geoJsonMarkers)
             return Promise.resolve();
         }
         const headers: Headers = new Headers({

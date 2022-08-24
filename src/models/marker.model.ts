@@ -1,6 +1,11 @@
 export type MarkerModel = {
     count: number;
     label: string;
-    scans: string[];
+    scans: ScanModel[];
     wd: string;
+}
+
+export type ScanModel = {
+    id: string;
+    title: string;
 }

@@ -201,7 +201,10 @@ export class MapService {
     }
 
     private _getMarkerProperties(e: any): MarkerModel {
-        return e.features[0].properties;
+        // TODO: Fix issue with scans not showing properly when selecting single item
+        const markerProperties: any = e.features[0].properties;
+        // markerProperties.scans = JSON.parse(markerProperties.scans);
+        return markerProperties;
     }
 
 }

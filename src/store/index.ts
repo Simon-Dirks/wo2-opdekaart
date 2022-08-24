@@ -1,20 +1,22 @@
 import {createStore} from 'vuex'
 import {mapStoreModule} from "./map";
+import {previewModalModule} from "./preview-modal";
 import {MarkerModel} from "../models/marker.model";
 
 interface State {
     selectedItem: MarkerModel | null,
-    searchTerm: string
+    searchTerm: string,
 }
 
 export const store = createStore<State>({
     modules: {
-        map: mapStoreModule
+        map: mapStoreModule,
+        previewModal: previewModalModule
     },
     state() {
         return {
             selectedItem: null,
-            searchTerm: ''
+            searchTerm: '',
         }
     },
     getters: {
@@ -26,14 +28,14 @@ export const store = createStore<State>({
         }
     },
     mutations: {
-        updateSearchTerm(state, searchTerm: string) {
+        updateSearchTerm(state: State, searchTerm: string) {
             state.searchTerm = searchTerm;
         },
-        selectItem(state, item: MarkerModel) {
+        selectItem(state: State, item: MarkerModel) {
             state.selectedItem = item;
         },
-        deselectItem(state) {
+        deselectItem(state: State) {
             state.selectedItem = null;
-        }
+        },
     }
 })
