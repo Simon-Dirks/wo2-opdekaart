@@ -6,7 +6,7 @@ import {GlobalThemeOverrides} from 'naive-ui'
 const themeOverrides: GlobalThemeOverrides = {
   common: {
     primaryColor: '#D72F19',
-    // baseColor: '#D72F19',
+    baseColor: '#D72F19',
     // borderColor: '#D72F19',
     // primaryColorPressed: '#D72F19',
     primaryColorHover: 'rgb(215,47,25, 0.1)'
@@ -22,7 +22,7 @@ const themeOverrides: GlobalThemeOverrides = {
         <n-notification-provider>
           <n-dialog-provider>
             <n-config-provider :theme-overrides="themeOverrides" class="h-full">
-              <Map></Map>
+              <router-view/>
             </n-config-provider>
           </n-dialog-provider>
         </n-notification-provider>

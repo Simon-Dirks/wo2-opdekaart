@@ -6,8 +6,10 @@ import VueMapboxTs from "vue-mapbox-ts";
 import {store} from "./store";
 import naive from "naive-ui";
 import {Icon, IconConfigProvider} from "@vicons/utils";
+import router from "./router";
 
 const app = createApp(App);
+app.use(router);
 app.use(store);
 app.use(VueMapboxTs);
 app.use(naive);
