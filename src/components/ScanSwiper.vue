@@ -25,18 +25,22 @@ const openModal = () => store.commit("previewModal/setShownScans", props.scans);
       class="h-full"
   >
     <swiper-slide v-for="(scan, idx) in props.scans" :key="scan.id + idx" class="h-full image-slide">
-      <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
-        <!-- TODO: Re-enable lazy loading when fullscreen-->
-        <n-image
-            :src="scan.id ? 'https://proxy.archieven.nl/thumb/39/' + scan.id : 'https://via.placeholder.com/1000x200'"
-            :fallback-src="'https://via.placeholder.com/1000x200'"
-            :lazy="!isShownFullscreen"
-            :preview-disabled="true"
-            class="w-full h-full !object-contain"></n-image>
-      </button>
-
-      <div class="text-center">
-        <p v-if="isShownFullscreen">{{ scan.title }}</p>
+      <div class="grid grid-rows-12 h-full">
+        <div class="row-span-11">
+          <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
+            <!-- TODO: Re-enable lazy loading when fullscreen-->
+            <!--  TODO: Add pinch to zoom-->
+            <n-image
+                :src="scan.id ? 'https://proxy.archieven.nl/thumb/39/' + scan.id : 'https://via.placeholder.com/1000x200'"
+                :fallback-src="'https://via.placeholder.com/1000x200'"
+                :lazy="!isShownFullscreen"
+                :preview-disabled="true"
+                class="w-full h-full !object-contain"></n-image>
+          </button>
+        </div>
+        <div class="text-center row-span-1">
+          <p v-if="isShownFullscreen">{{ scan.title }}</p>
+        </div>
       </div>
     </swiper-slide>
   </swiper>
@@ -45,6 +49,7 @@ const openModal = () => store.commit("previewModal/setShownScans", props.scans);
 <style>
 .image-slide img {
   object-fit: contain !important;
+  width: 100%;
 }
 
 .image-slide .n-image {
