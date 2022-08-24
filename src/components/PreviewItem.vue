@@ -2,10 +2,16 @@
 import {PropType} from "vue";
 import {InsertLinkSharp} from "@vicons/material";
 import {MarkerModel} from "../models/marker.model";
+import {Swiper, SwiperSlide} from 'swiper/vue';
+import {Mousewheel, Scrollbar} from 'swiper';
+import 'swiper/css';
+import 'swiper/css/scrollbar';
 
 const props = defineProps({
   item: {type: Object as PropType<MarkerModel | null>, required: true}
 })
+
+const modules = [Scrollbar, Mousewheel];
 
 </script>
 
@@ -13,15 +19,29 @@ const props = defineProps({
   <Transition>
     <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
       <template #cover class="w-full">
-        <n-image
-            :src="props.item?.scans[0] ? 'https://proxy.archieven.nl/thumb/39/' + props.item?.scans[0] : 'https://via.placeholder.com/1000x200'"
-            :preview-src="props.item?.scans[0] ? 'https://proxy.archieven.nl/download/39/' + props.item?.scans[0] : 'https://via.placeholder.com/1000x200'"
-            lazy
-            width="100%"
-        />
+        <swiper
+            :modules="modules"
+            :slides-per-view="2"
+            :space-between="10"
+            :mousewheel="true"
+        >
+          <!-- :scrollbar="{draggable: true}"-->
+
+          <swiper-slide v-for="(scan, idx) in props.item?.scans" :key="scan + idx">
+            <n-image
+                :src="scan ? 'https://proxy.archieven.nl/thumb/39/' + scan : 'https://via.placeholder.com/1000x200'"
+                :preview-src="scan ? 'https://proxy.archieven.nl/download/39/' + scan : 'https://via.placeholder.com/1000x200'"
+                lazy
+                :fallback-src="'https://via.placeholder.com/1000x200'"
+                width="100%"
+            />
+          </swiper-slide>
+        </swiper>
+
+
       </template>
 
-<!--      <p>Beschrijving hier...</p>-->
+      <!--      <p>Beschrijving hier...</p>-->
 
 
       <template #action>
