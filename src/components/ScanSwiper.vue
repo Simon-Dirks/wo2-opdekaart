@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import {Swiper, SwiperSlide} from 'swiper/vue';
-import {Mousewheel, Scrollbar} from 'swiper';
+import {Keyboard, Mousewheel, Scrollbar} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
-import {PropType} from "vue";
+import 'swiper/css/keyboard';
+import {onMounted, PropType} from "vue";
 import {ScanModel} from "../models/marker.model";
-import {store} from "../store";
+import ScanSwiperSlide from "./ScanSwiperSlide.vue";
 
-const modules = [Scrollbar, Mousewheel];
+const modules = [Scrollbar, Mousewheel, Keyboard];
 
 const props = defineProps({
   scans: {type: Object as PropType<ScanModel[]>, required: true},
   isShownFullscreen: {type: Boolean, required: false},
 })
-
-const openModal = () => store.commit("previewModal/setShownScans", props.scans);
 </script>
 
 <template>
@@ -22,37 +21,16 @@ const openModal = () => store.commit("previewModal/setShownScans", props.scans);
       :modules="modules"
       :slides-per-view="isShownFullscreen ? 1 : 2"
       :space-between="10"
+      :auto-height="true"
+      :keyboard="{enabled: isShownFullscreen, onlyInViewport: true}"
       class="h-full"
   >
     <swiper-slide v-for="(scan, idx) in props.scans" :key="scan.id + idx" class="h-full image-slide">
-      <div class="h-full" style="flex: 0 1 auto;">
-        <div class="" style="flex: 1 1 auto;">
-          <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
-            <!-- TODO: Re-enable lazy loading when fullscreen-->
-            <!--  TODO: Add pinch to zoom-->
-            <n-image
-                :src="scan.id ? 'https://proxy.archieven.nl/thumb/39/' + scan.id : 'https://via.placeholder.com/1000x200'"
-                :fallback-src="'https://via.placeholder.com/1000x200'"
-                :lazy="!isShownFullscreen"
-                :preview-disabled="true"
-                class="w-full h-full !object-contain"></n-image>
-          </button>
-        </div>
-        <div class="text-center text-white drop-shadow" style="flex: 0 1 40px">
-          <p v-if="isShownFullscreen">{{ scan.title }}</p>
-        </div>
-      </div>
+      <scan-swiper-slide :is-shown-fullscreen="isShownFullscreen" :scans="scans" :scan="scan"></scan-swiper-slide>
     </swiper-slide>
   </swiper>
 </template>
 
 <style>
-.image-slide img {
-  object-fit: contain !important;
-  width: 100%;
-}
 
-.image-slide .n-image {
-  justify-content: space-around;
-}
 </style>

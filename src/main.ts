@@ -7,12 +7,22 @@ import {store} from "./store";
 import naive from "naive-ui";
 import {Icon, IconConfigProvider} from "@vicons/utils";
 import router from "./router";
+import VueLazyLoad from 'vue3-lazyload'
 
 const app = createApp(App);
 app.use(router);
 app.use(store);
 app.use(VueMapboxTs);
 app.use(naive);
+app.use(VueLazyLoad, {
+    loading: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif',
+    error: 'https://placekitten.com/1000/500',
+    lifecycle: {
+        error: (el: any) => {
+            // console.warn(el);
+        }
+    }
+});
 app.component('Icon', Icon);
 app.component('IconConfigProvider', IconConfigProvider);
 app.mount('#app');

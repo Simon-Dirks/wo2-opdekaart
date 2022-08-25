@@ -8,14 +8,13 @@ import ScanSwiper from "./ScanSwiper.vue";
 const store = useStore();
 const isShown: ComputedRef<boolean> = computed(() => store.getters["previewModal/getIsShown"]);
 const shownScans: ComputedRef<ScanModel[]> = computed(() => store.getters["previewModal/getShownScans"]);
-const closeModal = () => store.commit("previewModal/setShownScans", []);
+const closeModal = () => store.commit("previewModal/setIsShown", false);
 </script>
 
 <template>
   <n-modal v-model:show="isShown" :on-mask-click="closeModal" :on-esc="closeModal" :closable="true">
     <n-card
         style="width: 95vw; height: auto"
-        title="Scans"
         :bordered="false"
         size="huge"
         role="dialog"
