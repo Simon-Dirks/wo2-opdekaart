@@ -22,7 +22,14 @@ export class DataService {
         console.log("Retrieving markers...");
 
         if (mock) {
-            const geoJsonResponse: Response = await fetch('https://wo2kaart.hualab.nl/api/locations.php');
+            const headers = new Headers();
+            headers.set('Authorization', 'Basic ' + btoa('wo2' + ":" + 'wo2kaart'));
+
+            const geoJsonResponse: Response | void = await fetch('api/locations.php', {method: 'GET', headers: headers}).catch(err => alert("ERROR: Failed to retrieve data..."));
+            if(!geoJsonResponse) {
+                return;
+            }
+
             const geoJson: any = await geoJsonResponse.json();
             const parsedFeatures = geoJson.features.map((feature: any) => {
                 feature.properties.scans = feature.properties.scans.map((scan: string) => {
