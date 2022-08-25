@@ -15,10 +15,12 @@ const props = defineProps({
 <template>
   <Transition>
     <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
-      <template #cover class="w-full">
-        <scan-swiper :scans="props.item?.scans" :is-shown-fullscreen="false"></scan-swiper>
-      </template>
+<!--      <template #cover class="w-full">-->
+<!--      </template>-->
 
+      <p class="mb-3">Documenten: {{props.item?.scans.length}}</p>
+
+      <scan-swiper :scans="props.item?.scans" :is-shown-fullscreen="false"></scan-swiper>
 
       <template #action>
         <a href="#" class="italic hover:text-primary">
@@ -32,16 +34,8 @@ const props = defineProps({
 
 </template>
 
-<style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
+<style>
+#preview-items-container .n-card-header {
+  padding-bottom: 0 !important;
 }
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-  transform: scale(0.95);
-}
-
 </style>
