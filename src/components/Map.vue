@@ -20,13 +20,19 @@ const mapService: MapService = new MapService();
 const shownPreviewItems: Ref<MarkerModel[]> = ref([]);
 
 const onMapLoaded = (map: mapboxgl.Map) => {
-  mapService.initialize(map);
-  const dataService: DataService = new DataService();
-  void dataService.updateMarkersFromServer();
-  updateShownPreviewItems(map);
+  mapService.initialize(map).then(() => {
+    const dataService: DataService = new DataService();
+    void dataService.updateMarkersFromServer();
+    updateShownPreviewItems(map);
+  })
+
 
   watch(() => store.getters["getSearchTerm"],  (searchTerm: string) => {
     console.log(searchTerm);
+    updateShownPreviewItems(map);
+  });
+
+  watch(() => store.getters["map/getGeoJson"],  (geoJson: MarkersGeoJsonModel | null) => {
     updateShownPreviewItems(map);
   });
 };
