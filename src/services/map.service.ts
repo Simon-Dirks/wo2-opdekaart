@@ -168,6 +168,7 @@ export class MapService {
         const filteredGeoJson = geoJson['features'].filter((feature: any) => {
             return this._markerIsShownWithFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
         })
+        // TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?)
         const previewItems: MarkerModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => feature.properties);
         return previewItems;
     }
