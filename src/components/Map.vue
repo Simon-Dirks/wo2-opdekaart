@@ -35,18 +35,24 @@ const onMapLoaded = (map: mapboxgl.Map) => {
   })
 
 
-  watch(() => store.getters["getSearchTerm"],  (searchTerm: string) => {
+  watch(() => store.getters["getSearchTerm"], (searchTerm: string) => {
     console.log(searchTerm);
     updateShownPreviewItems(map);
   });
 
-  watch(() => store.getters["map/getGeoJson"],  (geoJson: MarkersGeoJsonModel | null) => {
+  watch(() => store.getters["map/getGeoJson"], (geoJson: MarkersGeoJsonModel | null) => {
     updateShownPreviewItems(map);
   });
 };
 
 const updateShownPreviewItems = (map: mapboxgl.Map) => {
+  // TODO: "Debounce" this call for performance optimizations
   shownPreviewItems.value = mapService.getShownPreviewItems();
+}
+
+const getNumberOfDocumentsForShownPreviewItems = (): number => {
+  const shownScans = shownPreviewItems.value.map((marker: MarkerModel) => marker.scans.length);
+  return shownScans.reduce((prev, curr) => prev + curr, 0);
 }
 </script>
 
@@ -71,15 +77,20 @@ const updateShownPreviewItems = (map: mapboxgl.Map) => {
         </mapbox-map>
       </div>
     </div>
-    <div class="md:col-span-2 bg-slate-600 p-4 overflow-y-auto h-[50vh] md:h-full text-white"
+    <div class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
          id="preview-items-container">
-      <template v-if="selectedItem">
-        <PreviewItem
-            :item="selectedItem"></PreviewItem>
-      </template>
-      <template v-if="!selectedItem">
-        <PreviewItem :item="previewItem" v-for="previewItem in shownPreviewItems"></PreviewItem>
-      </template>
+      <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20"><strong>Totaal:</strong>
+        {{ shownPreviewItems.length }} adressen en {{ getNumberOfDocumentsForShownPreviewItems() }} documenten</h1>
+      <div class="px-4">
+        <template v-if="selectedItem">
+          <PreviewItem
+              :item="selectedItem"></PreviewItem>
+        </template>
+        <template v-if="!selectedItem">
+          <PreviewItem :item="previewItem" v-for="previewItem in shownPreviewItems"></PreviewItem>
+        </template>
+      </div>
+
     </div>
   </div>
 
