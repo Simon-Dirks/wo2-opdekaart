@@ -8,4 +8,6 @@ export type MarkerModel = {
 export type ScanModel = {
     id: string;
     title: string;
+    url: string;
+    description: string;
 }

@@ -33,7 +33,7 @@ export class DataService {
             const geoJson: any = await geoJsonResponse.json();
             const parsedFeatures = geoJson.features.map((feature: any) => {
                 feature.properties.scans = feature.properties.scans.map((scan: string) => {
-                    return {id: scan, title: "SCAN TITLE"}
+                    return {id: scan, title: "SCAN TITLE", url: "https://google.com", description: "DESCRIPTION"}
                 })
                 return feature;
             })

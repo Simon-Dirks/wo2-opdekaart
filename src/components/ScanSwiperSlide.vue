@@ -10,9 +10,12 @@
                     lifecycle: {
                       loaded: (el) => {swiper.updateAutoHeight()},
                       error: (el) => {
-                        el.style.display = 'none';
-                        swiper.updateAutoHeight()
-                        // el.addEventListener('load', () => {swiper.updateAutoHeight()})
+                        if(isShownFullscreen) {
+                            el.addEventListener('load', () => {swiper.updateAutoHeight()})
+                        } else {
+                          el.style.display = 'none';
+                          swiper.updateAutoHeight()
+                        }
                       }
                     }
                 }"
@@ -21,7 +24,10 @@
       </button>
     </div>
     <div class="text-center text-white drop-shadow" style="flex: 0 1 40px" v-if="isShownFullscreen">
-      <p>{{ scan.title }}</p>
+      <p>{{ scan.title }}
+        </p>
+      <p><a :href="scan.url" target="_blank">LINK</a></p>
+      <p>{{ scan.description }}</p>
     </div>
   </div>
 </template>
