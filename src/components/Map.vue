@@ -10,6 +10,7 @@ import {DataService} from "../services/data.service";
 import {MarkerModel} from "../models/marker.model";
 import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
 import PreviewItemModal from "./PreviewItemModal.vue";
+import {useLoadingBar} from "naive-ui";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/kverdult/cl6eris3u002115qgz3vg5l1n';
@@ -19,10 +20,17 @@ const selectedItem = computed(() => store.getters.getSelectedItem);
 const mapService: MapService = new MapService();
 const shownPreviewItems: Ref<MarkerModel[]> = ref([]);
 
+const loadingBar = useLoadingBar();
+
 const onMapLoaded = (map: mapboxgl.Map) => {
-  mapService.initialize(map).then(() => {
+  mapService.initialize(map).then(async () => {
+    loadingBar.start();
     const dataService: DataService = new DataService();
-    void dataService.updateMarkersFromServer();
+    await dataService.updateMarkersFromServer().then(() => {
+      loadingBar.finish();
+    }).catch(() => {
+      loadingBar.error();
+    });
     updateShownPreviewItems(map);
   })
 

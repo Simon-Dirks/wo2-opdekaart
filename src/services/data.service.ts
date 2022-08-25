@@ -25,9 +25,9 @@ export class DataService {
             const headers = new Headers();
             headers.set('Authorization', 'Basic ' + btoa('wo2' + ":" + 'wo2kaart'));
 
-            const geoJsonResponse: Response | void = await fetch('api/locations.php', {method: 'GET', headers: headers}).catch(err => alert("ERROR: Failed to retrieve data..."));
+            const geoJsonResponse: Response | void = await fetch('api/locations.php', {method: 'GET', headers: headers}).catch(err => console.error("ERROR: Failed to retrieve data..."));
             if(!geoJsonResponse) {
-                return;
+                return Promise.reject();
             }
 
             const geoJson: any = await geoJsonResponse.json();
