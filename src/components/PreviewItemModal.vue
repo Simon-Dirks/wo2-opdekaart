@@ -29,10 +29,6 @@ const closeModal = () => store.commit("previewModal/setIsShown", false);
       </template>
 
       <scan-swiper :scans="shownScans" :isShownFullscreen="true"></scan-swiper>
-
-      <!--      <template #footer>-->
-      <!--        Footer-->
-      <!--      </template>-->
     </n-card>
   </n-modal>
 </template>
