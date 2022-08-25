@@ -9,7 +9,11 @@
                     src: getImageSourceById(scan.id),
                     lifecycle: {
                       loaded: (el) => {swiper.updateAutoHeight()},
-                      error: (el) => {el.addEventListener('load', () => {swiper.updateAutoHeight()}) }
+                      error: (el) => {
+                        el.style.display = 'none';
+                        swiper.updateAutoHeight()
+                        // el.addEventListener('load', () => {swiper.updateAutoHeight()})
+                      }
                     }
                 }"
             alt=""
