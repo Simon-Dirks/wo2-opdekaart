@@ -25,8 +25,8 @@ const openModal = () => store.commit("previewModal/setShownScans", props.scans);
       class="h-full"
   >
     <swiper-slide v-for="(scan, idx) in props.scans" :key="scan.id + idx" class="h-full image-slide">
-      <div class="grid grid-rows-12 h-full">
-        <div class="row-span-11">
+      <div class="h-full" style="flex: 0 1 auto;">
+        <div class="" style="flex: 1 1 auto;">
           <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
             <!-- TODO: Re-enable lazy loading when fullscreen-->
             <!--  TODO: Add pinch to zoom-->
@@ -38,7 +38,7 @@ const openModal = () => store.commit("previewModal/setShownScans", props.scans);
                 class="w-full h-full !object-contain"></n-image>
           </button>
         </div>
-        <div class="text-center row-span-1">
+        <div class="text-center text-white drop-shadow" style="flex: 0 1 40px">
           <p v-if="isShownFullscreen">{{ scan.title }}</p>
         </div>
       </div>

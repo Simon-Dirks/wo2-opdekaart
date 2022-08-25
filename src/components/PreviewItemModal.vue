@@ -14,7 +14,7 @@ const closeModal = () => store.commit("previewModal/setShownScans", []);
 <template>
   <n-modal v-model:show="isShown" :on-mask-click="closeModal" :on-esc="closeModal" :closable="true">
     <n-card
-        style="width: 95vw; height: 95vh"
+        style="width: 95vw; height: auto"
         title="Scans"
         :bordered="false"
         size="huge"
@@ -22,8 +22,8 @@ const closeModal = () => store.commit("previewModal/setShownScans", []);
         aria-modal="true"
     >
       <template #header-extra>
-        <button @click="closeModal" class="relative right-[-1rem] top-[-0.8rem] ">
-          <Icon size="20" class="transition-colors hover:text-primary">
+        <button @click="closeModal" class="relative right-1 top-1">
+          <Icon size="20" class="transition-colors text-white hover:text-primary">
             <Close/>
           </Icon>
         </button>
@@ -37,3 +37,17 @@ const closeModal = () => store.commit("previewModal/setShownScans", []);
     </n-card>
   </n-modal>
 </template>
+
+<style>
+.n-modal {
+  --n-color-modal: rgba(0, 0, 0, 0.3) !important;
+}
+
+.n-modal > .n-card-header {
+  padding: 0;
+}
+
+.n-modal > .n-card__content {
+  padding: 0 1rem 0.5rem;
+}
+</style>
