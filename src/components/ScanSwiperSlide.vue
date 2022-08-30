@@ -8,8 +8,8 @@
             v-lazy="{
                     src: getImageSourceById(scan.id),
                     lifecycle: {
-                      loaded: (el) => {swiper.updateAutoHeight()},
-                      error: (el) => {
+                      loaded: (el: any) => {swiper.updateAutoHeight()},
+                      error: (el: any) => {
                         el.addEventListener('load', () => {swiper.updateAutoHeight()})
                       }
                     }
