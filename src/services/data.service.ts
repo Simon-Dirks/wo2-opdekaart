@@ -42,56 +42,56 @@ export class DataService {
             store.commit("map/setGeoJson", geoJsonMarkers)
             return Promise.resolve();
         }
-        const headers: Headers = new Headers({
-            'Authorization': this.TRIPLY_TOKEN
-        });
-        const rawResponse: void | Response = await fetch(this.MARKERS_QUERY_URL + searchTerm, {
-            method: 'get',
-            headers: headers
-        }).catch((err) => {
-            console.error(err);
-        });
-        if (!rawResponse) {
-            // TODO: Use more beautiful alert box
-            alert("ERROR: Could not retrieve data.");
-            return Promise.reject();
-        }
-        const response: any = await rawResponse.json();
-        if ('message' in response) {
-            // TODO: Use more beautiful alert box
-            alert("ERROR: " + response.message);
-            return Promise.reject();
-        }
-        const markers: TripleStoreMarkerModel[] = response as TripleStoreMarkerModel[];
-        const markersGeoJson: MarkersGeoJsonModel = this._parseMarkers(markers);
-        store.commit("map/setGeoJson", markersGeoJson)
+        // const headers: Headers = new Headers({
+        //     'Authorization': this.TRIPLY_TOKEN
+        // });
+        // const rawResponse: void | Response = await fetch(this.MARKERS_QUERY_URL + searchTerm, {
+        //     method: 'get',
+        //     headers: headers
+        // }).catch((err) => {
+        //     console.error(err);
+        // });
+        // if (!rawResponse) {
+        //     // TODO: Use more beautiful alert box
+        //     alert("ERROR: Could not retrieve data.");
+        //     return Promise.reject();
+        // }
+        // const response: any = await rawResponse.json();
+        // if ('message' in response) {
+        //     // TODO: Use more beautiful alert box
+        //     alert("ERROR: " + response.message);
+        //     return Promise.reject();
+        // }
+        // const markers: TripleStoreMarkerModel[] = response as TripleStoreMarkerModel[];
+        // const markersGeoJson: MarkersGeoJsonModel = this._parseMarkers(markers);
+        // store.commit("map/setGeoJson", markersGeoJson)
 
         return Promise.resolve();
     }
 
-    private _parseMarkers(markers: TripleStoreMarkerModel[]): MarkersGeoJsonModel {
-        const markersGeoJson: MarkersGeoJsonModel = {
-            "type": "FeatureCollection",
-            "features": []
-        };
-
-        for (const marker of markers) {
-            console.log(marker);
-            const markerProperties: MarkerModel = {
-                "markerColor": '#D72F19',
-                "label": marker.label,
-                "imgUrl": marker.depicts
-            }
-            const coordinates: LngLatLike = [parseFloat(marker.long), parseFloat(marker.lat)];
-            markersGeoJson['features'].push({
-                properties: markerProperties,
-                type: "Feature",
-                geometry: {
-                    type: "Point",
-                    coordinates: coordinates
-                }
-            })
-        }
-        return markersGeoJson;
-    }
+    // private _parseMarkers(markers: TripleStoreMarkerModel[]): MarkersGeoJsonModel {
+    //     const markersGeoJson: MarkersGeoJsonModel = {
+    //         "type": "FeatureCollection",
+    //         "features": []
+    //     };
+    //
+    //     for (const marker of markers) {
+    //         console.log(marker);
+    //         const markerProperties: MarkerModel = {
+    //             "markerColor": '#D72F19',
+    //             "label": marker.label,
+    //             "imgUrl": marker.depicts
+    //         }
+    //         const coordinates: LngLatLike = [parseFloat(marker.long), parseFloat(marker.lat)];
+    //         markersGeoJson['features'].push({
+    //             properties: markerProperties,
+    //             type: "Feature",
+    //             geometry: {
+    //                 type: "Point",
+    //                 coordinates: coordinates
+    //             }
+    //         })
+    //     }
+    //     return markersGeoJson;
+    // }
 }
