@@ -6,7 +6,7 @@ import {GlobalThemeOverrides} from 'naive-ui'
 const themeOverrides: GlobalThemeOverrides = {
   common: {
     primaryColor: '#D72F19',
-    baseColor: '#D72F19',
+    // baseColor: '#D72F19',
     // borderColor: '#D72F19',
     // primaryColorPressed: '#D72F19',
     primaryColorHover: 'rgb(215,47,25, 0.1)'
