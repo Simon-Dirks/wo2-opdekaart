@@ -66,7 +66,7 @@ const getNumberOfDocumentsForShownPreviewItems = (): number => {
         <Search class="absolute top-4 left-4 z-20"></Search>
         <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
         <mapbox-map :accessToken="MAPBOX_TOKEN"
-                    :center="[4.897, 52.377]"
+                    :center="[5.079400243080665, 52.09049473634017]"
                     :maxZoom="20"
                     :minZoom="4"
                     :zoom="10"
