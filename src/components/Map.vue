@@ -63,17 +63,18 @@ const getNumberOfDocumentsForShownPreviewItems = (): number => {
   <div class="md:grid md:grid-cols-6 h-[50vh] md:h-full">
     <div class="md:col-span-4 h-full">
       <div class="h-full">
-        <Search class="absolute top-4 left-4 z-20"></Search>
-        <SourceSelect class="absolute top-20 left-4 z-20"></SourceSelect>
-        <mapbox-map :accessToken="MAPBOX_TOKEN"
-                    :center="[5.079400243080665, 52.09049473634017]"
-                    :maxZoom="20"
-                    :minZoom="4"
-                    :zoom="10"
-                    :mapStyle="MAPBOX_STYLE"
-                    @loaded="onMapLoaded"
-                    @zoom="updateShownPreviewItems"
-                    @move="updateShownPreviewItems">
+        <search class="absolute top-4 left-4 z-20"></search>
+        <source-select class="absolute top-20 left-4 z-20"></source-select>
+        <mapbox-map
+            :accessToken="MAPBOX_TOKEN"
+            :center="[5.079400243080665, 52.09049473634017]"
+            :maxZoom="20"
+            :minZoom="4"
+            :zoom="10"
+            :mapStyle="MAPBOX_STYLE"
+            @loaded="onMapLoaded"
+            @zoom="updateShownPreviewItems"
+            @move="updateShownPreviewItems">
           <mapbox-navigation-control position="bottom-right"/>
         </mapbox-map>
       </div>
@@ -84,11 +85,11 @@ const getNumberOfDocumentsForShownPreviewItems = (): number => {
       <!--        {{ shownPreviewItems.length }} adressen en {{ getNumberOfDocumentsForShownPreviewItems() }} documenten</h1>-->
       <div class="px-4 pt-4">
         <template v-if="selectedItem">
-          <PreviewItem
-              :item="selectedItem"></PreviewItem>
+          <preview-item
+              :item="selectedItem"></preview-item>
         </template>
         <template v-if="!selectedItem">
-          <PreviewItem :item="previewItem" v-for="previewItem in shownPreviewItems"></PreviewItem>
+          <preview-item :item="previewItem" v-for="previewItem in shownPreviewItems"></preview-item>
         </template>
       </div>
 
