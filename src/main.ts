@@ -8,6 +8,7 @@ import naive from "naive-ui";
 import {Icon, IconConfigProvider} from "@vicons/utils";
 import router from "./router";
 import VueLazyLoad from 'vue3-lazyload'
+import {vue3Debounce} from "vue-debounce";
 
 const app = createApp(App);
 app.use(router);
@@ -25,4 +26,5 @@ app.use(VueLazyLoad, {
 });
 app.component('Icon', Icon);
 app.component('IconConfigProvider', IconConfigProvider);
+app.directive('debounce', vue3Debounce({lock: true}));
 app.mount('#app');

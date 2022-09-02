@@ -13,6 +13,7 @@
     "mapbox-gl": "^2.9.2",
     "swiper": "^8.3.2",
     "vue": "^3.2.37",
+    "vue-debounce": "^4.0.0",
     "vue-mapbox-ts": "^0.9.3",
     "vue-router": "^4.0.13",
     "vue3-lazyload": "^0.3.6",
