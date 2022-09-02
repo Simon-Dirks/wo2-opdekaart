@@ -1,12 +1,12 @@
 <template>
-  <div class="h-full" style="flex: 0 1 auto;">
+  <div class="h-full" style="flex: 0 1 auto;" v-if="document">
     <div class="" style="flex: 1 1 auto;">
       <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
         <!-- TODO: Re-enable lazy loading when fullscreen-->
         <!-- TODO: Add pinch to zoom-->
         <img
             v-lazy="{
-                    src: getImageSourceById(scan.id),
+                    src: getImageUrl(document.imageUrl),
                     lifecycle: {
                       loaded: (el: any) => {swiper.updateAutoHeight()},
                       error: (el: any) => {
@@ -18,36 +18,41 @@
             class="w-full h-full max-h-[80vh] !object-contain" loading="lazy">
       </button>
     </div>
-    <div class="text-center text-white drop-shadow" style="flex: 0 1 40px" v-if="isShownFullscreen">
-      <p>{{ scan.title }}
+    <div class="text-center text-white drop-shadow" style="flex: 0 1 20px" v-if="isShownFullscreen">
+      <p>{{ document.label }}
       </p>
-      <p><a :href="scan.url" target="_blank">LINK</a></p>
-      <p>{{ scan.description }}</p>
+<!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
+<!--      <p>{{ document.source.id }}</p>-->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import {ScanModel} from "../models/marker.model";
 import {PropType} from "vue";
 import {store} from "../store";
 import {useSwiper} from "swiper/vue";
+import {DocumentModel} from "../models/document.model";
 
 const props = defineProps({
-  scans: {type: Object as PropType<ScanModel[]>, required: true},
-  scan: {type: Object as PropType<ScanModel>, required: true},
+  documents: {type: Object as PropType<DocumentModel[]>, required: true},
+  document: {type: Object as PropType<DocumentModel>, required: true},
   isShownFullscreen: {type: Boolean, required: false},
 })
 
 const openModal = () => {
-  store.commit("previewModal/setShownScans", props.scans);
+  store.commit("previewModal/setShownDocuments", props.documents);
   store.commit("previewModal/setIsShown", true);
 }
 
-const getImageSourceById = (id: string | null) => {
+const getImageUrl = (imgUrl: string): string | undefined => {
+  if(!imgUrl) {
+    return undefined;
+  }
+
+  const imgId: string = imgUrl.replace('https://proxy.archieven.nl/thumb/39/', '');
   const url = `https://proxy.archieven.nl/${props.isShownFullscreen ? 'download' : 'thumb'}/39/`;
-  return id ? url + id : 'https://via.placeholder.com/1000x200';
+  return url + imgId;
 }
 
 const swiper = useSwiper();

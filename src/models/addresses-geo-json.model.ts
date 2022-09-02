@@ -1,10 +1,10 @@
-import {MarkerModel} from "./marker.model";
 import {LngLatLike} from "mapbox-gl";
+import {AddressModel} from "./address.model";
 
-export type MarkersGeoJsonModel = {
+export type AddressesGeoJsonModel = {
     "type": string;
     "features": {
-        properties: MarkerModel,
+        properties: AddressModel,
         type: string,
         geometry: { type: string, coordinates: LngLatLike }
     }[]

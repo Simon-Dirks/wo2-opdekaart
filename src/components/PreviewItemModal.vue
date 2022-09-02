@@ -2,12 +2,12 @@
 import {useStore} from "vuex";
 import {computed, ComputedRef} from "vue";
 import {Close} from "@vicons/ionicons5";
-import {ScanModel} from "../models/marker.model";
-import ScanSwiper from "./ScanSwiper.vue";
+import DocumentSwiper from "./DocumentSwiper.vue";
+import {DocumentModel} from "../models/document.model";
 
 const store = useStore();
 const isShown: ComputedRef<boolean> = computed(() => store.getters["previewModal/getIsShown"]);
-const shownScans: ComputedRef<ScanModel[]> = computed(() => store.getters["previewModal/getShownScans"]);
+const shownDocuments: ComputedRef<DocumentModel[]> = computed(() => store.getters["previewModal/getShownDocuments"]);
 const closeModal = () => store.commit("previewModal/setIsShown", false);
 </script>
 
@@ -28,7 +28,7 @@ const closeModal = () => store.commit("previewModal/setIsShown", false);
         </button>
       </template>
 
-      <scan-swiper :scans="shownScans" :isShownFullscreen="true"></scan-swiper>
+      <document-swiper :documents="shownDocuments" :isShownFullscreen="true"></document-swiper>
     </n-card>
   </n-modal>
 </template>

@@ -1,15 +1,15 @@
 import mapboxgl, {LngLatBounds} from "mapbox-gl";
-import {MarkerModel} from "../models/marker.model";
 import {store} from "../store";
 import {watch} from "vue";
-import {MarkersGeoJsonModel} from "../models/markers-geo-json.model";
+import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
+import {AddressModel} from "../models/address.model";
 
 export class MapService {
     private static _instance: MapService;
 
     // @ts-ignore
     private _map: mapboxgl.Map;
-    private readonly _maxPreviewItemsToShow = 50;
+    private readonly _maxAddressesToShow = 50;
 
     constructor() {
         if (MapService._instance) {
@@ -17,7 +17,7 @@ export class MapService {
         }
         MapService._instance = this;
 
-        watch(() => store.getters["map/getGeoJson"], (geoJson: MarkersGeoJsonModel) => {
+        watch(() => store.getters["map/getGeoJson"], (geoJson: AddressesGeoJsonModel) => {
             console.log('GeoJson updated:', geoJson);
             this._updateSourceData(geoJson);
         });
@@ -34,7 +34,7 @@ export class MapService {
             clusterMaxZoom: 14, // Max zoom to cluster points on
             clusterRadius: 50, // Radius of each cluster when clustering points,
             clusterProperties: {
-                "document_count": ["+", ["get", "count"]]
+                "document_count": ["+", ["get", "documentCount"]]
             }
         });
 
@@ -121,17 +121,17 @@ export class MapService {
         this._map.on('click', 'unclustered-point', (e: any) => {
             e.preventDefault();
 
-            this._onMapMarkerClicked(e);
+            this._onMapAddressClicked(e);
 
-            const markerProperties: MarkerModel = this._getMarkerProperties(e);
-            store.commit("selectItem", markerProperties);
+            const addressData: AddressModel = this._getAddressData(e);
+            store.commit("selectAddress", addressData);
         });
 
         this._map.on('click', (e: any) => {
             if (e.defaultPrevented) {
                 return;
             }
-            store.commit("deselectItem");
+            store.commit("deselectAddress");
         });
 
         store.commit("map/setIsInitialized", true);
@@ -141,24 +141,24 @@ export class MapService {
         store.commit("updateSearchTerm", filter);
 
         const geoJson = store.getters["map/getGeoJson"];
-        const filteredGeoJson: MarkersGeoJsonModel = {"type": "FeatureCollection", "features": []};
+        const filteredGeoJson: AddressesGeoJsonModel = {"type": "FeatureCollection", "features": []};
         for (const feature of geoJson["features"]) {
-            if (this._markerIsShownWithFilter(feature?.properties)) {
+            if (this._addressIsShownWithFilter(feature?.properties)) {
                 filteredGeoJson.features.push(feature);
             }
         }
         this._updateSourceData(filteredGeoJson);
     }
 
-    private _markerIsShownWithFilter(marker: MarkerModel): boolean {
+    private _addressIsShownWithFilter(address: AddressModel): boolean {
         const filter: string = store.getters.getSearchTerm;
         if (!filter) {
             return true;
         }
-        return marker.label.toLowerCase().includes(filter.toLowerCase());
+        return address.label.toLowerCase().includes(filter.toLowerCase());
     }
 
-    public getShownPreviewItems(): MarkerModel[] {
+    public getShownAddresses(): AddressModel[] {
         const geoJson = store.getters["map/getGeoJson"];
         if (!geoJson || !this._map || !('features' in geoJson)) {
             return [];
@@ -166,14 +166,14 @@ export class MapService {
 
         const mapBounds: LngLatBounds = this._map.getBounds();
         const filteredGeoJson = geoJson['features'].filter((feature: any) => {
-            return this._markerIsShownWithFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
+            return this._addressIsShownWithFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
         })
         // TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?)
-        const previewItems: MarkerModel[] = filteredGeoJson.slice(0, this._maxPreviewItemsToShow).map((feature: any) => feature.properties);
-        return previewItems;
+        const shownAddresses: AddressModel[] = filteredGeoJson.slice(0, this._maxAddressesToShow).map((feature: any) => feature.properties);
+        return shownAddresses;
     }
 
-    private _updateSourceData(geoJson: MarkersGeoJsonModel): void {
+    private _updateSourceData(geoJson: AddressesGeoJsonModel): void {
         if (!this._map) {
             console.warn("Tried to update source data while map was not (yet) initialized");
             return;
@@ -182,9 +182,9 @@ export class MapService {
         (this._map.getSource('markers-source') as any).setData(geoJson);
     }
 
-    private _onMapMarkerClicked(e: any) {
+    private _onMapAddressClicked(e: any) {
         const coordinates = e.features[0].geometry.coordinates.slice();
-        const label: string = this._getMarkerProperties(e).label;
+        const label: string = this._getAddressData(e).label;
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -201,11 +201,10 @@ export class MapService {
             .addTo(this._map);
     }
 
-    private _getMarkerProperties(e: any): MarkerModel {
+    private _getAddressData(e: any): AddressModel {
         // TODO: Fix issue with scans not showing properly when selecting single item
-        const markerProperties: any = e.features[0].properties;
-        // markerProperties.scans = JSON.parse(markerProperties.scans);
-        return markerProperties;
+        const addressData: AddressModel = e.features[0].properties;
+        return addressData;
     }
 
 }

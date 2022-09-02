@@ -1,34 +1,33 @@
 <script setup lang="ts">
-import {PropType} from "vue";
-import {InsertLinkSharp} from "@vicons/material";
-import {MarkerModel} from "../models/marker.model";
+import {computed, PropType} from "vue";
 import 'swiper/css';
 import 'swiper/css/scrollbar';
-import ScanSwiper from "./ScanSwiper.vue";
+import {AddressModel} from "../models/address.model";
+import DocumentSwiper from "./DocumentSwiper.vue";
+import {useStore} from "vuex";
 
 const props = defineProps({
-  item: {type: Object as PropType<MarkerModel | null>, required: true}
-})
+  address: {type: Object as PropType<AddressModel | null>, required: true}
+});
 
+const store = useStore();
+const documents = computed(() => {
+  return store.getters["map/getDocumentsByIds"](props.address?.documentIds)
+});
 </script>
 
 <template>
   <Transition>
-    <n-card :title="props.item?.label" v-if="props.item" hoverable class="mb-4">
-<!--      <template #cover class="w-full">-->
-<!--      </template>-->
+    <n-card :title="props.item?.label" v-if="props.address" hoverable class="mb-4">
+      <p>
+        <strong>
+          {{ props.address?.label }}
+        </strong>
+      </p>
+      <p class="mb-3" v-if="documents.length > 0">Documenten: {{ documents.length }}</p>
+      <p class="mb-3" v-if="documents.length <= 0"><em>Geen documenten gevonden</em></p>
 
-      <p class="mb-3">Documenten: {{props.item?.scans.length}}</p>
-
-      <scan-swiper :scans="props.item?.scans" :is-shown-fullscreen="false"></scan-swiper>
-
-      <template #action>
-        <a href="#" class="italic hover:text-primary">
-          <Icon size="20" class="relative top-[0.3rem]">
-            <InsertLinkSharp/>
-          </Icon>
-          Oorspronkelijke bron</a>
-      </template>
+      <document-swiper :documents="documents" :is-shown-fullscreen="false"></document-swiper>
     </n-card>
   </Transition>
 

@@ -4,14 +4,14 @@ import {Keyboard, Mousewheel, Scrollbar} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/keyboard';
-import {onMounted, PropType} from "vue";
-import {ScanModel} from "../models/marker.model";
-import ScanSwiperSlide from "./ScanSwiperSlide.vue";
+import {PropType} from "vue";
+import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
+import {DocumentModel} from "../models/document.model";
 
 const modules = [Scrollbar, Mousewheel, Keyboard];
 
 const props = defineProps({
-  scans: {type: Object as PropType<ScanModel[]>, required: true},
+  documents: {type: Object as PropType<DocumentModel[]>, required: true},
   isShownFullscreen: {type: Boolean, required: false},
 })
 </script>
@@ -25,8 +25,10 @@ const props = defineProps({
       :keyboard="{enabled: isShownFullscreen, onlyInViewport: true}"
       class="h-full"
   >
-    <swiper-slide v-for="(scan, idx) in props.scans" :key="scan.id + idx" class="h-full image-slide">
-      <scan-swiper-slide :is-shown-fullscreen="isShownFullscreen" :scans="scans" :scan="scan"></scan-swiper-slide>
+    <swiper-slide v-for="(document, idx) in props.documents" :key="document.id + idx" class="h-full image-slide"
+                  v-if="props.documents">
+      <document-swiper-slide :is-shown-fullscreen="isShownFullscreen" :documents="documents"
+                             :document="document"></document-swiper-slide>
     </swiper-slide>
   </swiper>
 </template>

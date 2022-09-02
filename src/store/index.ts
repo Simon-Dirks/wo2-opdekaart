@@ -1,10 +1,10 @@
 import {createStore} from 'vuex'
 import {mapStoreModule} from "./map";
 import {previewModalModule} from "./preview-modal";
-import {MarkerModel} from "../models/marker.model";
+import {AddressModel} from "../models/address.model";
 
 interface State {
-    selectedItem: MarkerModel | null,
+    selectedAddress: AddressModel | null,
     searchTerm: string,
 }
 
@@ -15,13 +15,13 @@ export const store = createStore<State>({
     },
     state() {
         return {
-            selectedItem: null,
+            selectedAddress: null,
             searchTerm: '',
         }
     },
     getters: {
         getSelectedItem(state) {
-            return state.selectedItem;
+            return state.selectedAddress;
         },
         getSearchTerm(state) {
             return state.searchTerm;
@@ -31,11 +31,11 @@ export const store = createStore<State>({
         updateSearchTerm(state: State, searchTerm: string) {
             state.searchTerm = searchTerm;
         },
-        selectItem(state: State, item: MarkerModel) {
-            state.selectedItem = item;
+        selectAddress(state: State, selectedAddress: AddressModel) {
+            state.selectedAddress = selectedAddress;
         },
-        deselectItem(state: State) {
-            state.selectedItem = null;
+        deselectAddress(state: State) {
+            state.selectedAddress = null;
         },
     }
 })

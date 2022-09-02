@@ -1,7 +1,7 @@
-import {ScanModel} from "../../models/marker.model";
+import {DocumentModel} from "../../models/document.model";
 
 interface PreviewModalState {
-    shownScans: ScanModel[]
+    shownDocuments: DocumentModel[]
     isShown: boolean;
 }
 
@@ -9,7 +9,7 @@ export const previewModalModule = {
     namespaced: true,
     state() {
         return {
-            shownScans: [],
+            shownDocuments: [],
             isShown: false,
         };
     },
@@ -17,13 +17,13 @@ export const previewModalModule = {
         getIsShown(state: PreviewModalState) {
             return state.isShown;
         },
-        getShownScans(state: PreviewModalState) {
-            return state.shownScans;
+        getShownDocuments(state: PreviewModalState) {
+            return state.shownDocuments;
         }
     },
     mutations: {
-        setShownScans: (state: PreviewModalState, shownScans: ScanModel[]) => {
-            state.shownScans = shownScans;
+        setShownDocuments: (state: PreviewModalState, shownDocuments: DocumentModel[]) => {
+            state.shownDocuments = shownDocuments;
         },
         setIsShown: (state: PreviewModalState, isShown: boolean) => {
             state.isShown = isShown;
