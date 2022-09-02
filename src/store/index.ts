@@ -6,6 +6,7 @@ import {AddressModel} from "../models/address.model";
 interface State {
     selectedAddress: AddressModel | null,
     searchTerm: string,
+    shownSourceIds: Set<string>,
 }
 
 export const store = createStore<State>({
@@ -17,6 +18,7 @@ export const store = createStore<State>({
         return {
             selectedAddress: null,
             searchTerm: '',
+            shownSourceIds: new Set<string>([])
         }
     },
     getters: {
@@ -25,11 +27,20 @@ export const store = createStore<State>({
         },
         getSearchTerm(state) {
             return state.searchTerm;
+        },
+        getShownSourceIds(state): Set<string> {
+            return state.shownSourceIds;
+        },
+        getSourceIdIsShown: (state) => (sourceId: string): boolean => {
+            return state.shownSourceIds.has(sourceId);
         }
     },
     mutations: {
         updateSearchTerm(state: State, searchTerm: string) {
             state.searchTerm = searchTerm;
+        },
+        setShownSourceIds(state: State, shownSourceIds: Set<string>) {
+            state.shownSourceIds = shownSourceIds;
         },
         selectAddress(state: State, selectedAddress: AddressModel) {
             state.selectedAddress = selectedAddress;

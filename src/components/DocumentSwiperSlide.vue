@@ -8,8 +8,16 @@
             v-lazy="{
                     src: getImageUrl(document.imageUrl),
                     lifecycle: {
-                      loaded: (el: any) => {swiper.updateAutoHeight()},
+                      loaded: (el: any) => {
+                        if(!swiper) {
+                          return;
+                        }
+                        swiper.updateAutoHeight()
+                        },
                       error: (el: any) => {
+                        if(!swiper) {
+                          return;
+                        }
                         el.addEventListener('load', () => {swiper.updateAutoHeight()})
                       }
                     }
@@ -21,8 +29,8 @@
     <div class="text-center text-white drop-shadow" style="flex: 0 1 20px" v-if="isShownFullscreen">
       <p>{{ document.label }}
       </p>
-<!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
-<!--      <p>{{ document.source.id }}</p>-->
+      <!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
+      <!--      <p>{{ document.source.id }}</p>-->
     </div>
   </div>
 </template>
@@ -46,7 +54,7 @@ const openModal = () => {
 }
 
 const getImageUrl = (imgUrl: string): string | undefined => {
-  if(!imgUrl) {
+  if (!imgUrl) {
     return undefined;
   }
 

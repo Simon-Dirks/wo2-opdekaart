@@ -124,6 +124,7 @@ export class MapService {
             this._onMapAddressClicked(e);
 
             const addressData: AddressModel = this._getAddressData(e);
+            console.log(addressData);
             store.commit("selectAddress", addressData);
         });
 
@@ -137,25 +138,36 @@ export class MapService {
         store.commit("map/setIsInitialized", true);
     }
 
-    public async updateFilter(filter: string) {
-        store.commit("updateSearchTerm", filter);
-
+    public async updateFilter() {
         const geoJson = store.getters["map/getGeoJson"];
         const filteredGeoJson: AddressesGeoJsonModel = {"type": "FeatureCollection", "features": []};
         for (const feature of geoJson["features"]) {
-            if (this._addressIsShownWithFilter(feature?.properties)) {
-                filteredGeoJson.features.push(feature);
+            const filteredFeature = JSON.parse(JSON.stringify(feature));
+
+            const address: AddressModel = filteredFeature?.properties;
+            if (this._addressIsShownWithSearchFilter(address)) {
+                const filteredAddress: AddressModel = this._getAddressWithFilteredDocuments(address);
+                filteredFeature.properties = filteredAddress;
+                filteredGeoJson.features.push(filteredFeature);
             }
         }
         this._updateSourceData(filteredGeoJson);
     }
 
-    private _addressIsShownWithFilter(address: AddressModel): boolean {
-        const filter: string = store.getters.getSearchTerm;
-        if (!filter) {
-            return true;
-        }
-        return address.label.toLowerCase().includes(filter.toLowerCase());
+    private _addressIsShownWithSearchFilter(address: AddressModel): boolean {
+        const searchFilter: string = store.getters.getSearchTerm;
+        const addressIsShownWithSearch: boolean = address.label.toLowerCase().includes(searchFilter.toLowerCase());
+        return addressIsShownWithSearch;
+    }
+
+    private _getAddressWithFilteredDocuments(address: AddressModel): AddressModel {
+        const filteredAddress: AddressModel = address;
+        filteredAddress.documents = filteredAddress.documents.filter((document) => {
+            return store.getters.getSourceIdIsShown(document.source.id)
+        })
+        filteredAddress.documentCount = filteredAddress.documents.length;
+        // console.log(filteredAddress.documents);
+        return filteredAddress;
     }
 
     public getShownAddresses(): AddressModel[] {
@@ -166,7 +178,7 @@ export class MapService {
 
         const mapBounds: LngLatBounds = this._map.getBounds();
         const filteredGeoJson = geoJson['features'].filter((feature: any) => {
-            return this._addressIsShownWithFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
+            return this._addressIsShownWithSearchFilter(feature?.properties) && mapBounds.contains(feature['geometry']['coordinates']);
         })
         // TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?)
         const shownAddresses: AddressModel[] = filteredGeoJson.slice(0, this._maxAddressesToShow).map((feature: any) => feature.properties);
@@ -202,7 +214,7 @@ export class MapService {
     }
 
     private _getAddressData(e: any): AddressModel {
-        // TODO: Fix issue with scans not showing properly when selecting single item
+        // TODO: Fix issue with documents being stringified
         const addressData: AddressModel = e.features[0].properties;
         return addressData;
     }

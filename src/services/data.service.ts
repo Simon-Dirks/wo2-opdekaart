@@ -8,6 +8,7 @@ import {PersonModel} from "../models/person.model";
 import {LngLatLike} from "mapbox-gl";
 import {store} from "../store";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
+import {SourceLabels} from "../models/source.model";
 
 export class DataService {
     private static _instance: DataService;
@@ -39,9 +40,9 @@ export class DataService {
         const documentsForAddresses: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL);
 
         const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people);
-        store.commit("map/setDocuments", parsedDocuments);
+        // store.commit("map/setDocuments", parsedDocuments);
 
-        const parsedAddresses: AddressModel[] = this._parseAddresses(addresses, documentsForAddresses);
+        const parsedAddresses: AddressModel[] = this._parseAddresses(addresses, parsedDocuments, documentsForAddresses);
         const geoJson: AddressesGeoJsonModel = this._parseGeoJson(parsedAddresses);
         store.commit("map/setGeoJson", geoJson)
 
@@ -68,14 +69,15 @@ export class DataService {
         const documents: DocumentModel[] = [];
         for (const tripleStoreDocument of tripleStoreDocuments) {
             const documentId: string = tripleStoreDocument.doc;
+            const sourceId: string = tripleStoreDocument.bronType;
             const document: DocumentModel = {
                 id: documentId,
                 imageUrl: tripleStoreDocument.image,
                 label: tripleStoreDocument.label,
                 people: peopleForDocuments[documentId],
                 source: {
-                    id: tripleStoreDocument.bronType,
-                    label: 'LABEL' // TODO: Set label based on source type ID
+                    id: sourceId,
+                    label: this._getSourceLabelFromId(sourceId)
                 }
             }
             documents.push(document);
@@ -83,23 +85,34 @@ export class DataService {
         return documents;
     }
 
-    private _parseAddresses(tripleStoreAddresses: TripleStoreAddressModel[], documentsForAddresses: DocumentForAddressModel[]): AddressModel[] {
+    private _getSourceLabelFromId(sourceId: string): string {
+        if (sourceId in SourceLabels) {
+            return SourceLabels[sourceId];
+        }
+        console.warn("Failed to retrieve label for source ID...", sourceId);
+        return sourceId;
+    }
+
+    private _parseAddresses(tripleStoreAddresses: TripleStoreAddressModel[], documents: DocumentModel[], documentsForAddresses: DocumentForAddressModel[]): AddressModel[] {
         const addresses: AddressModel[] = [];
 
-        const documentIdsPerAddress: { [addressId: string]: string[] } = {};
+        const documentsPerAddress: { [addressId: string]: DocumentModel[] } = {};
         for (const documentForAddress of documentsForAddresses) {
-            if (!(documentForAddress.adres in documentIdsPerAddress)) {
-                documentIdsPerAddress[documentForAddress.adres] = [];
+            if (!(documentForAddress.adres in documentsPerAddress)) {
+                documentsPerAddress[documentForAddress.adres] = [];
             }
 
-            documentIdsPerAddress[documentForAddress.adres].push(documentForAddress.doc);
+            const document: DocumentModel | undefined = documents.find((doc) => doc.id === documentForAddress.doc);
+            if (document) {
+                documentsPerAddress[documentForAddress.adres].push(document);
+            }
         }
 
         for (const tripleStoreAddress of tripleStoreAddresses) {
             const addressId: string = tripleStoreAddress.adres;
-            let documentIds: string[] = [];
-            if (addressId in documentIdsPerAddress) {
-                documentIds = documentIdsPerAddress[addressId];
+            let documents: DocumentModel[] = [];
+            if (addressId in documentsPerAddress) {
+                documents = documentsPerAddress[addressId];
             }
 
             const address: AddressModel = {
@@ -108,8 +121,8 @@ export class DataService {
                 coordinates: this._parseGeoCoords(tripleStoreAddress.geo),
                 place: tripleStoreAddress.woonplaats,
                 streetName: tripleStoreAddress.straatnaam,
-                documentIds: documentIds,
-                documentCount: documentIds.length,
+                documents: documents,
+                documentCount: documents.length,
                 houseLetter: tripleStoreAddress.huisletter,
                 houseNumber: tripleStoreAddress.huisnummer,
                 houseNumberAddition: tripleStoreAddress.huisnummer_toevoeging,

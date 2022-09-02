@@ -77,8 +77,8 @@ const clearShownAddresses = () => {
             :zoom="10"
             :mapStyle="MAPBOX_STYLE"
             @loaded="onMapLoaded"
-            @zoomend="updateShownAddresses"
-            @moveend="updateShownAddresses">
+            @zoom="updateShownAddresses"
+            @move="updateShownAddresses">
           <mapbox-navigation-control position="bottom-right"/>
         </mapbox-map>
       </div>

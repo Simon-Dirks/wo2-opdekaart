@@ -12,5 +12,6 @@ export type AddressModel = {
     place?: string;
 
     documentCount: number;
-    documentIds: string[];
+    // documentIds: string[];
+    documents: DocumentModel[];
 }

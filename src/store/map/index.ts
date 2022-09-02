@@ -1,9 +1,8 @@
 import {AddressesGeoJsonModel} from "../../models/addresses-geo-json.model";
-import {DocumentModel} from "../../models/document.model";
 
 interface MapState {
     geoJson: AddressesGeoJsonModel | null;
-    documents: DocumentModel[];
+    // documents: DocumentModel[];
     isInitialized: boolean;
 }
 
@@ -12,7 +11,7 @@ export const mapStoreModule = {
     state() {
         return {
             geoJson: null,
-            documents: [],
+            // documents: [],
             isInitialized: false
         };
     },
@@ -20,16 +19,16 @@ export const mapStoreModule = {
         getGeoJson(state: MapState): AddressesGeoJsonModel | null {
             return state.geoJson;
         },
-        getDocuments(state: MapState): DocumentModel[] {
-            return state.documents;
-        },
-        getDocumentsByIds: (state: MapState) => (documentIds: string[]) => {
-            if(!documentIds) {
-                console.warn("No document IDs passed...");
-                return [];
-            }
-            return state.documents.filter((document) => documentIds.includes(document.id));
-        },
+        // getDocuments(state: MapState): DocumentModel[] {
+        //     return state.documents;
+        // },
+        // getDocumentsByIds: (state: MapState) => (documentIds: string[]) => {
+        //     if(!documentIds) {
+        //         console.warn("No document IDs passed...");
+        //         return [];
+        //     }
+        //     return state.documents.filter((document) => documentIds.includes(document.id));
+        // },
         getIsInitialized(state: MapState): boolean {
             return state.isInitialized;
         }
@@ -38,9 +37,9 @@ export const mapStoreModule = {
         setGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
             state.geoJson = geoJson;
         },
-        setDocuments: (state: MapState, documents: DocumentModel[]) => {
-            state.documents = documents;
-        },
+        // setDocuments: (state: MapState, documents: DocumentModel[]) => {
+        //     state.documents = documents;
+        // },
         setIsInitialized: (state: MapState, isInitialized: boolean) => {
             state.isInitialized = isInitialized;
         }

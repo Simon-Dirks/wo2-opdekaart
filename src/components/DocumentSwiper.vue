@@ -4,9 +4,10 @@ import {Keyboard, Mousewheel, Scrollbar} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/keyboard';
-import {PropType} from "vue";
+import {computed, ComputedRef, PropType} from "vue";
 import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
 import {DocumentModel} from "../models/document.model";
+import {useStore} from "vuex";
 
 const modules = [Scrollbar, Mousewheel, Keyboard];
 
@@ -14,6 +15,7 @@ const props = defineProps({
   documents: {type: Object as PropType<DocumentModel[]>, required: true},
   isShownFullscreen: {type: Boolean, required: false},
 })
+
 </script>
 
 <template>
