@@ -214,8 +214,8 @@ export class MapService {
     }
 
     private _getAddressData(e: any): AddressModel {
-        // TODO: Fix issue with documents being stringified
-        const addressData: AddressModel = e.features[0].properties;
+        const addressData: AddressModel = JSON.parse(JSON.stringify(e.features[0].properties as AddressModel));
+        addressData.documents = JSON.parse(addressData.documents.toString());
         return addressData;
     }
 
