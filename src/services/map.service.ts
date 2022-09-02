@@ -145,11 +145,15 @@ export class MapService {
             const filteredFeature = JSON.parse(JSON.stringify(feature));
 
             const address: AddressModel = filteredFeature?.properties;
-            if (this._addressIsShownWithSearchFilter(address)) {
-                const filteredAddress: AddressModel = this._getAddressWithFilteredDocuments(address);
-                filteredFeature.properties = filteredAddress;
-                filteredGeoJson.features.push(filteredFeature);
+            if (!this._addressIsShownWithSearchFilter(address)) {
+                continue;
             }
+            const filteredAddress: AddressModel = this._getAddressWithFilteredDocuments(address);
+            if (filteredAddress.documents.length <= 0) {
+                continue;
+            }
+            filteredFeature.properties = filteredAddress;
+            filteredGeoJson.features.push(filteredFeature);
         }
         this._updateSourceData(filteredGeoJson);
     }
