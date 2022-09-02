@@ -47,8 +47,11 @@ const onMapLoaded = (map: mapboxgl.Map) => {
 };
 
 const updateShownAddresses = (map: mapboxgl.Map) => {
-  // TODO: "Debounce" this call for performance optimizations
   shownAddresses.value = mapService.getShownAddresses();
+}
+
+const clearShownAddresses = () => {
+  shownAddresses.value = [];
 }
 
 // const getNumberOfDocumentsForShownPreviewItems = (): number => {
@@ -74,8 +77,8 @@ const updateShownAddresses = (map: mapboxgl.Map) => {
             :zoom="10"
             :mapStyle="MAPBOX_STYLE"
             @loaded="onMapLoaded"
-            @zoom="updateShownAddresses"
-            @move="updateShownAddresses">
+            @zoomend="updateShownAddresses"
+            @moveend="updateShownAddresses">
           <mapbox-navigation-control position="bottom-right"/>
         </mapbox-map>
       </div>
