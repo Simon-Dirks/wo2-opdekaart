@@ -17,19 +17,16 @@ const shownDocuments = computed(() => { return props.address?.documents.filter((
 </script>
 
 <template>
-  <Transition>
-    <n-card :title="props.item?.label" v-if="props.address" hoverable class="mb-4">
+    <n-card :title="props.item?.label" v-if="props.address && shownDocuments.length > 0" hoverable class="mb-4">
       <p>
         <strong>
           {{ props.address?.label }}
         </strong>
       </p>
-      <p class="mb-3" v-if="shownDocuments.length > 0">Documenten: {{ shownDocuments.length }}</p>
-      <p class="mb-3" v-if="shownDocuments.length <= 0"><em>Geen documenten gevonden</em></p>
+      <p class="mb-3">Documenten: {{ shownDocuments.length }}</p>
 
       <document-swiper :documents="shownDocuments" :is-shown-fullscreen="false"></document-swiper>
     </n-card>
-  </Transition>
 
 </template>
 
