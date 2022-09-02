@@ -37,7 +37,7 @@ const onMapLoaded = (map: mapboxgl.Map) => {
 
 
   watch(() => store.getters["getSearchTerm"], (searchTerm: string) => {
-    console.log(searchTerm);
+    console.log("SEARCH:", searchTerm);
     updateShownAddresses(map);
   });
 

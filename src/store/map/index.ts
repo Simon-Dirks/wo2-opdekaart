@@ -28,7 +28,6 @@ export const mapStoreModule = {
                 console.warn("No document IDs passed...");
                 return [];
             }
-            console.log(documentIds);
             return state.documents.filter((document) => documentIds.includes(document.id));
         },
         getIsInitialized(state: MapState): boolean {

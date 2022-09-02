@@ -145,7 +145,7 @@ export class DataService {
         }
 
         if (geo.includes('polygon')) {
-            console.warn("Polygon coordinates passed... Using center of the Netherlands.");
+            console.warn("Can not handle polygon coordinates... Using center of the Netherlands instead.", geo);
             return [5.2793703, 52.2129919];
         }
 
