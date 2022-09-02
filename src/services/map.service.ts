@@ -43,11 +43,11 @@ export class MapService {
             id: 'clusters',
             type: 'circle',
             source: 'markers-source',
-            filter: ['has', 'point_count'],
+            filter: ['has', 'document_count'],
             paint: {
                 'circle-color': [
                     'step',
-                    ['get', 'point_count'],
+                    ['get', 'document_count'],
                     '#51bbd6',
                     100,
                     '#f1f075',
@@ -56,7 +56,7 @@ export class MapService {
                 ],
                 'circle-radius': [
                     'step',
-                    ['get', 'point_count'],
+                    ['get', 'document_count'],
                     20,
                     100,
                     30,
@@ -70,7 +70,7 @@ export class MapService {
             id: 'cluster-count',
             type: 'symbol',
             source: 'markers-source',
-            filter: ['has', 'document_count'],
+            filter: ['has', 'point_count'],
             layout: {
                 'text-field': '{document_count}',
                 'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
