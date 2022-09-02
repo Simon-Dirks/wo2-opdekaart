@@ -14,7 +14,7 @@ export class DataService {
     private static _instance: DataService;
     private readonly DOCUMENTS_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-documenten/run?pageSize=10000';
     private readonly ADDRESSES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen/run';
-    private readonly DOCUMENTS_FOR_ADDRESSES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen-per-document/run';
+    private readonly DOCUMENTS_FOR_ADDRESSES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen-per-document/run?pageSize=10000';
     private readonly PEOPLE_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-personen/run';
 
     constructor() {
@@ -25,7 +25,7 @@ export class DataService {
     }
 
     public async updateFromServer(): Promise<void> {
-        console.log("Retrieving markers...");
+        console.log("Retrieving data...");
 
         let documents: TripleStoreDocumentModel[] = [];
         // TODO: Dynamic check (run for loop until no results are returned anymore)
@@ -37,12 +37,21 @@ export class DataService {
 
         const people: TripleStorePersonModel[] = await this._fetch(this.PEOPLE_QUERY_URL);
         const addresses: TripleStoreAddressModel[] = await this._fetch(this.ADDRESSES_QUERY_URL);
-        const documentsForAddresses: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL);
+
+        let documentsForAddresses: DocumentForAddressModel[] = [];
+        for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
+            const documentsForAddressesPage: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`);
+            documentsForAddresses = documentsForAddresses.concat(documentsForAddressesPage);
+        }
 
         const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people);
         // store.commit("map/setDocuments", parsedDocuments);
 
         const parsedAddresses: AddressModel[] = this._parseAddresses(addresses, parsedDocuments, documentsForAddresses);
+
+        console.log("Documents:", parsedDocuments);
+        console.log("Addresses:", parsedAddresses);
+        console.log("Documents per address:", documentsForAddresses);
         const geoJson: AddressesGeoJsonModel = this._parseGeoJson(parsedAddresses);
         store.commit("map/setGeoJson", geoJson)
 
