@@ -9,6 +9,8 @@ import {Icon, IconConfigProvider} from "@vicons/utils";
 import router from "./router";
 import VueLazyLoad from 'vue3-lazyload'
 import {vue3Debounce} from "vue-debounce";
+import 'viewerjs/dist/viewer.css'
+import VueViewer from 'v-viewer'
 
 const app = createApp(App);
 app.use(router);
@@ -24,6 +26,7 @@ app.use(VueLazyLoad, {
         }
     }
 });
+app.use(VueViewer);
 app.component('Icon', Icon);
 app.component('IconConfigProvider', IconConfigProvider);
 app.directive('debounce', vue3Debounce({lock: true}));

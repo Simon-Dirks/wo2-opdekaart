@@ -12,6 +12,7 @@
     "@types/mapbox-gl": "^2.7.5",
     "mapbox-gl": "^2.9.2",
     "swiper": "^8.3.2",
+    "v-viewer": "^3.0.10",
     "vue": "^3.2.37",
     "vue-debounce": "^4.0.0",
     "vue-mapbox-ts": "^0.9.3",
