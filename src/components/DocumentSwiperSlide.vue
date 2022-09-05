@@ -2,7 +2,6 @@
   <div class="h-full" style="flex: 0 1 auto;" v-if="document">
     <div class="" style="flex: 1 1 auto;">
       <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
-        <!-- TODO: Re-enable lazy loading when fullscreen-->
         <!-- TODO: Add pinch to zoom-->
         <img
             v-lazy="{
