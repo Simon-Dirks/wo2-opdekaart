@@ -193,6 +193,10 @@ export class MapService {
         filteredAddress.documents = filteredAddress.documents.filter((document) => {
             return store.getters.getSourceIdIsShown(document.source.id)
         });
+        filteredAddress.documentCount = filteredAddress.documents.length;
+        if(filteredAddress.documentCount <= 0) {
+            return undefined;
+        }
 
         if(addressLabelMatchesSearch) {
             return filteredAddress;

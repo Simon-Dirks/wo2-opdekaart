@@ -28,6 +28,7 @@
     <div class="text-center text-white drop-shadow" style="flex: 0 1 20px" v-if="isShownFullscreen">
       <p>{{ document.label }}
       </p>
+      <p>{{props.document.people}}</p>
       <!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
       <!--      <p>{{ document.source.id }}</p>-->
     </div>
@@ -52,9 +53,9 @@ const openModal = () => {
   store.commit("previewModal/setIsShown", true);
 }
 
-const getImageUrl = (imgUrl: string): string | undefined => {
+const getImageUrl = (imgUrl: string): string => {
   if (!imgUrl) {
-    return undefined;
+    return 'https://via.placeholder.com/350x150';
   }
 
   const imgId: string = imgUrl.replace('https://proxy.archieven.nl/thumb/39/', '');
