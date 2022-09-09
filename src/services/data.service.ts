@@ -29,15 +29,20 @@ export class DataService {
         DataService._instance = this;
     }
 
-    public async updateFromServer(useCachedData: boolean = true): Promise<void> {
+    public async updateFromServer(useCachedData: boolean = false): Promise<void> {
         console.log("Retrieving data...");
 
-        let documents: TripleStoreDocumentModel[] = CachedDocuments;
-        let people: TripleStorePersonModel[] = CachedPeople;
-        let addresses: TripleStoreAddressModel[] = CachedAddresses;
-        let documentsForAddresses: DocumentForAddressModel[] = CachedDocumentsForAddresses;
+        let documents: TripleStoreDocumentModel[] = [];
+        let people: TripleStorePersonModel[] = [];
+        let addresses: TripleStoreAddressModel[] = [];
+        let documentsForAddresses: DocumentForAddressModel[] = [];
 
-        if(!useCachedData) {
+        if (useCachedData) {
+            documents = CachedDocuments;
+            people = CachedPeople;
+            addresses = CachedAddresses;
+            documentsForAddresses = CachedDocumentsForAddresses;
+        } else {
             // TODO: Dynamic check (run for loop until no results are returned anymore)
             // TODO: Optimize by running all requests asynchronously
             for (let documentPageIdx = 1; documentPageIdx <= 2; documentPageIdx++) {
