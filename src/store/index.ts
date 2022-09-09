@@ -3,7 +3,7 @@ import {mapStoreModule} from "./map";
 import {previewModalModule} from "./preview-modal";
 import {AddressModel} from "../models/address.model";
 
-interface State {
+export interface State {
     selectedAddress: AddressModel | null,
     searchTerm: string,
     shownSourceIds: Set<string>,

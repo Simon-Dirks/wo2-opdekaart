@@ -55,7 +55,6 @@ export class DataService {
             }
         }
 
-
         const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people);
         // store.commit("map/setDocuments", parsedDocuments);
 
@@ -65,7 +64,8 @@ export class DataService {
         console.log("Addresses:", parsedAddresses);
         console.log("Documents per address:", documentsForAddresses);
         const geoJson: AddressesGeoJsonModel = this._parseGeoJson(parsedAddresses);
-        store.commit("map/setGeoJson", geoJson)
+        console.log("SETTING", geoJson);
+        await store.dispatch("map/updateGeoJson", geoJson);
 
         return Promise.resolve();
     }

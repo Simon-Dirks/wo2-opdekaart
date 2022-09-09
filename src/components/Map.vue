@@ -33,22 +33,16 @@ const onMapLoaded = (map: mapboxgl.Map) => {
     }).catch(() => {
       loadingBar.error();
     });
-    updateShownAddresses(map);
+    void updateShownAddresses(map);
   })
 
-
-  watch(() => store.getters["getSearchTerm"], (searchTerm: string) => {
-    console.log("SEARCH:", searchTerm);
-    updateShownAddresses(map);
-  });
-
-  watch(() => store.getters["map/getGeoJson"], (geoJson: AddressesGeoJsonModel | null) => {
+  watch(() => store.getters["map/getFilteredGeoJson"], (geoJson: AddressesGeoJsonModel | null) => {
     updateShownAddresses(map);
   });
 };
 
-const updateShownAddresses = (map: mapboxgl.Map) => {
-  shownAddresses.value = mapService.getShownAddresses();
+const updateShownAddresses = async (map: mapboxgl.Map) => {
+  shownAddresses.value = await store.dispatch("map/getAddressesInBounds", map.getBounds());
 }
 
 const clearShownAddresses = () => {
@@ -77,6 +71,7 @@ const clearShownAddresses = () => {
             :minZoom="4"
             :zoom="10"
             :mapStyle="MAPBOX_LIGHT_STYLE"
+            @moveend="updateShownAddresses($event.target)"
             @loaded="onMapLoaded"
         >
           <mapbox-navigation-control position="bottom-right"/>

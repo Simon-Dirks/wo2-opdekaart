@@ -1,8 +1,12 @@
 import {AddressesGeoJsonModel} from "../../models/addresses-geo-json.model";
+import {ActionContext} from "vuex";
+import {State} from "../index";
+import {LngLatBounds} from "mapbox-gl";
+import {AddressModel} from "../../models/address.model";
 
 interface MapState {
     geoJson: AddressesGeoJsonModel | null;
-    // documents: DocumentModel[];
+    filteredGeoJson: AddressesGeoJsonModel | null;
     isInitialized: boolean;
 }
 
@@ -11,7 +15,7 @@ export const mapStoreModule = {
     state() {
         return {
             geoJson: null,
-            // documents: [],
+            filteredGeoJson: null,
             isInitialized: false
         };
     },
@@ -19,27 +23,40 @@ export const mapStoreModule = {
         getGeoJson(state: MapState): AddressesGeoJsonModel | null {
             return state.geoJson;
         },
-        // getDocuments(state: MapState): DocumentModel[] {
-        //     return state.documents;
-        // },
-        // getDocumentsByIds: (state: MapState) => (documentIds: string[]) => {
-        //     if(!documentIds) {
-        //         console.warn("No document IDs passed...");
-        //         return [];
-        //     }
-        //     return state.documents.filter((document) => documentIds.includes(document.id));
-        // },
+        getFilteredGeoJson(state: MapState): AddressesGeoJsonModel | null {
+            return state.filteredGeoJson;
+        },
         getIsInitialized(state: MapState): boolean {
             return state.isInitialized;
         }
+    },
+    actions: {
+        updateGeoJson: (context: ActionContext<MapState, State>, geoJson: AddressesGeoJsonModel) => {
+            context.commit('setGeoJson', geoJson);
+            context.commit('setFilteredGeoJson', geoJson);
+        },
+        getAddressesInBounds: (context: ActionContext<MapState, State>, mapBounds: LngLatBounds): Promise<AddressModel[]> => {
+            const geoJson: AddressesGeoJsonModel | null = context.state.filteredGeoJson;
+            if (!geoJson || !('features' in geoJson)) {
+                return Promise.resolve([]);
+            }
+
+            // @ts-ignore
+            const addressesWithinBounds: AddressModel[] = geoJson['features'].filter((feature: any) => {
+                return mapBounds.contains(feature['geometry']['coordinates']);
+            })
+            // TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?)
+            const shownAddresses: AddressModel[] = addressesWithinBounds.slice(0, 50).map((feature: any) => feature.properties);
+            return Promise.resolve(shownAddresses);
+        },
     },
     mutations: {
         setGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
             state.geoJson = geoJson;
         },
-        // setDocuments: (state: MapState, documents: DocumentModel[]) => {
-        //     state.documents = documents;
-        // },
+        setFilteredGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
+            state.filteredGeoJson = geoJson;
+        },
         setIsInitialized: (state: MapState, isInitialized: boolean) => {
             state.isInitialized = isInitialized;
         }
