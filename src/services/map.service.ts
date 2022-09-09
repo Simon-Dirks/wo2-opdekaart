@@ -1,4 +1,6 @@
+import geojsonExtent from "@mapbox/geojson-extent";
 import mapboxgl, {LngLatBounds} from "mapbox-gl";
+
 import {store} from "../store";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
 import {AddressModel} from "../models/address.model";
@@ -20,8 +22,19 @@ export class MapService {
 
         watch(() => store.getters["map/getFilteredGeoJson"], (filteredGeoJson: AddressesGeoJsonModel) => {
             console.log("GeoJson updated:", filteredGeoJson);
+
+            const geoJsonHasFeatures: boolean = filteredGeoJson.features.length > 0;
+            if (geoJsonHasFeatures && this._map) {
+                const markersBounds: LngLatBounds = geojsonExtent(filteredGeoJson);
+                this._map.fitBounds(markersBounds);
+            }
+
             this._updateSourceData(filteredGeoJson);
         });
+
+        watch(() => store.getters["getSearchTerm"], () => {
+            void this.updateFilter();
+        })
     }
 
     public async initialize(map: mapboxgl.Map): Promise<void> {
@@ -99,12 +112,12 @@ export class MapService {
             'layout': {
                 'text-field': [
                     'format',
-                    ['get', 'streetName'], { 'font-scale': 0.8 },
+                    ['get', 'streetName'], {'font-scale': 0.8},
                     ' ',
-                    ['get', 'houseNumber'], { 'font-scale': 0.8 },
+                    ['get', 'houseNumber'], {'font-scale': 0.8},
                 ],
 
-                    // 'get', 'streetName'],
+                // 'get', 'streetName'],
                 'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
                 'text-font': [
                     'Open Sans Semibold',
@@ -195,11 +208,11 @@ export class MapService {
             return store.getters.getSourceIdIsShown(document.source.id)
         });
         filteredAddress.documentCount = filteredAddress.documents.length;
-        if(filteredAddress.documentCount <= 0) {
+        if (filteredAddress.documentCount <= 0) {
             return undefined;
         }
 
-        if(addressLabelMatchesSearch) {
+        if (addressLabelMatchesSearch) {
             return filteredAddress;
         }
 

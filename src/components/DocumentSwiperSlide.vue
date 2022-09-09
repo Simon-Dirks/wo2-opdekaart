@@ -41,7 +41,11 @@
          v-if="isShownFullscreen && documentRefersToPeople">
       <h2 class="text-2xl">Personen</h2>
       <ul class="list-disc">
-        <li v-for="person in props.document.people">{{ person.label }}</li>
+        <li v-for="person in props.document.people">
+          <button @click="onPersonClicked(person.label)">
+            {{ person.label }}
+          </button>
+        </li>
       </ul>
     </div>
   </div>
@@ -51,9 +55,11 @@
 <script setup lang="ts">
 
 import {PropType} from "vue";
-import {store} from "../store";
 import {useSwiper} from "swiper/vue";
 import {DocumentModel} from "../models/document.model";
+import {useStore} from "vuex";
+
+const store = useStore();
 
 const props = defineProps({
   documents: {type: Object as PropType<DocumentModel[]>, required: true},
@@ -88,6 +94,12 @@ const getDocumentUrl = (documentId: string): string => {
   const documentGuid: string = documentId.replace('https://hetutrechtsarchief.nl/id/doc/', '');
   return 'https://hetutrechtsarchief.nl/collectie/' + documentGuid;
 }
+
+
+const onPersonClicked = (personLabel: string) => {
+  store.commit("updateSearchTerm", personLabel);
+  store.commit("previewModal/setIsShown", false);
+};
 </script>
 
 <style>
