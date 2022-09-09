@@ -91,6 +91,30 @@ export class MapService {
             }
         });
 
+        this._map.addLayer({
+            'id': 'poi-labels',
+            'type': 'symbol',
+            'source': 'markers-source',
+            'layout': {
+                'text-field': [
+                    'format',
+                    ['get', 'streetName'], { 'font-scale': 0.8 },
+                    ' ',
+                    ['get', 'houseNumber'], { 'font-scale': 0.8 },
+                ],
+
+                    // 'get', 'streetName'],
+                'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+                'text-font': [
+                    'Open Sans Semibold',
+                    'Arial Unicode MS Bold'
+                ],
+                // 'text-size': .8,
+                'text-radial-offset': 0.5,
+                'text-justify': 'auto'
+            }
+        });
+
         this._map.on('click', 'clusters', (e: any) => {
             const features = this._map.queryRenderedFeatures(e.point, {
                 layers: ['clusters']
