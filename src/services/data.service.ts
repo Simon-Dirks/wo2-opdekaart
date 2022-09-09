@@ -10,6 +10,11 @@ import {store} from "../store";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
 import {SourceLabels} from "../models/source.model";
 
+import CachedAddresses from "../assets/cached-data/addresses.json";
+import CachedDocuments from "../assets/cached-data/documents.json";
+import CachedDocumentsForAddresses from "../assets/cached-data/documents-for-addresses.json"
+import CachedPeople from "../assets/cached-data/people.json";
+
 export class DataService {
     private static _instance: DataService;
     private readonly DOCUMENTS_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-documenten/run?pageSize=10000';
@@ -24,25 +29,32 @@ export class DataService {
         DataService._instance = this;
     }
 
-    public async updateFromServer(): Promise<void> {
+    public async updateFromServer(useCachedData: boolean = true): Promise<void> {
         console.log("Retrieving data...");
 
-        let documents: TripleStoreDocumentModel[] = [];
-        // TODO: Dynamic check (run for loop until no results are returned anymore)
-        // TODO: Optimize by running all requests asynchronously
-        for (let documentPageIdx = 1; documentPageIdx <= 2; documentPageIdx++) {
-            const documentsPage: TripleStoreDocumentModel[] = await this._fetch(this.DOCUMENTS_QUERY_URL + `&page=${documentPageIdx}`);
-            documents = documents.concat(documentsPage);
+        let documents: TripleStoreDocumentModel[] = CachedDocuments;
+        let people: TripleStorePersonModel[] = CachedPeople;
+        let addresses: TripleStoreAddressModel[] = CachedAddresses;
+        let documentsForAddresses: DocumentForAddressModel[] = CachedDocumentsForAddresses;
+
+        if(!useCachedData) {
+            // TODO: Dynamic check (run for loop until no results are returned anymore)
+            // TODO: Optimize by running all requests asynchronously
+            for (let documentPageIdx = 1; documentPageIdx <= 2; documentPageIdx++) {
+                const documentsPage: TripleStoreDocumentModel[] = await this._fetch(this.DOCUMENTS_QUERY_URL + `&page=${documentPageIdx}`);
+                documents = documents.concat(documentsPage);
+            }
+
+            // TODO: Retrieve all people (paginated)
+            people = await this._fetch(this.PEOPLE_QUERY_URL);
+            addresses = await this._fetch(this.ADDRESSES_QUERY_URL);
+
+            for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
+                const documentsForAddressesPage: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`);
+                documentsForAddresses = documentsForAddresses.concat(documentsForAddressesPage);
+            }
         }
 
-        const people: TripleStorePersonModel[] = await this._fetch(this.PEOPLE_QUERY_URL);
-        const addresses: TripleStoreAddressModel[] = await this._fetch(this.ADDRESSES_QUERY_URL);
-
-        let documentsForAddresses: DocumentForAddressModel[] = [];
-        for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
-            const documentsForAddressesPage: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`);
-            documentsForAddresses = documentsForAddresses.concat(documentsForAddressesPage);
-        }
 
         const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people);
         // store.commit("map/setDocuments", parsedDocuments);
