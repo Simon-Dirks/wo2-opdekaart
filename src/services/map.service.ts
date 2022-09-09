@@ -185,6 +185,7 @@ export class MapService {
     }
 
     private _getFilteredAddress(address: AddressModel): AddressModel | undefined {
+        // TODO: Move to store?
         const searchFilter: string = store.getters.getSearchTerm;
         const searchFilterLowered: string = searchFilter.toLowerCase();
         const addressLabelMatchesSearch: boolean = address.label.toLowerCase().includes(searchFilterLowered);
