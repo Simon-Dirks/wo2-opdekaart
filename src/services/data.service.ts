@@ -29,7 +29,7 @@ export class DataService {
         DataService._instance = this;
     }
 
-    public async updateFromServer(useCachedData: boolean = false): Promise<void> {
+    public async updateFromServer(useCachedData: boolean = true): Promise<void> {
         console.log("Retrieving data...");
 
         let documents: TripleStoreDocumentModel[] = [];

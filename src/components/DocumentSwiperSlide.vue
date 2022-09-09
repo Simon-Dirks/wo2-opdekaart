@@ -1,10 +1,11 @@
 <template>
-  <div class="h-full" style="flex: 0 1 auto;" v-if="document">
-    <div class="" style="flex: 1 1 auto;">
-      <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
-        <!-- TODO: Add pinch to zoom-->
-        <img
-            v-lazy="{
+  <div :class="[isShownFullscreen ? 'grid grid-cols-6 text-white grid-flow-dense': '']" v-if="document">
+    <div class="col-span-6 h-full flex-initial" :class="[documentRefersToPeople ? 'md:col-start-3 md:col-span-4' : '' ]">
+      <div class="flex-auto">
+        <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
+          <!-- TODO: Add pinch to zoom-->
+          <img
+              v-lazy="{
                     src: getImageUrl(document.imageUrl),
                     lifecycle: {
                       loaded: (el: any) => {
@@ -21,18 +22,26 @@
                       }
                     }
                 }"
-            alt=""
-            class="w-full h-full max-h-[80vh] !object-contain" loading="lazy">
-      </button>
+              alt=""
+              class="w-full h-full max-h-[80vh] !object-contain" loading="lazy">
+        </button>
+      </div>
+      <div class="text-center drop-shadow flex-[0_1_20px]" v-if="isShownFullscreen">
+        <p>{{ document.label }}
+        </p>
+        <!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
+        <!--      <p>{{ document.source.id }}</p>-->
+      </div>
     </div>
-    <div class="text-center text-white drop-shadow" style="flex: 0 1 20px" v-if="isShownFullscreen">
-      <p>{{ document.label }}
-      </p>
-      <p>{{props.document.people}}</p>
-      <!--      <p><a :href="document.url" target="_blank">LINK</a></p>-->
-      <!--      <p>{{ document.source.id }}</p>-->
+
+    <div class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2" v-if="isShownFullscreen && documentRefersToPeople">
+      <h2 class="text-2xl">Personen</h2>
+      <ul class="list-disc">
+        <li v-for="person in props.document.people">{{ person.label }}</li>
+      </ul>
     </div>
   </div>
+
 </template>
 
 <script setup lang="ts">
@@ -64,6 +73,8 @@ const getImageUrl = (imgUrl: string): string => {
 }
 
 const swiper = useSwiper();
+
+const documentRefersToPeople: boolean = props.document?.people && props.document.people.length > 0;
 </script>
 
 <style>
