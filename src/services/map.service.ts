@@ -189,11 +189,16 @@ export class MapService {
         const searchFilterLowered: string = searchFilter.toLowerCase();
         const addressLabelMatchesSearch: boolean = address.label.toLowerCase().includes(searchFilterLowered);
 
+        const filteredAddress: AddressModel = address;
+        filteredAddress.documents = filteredAddress.documents.filter((document) => {
+            return store.getters.getSourceIdIsShown(document.source.id)
+        });
+
         if(addressLabelMatchesSearch) {
-            return address;
+            return filteredAddress;
         }
 
-        const documentsThatMatchPeopleSearch: DocumentModel[] = address?.documents.filter((doc: DocumentModel) => {
+        const documentsThatMatchPeopleSearch: DocumentModel[] = filteredAddress?.documents.filter((doc: DocumentModel) => {
             if (!doc.people) {
                 return false;
             }
@@ -206,11 +211,7 @@ export class MapService {
             return undefined;
         }
 
-        const filteredAddress: AddressModel = address;
         filteredAddress.documents = documentsThatMatchPeopleSearch;
-        filteredAddress.documents = filteredAddress.documents.filter((document) => {
-            return store.getters.getSourceIdIsShown(document.source.id)
-        })
         filteredAddress.documentCount = filteredAddress.documents.length;
         return filteredAddress;
     }
