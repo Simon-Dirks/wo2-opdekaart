@@ -44,10 +44,8 @@ export const mapStoreModule = {
             // @ts-ignore
             const addressesWithinBounds: AddressModel[] = geoJson['features'].filter((feature: any) => {
                 return mapBounds.contains(feature['geometry']['coordinates']);
-            })
-            // TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?)
-            const shownAddresses: AddressModel[] = addressesWithinBounds.slice(0, 50).map((feature: any) => feature.properties);
-            return Promise.resolve(shownAddresses);
+            }).map((feature: any) => feature.properties);
+            return Promise.resolve(addressesWithinBounds);
         },
     },
     mutations: {

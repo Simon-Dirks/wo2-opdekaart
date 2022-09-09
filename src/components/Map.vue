@@ -19,6 +19,8 @@ const MAPBOX_LIGHT_STYLE: string = 'mapbox://styles/mapbox/light-v10';
 const store = useStore();
 const selectedAddress = computed(() => store.getters.getSelectedItem);
 const mapService: MapService = new MapService();
+
+const allAddresses: Ref<AddressModel[]> = ref([]);
 const shownAddresses: Ref<AddressModel[]> = ref([]);
 
 const loadingBar = useLoadingBar();
@@ -42,18 +44,18 @@ const onMapLoaded = (map: mapboxgl.Map) => {
 };
 
 const updateShownAddresses = async (map: mapboxgl.Map) => {
-  shownAddresses.value = await store.dispatch("map/getAddressesInBounds", map.getBounds());
+  const addressesInBounds: AddressModel[] = await store.dispatch("map/getAddressesInBounds", map.getBounds());
+  shownAddresses.value = addressesInBounds;
 }
 
 const clearShownAddresses = () => {
   shownAddresses.value = [];
 }
 
-// const getNumberOfDocumentsForShownPreviewItems = (): number => {
-//   // TODO: Show number of ALL preview items (instead of only the shown items)
-//   const shownDocumentsNums: number[] = shownAddresses.value.map((address: AddressModel) => address.documentIds.length);
-//   return shownDocumentsNums.reduce((prev, curr) => prev + curr, 0);
-// }
+const getNumberOfDocuments = (): number => {
+  const shownDocumentsNums: number[] = shownAddresses.value.map((address: AddressModel) => address.documents.length);
+  return shownDocumentsNums.reduce((prev, curr) => prev + curr, 0);
+}
 </script>
 
 <template>
@@ -80,18 +82,18 @@ const clearShownAddresses = () => {
     </div>
     <div class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
          id="preview-items-container">
-      <!--      <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20"><strong>Totaal:</strong>-->
-      <!--        {{ shownPreviewItems.length }} adressen en {{ getNumberOfDocumentsForShownPreviewItems() }} documenten</h1>-->
+      <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20"><strong>Totaal:</strong>
+        {{ shownAddresses.length }} adressen en {{ getNumberOfDocuments() }} documenten</h1>
       <div class="px-4 pt-4">
         <template v-if="selectedAddress">
           <address-preview
               :address="selectedAddress"></address-preview>
         </template>
         <template v-if="!selectedAddress">
-          <address-preview :address="shownAddress" v-for="shownAddress in shownAddresses"></address-preview>
+          <!-- TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?) -->
+          <address-preview :address="shownAddress" v-for="shownAddress in shownAddresses.slice(0,50)"></address-preview>
         </template>
       </div>
-
     </div>
   </div>
 
