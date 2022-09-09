@@ -29,7 +29,7 @@
       </div>
       <div class="text-center drop-shadow flex-[0_1_20px]" v-if="isShownFullscreen">
         <p>
-          <a :href="document.id" target="_blank"> {{ document.label }}</a>
+          <a :href="getDocumentUrl(document.id)" target="_blank"> {{ document.label }}</a>
         </p>
         <p>
           Bron: {{document.source.label}}
@@ -79,6 +79,15 @@ const getImageUrl = (imgUrl: string): string => {
 const swiper = useSwiper();
 
 const documentRefersToPeople: boolean = props.document?.people && props.document.people.length > 0;
+
+const getDocumentUrl = (documentId: string): string => {
+  if(!documentId) {
+    return 'https://hetutrechtsarchief.nl/';
+  }
+
+  const documentGuid: string = documentId.replace('https://hetutrechtsarchief.nl/id/doc/', '');
+  return 'https://hetutrechtsarchief.nl/collectie/' + documentGuid;
+}
 </script>
 
 <style>
