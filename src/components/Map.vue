@@ -14,6 +14,7 @@ import {AddressModel} from "../models/address.model";
 
 const MAPBOX_TOKEN: string = 'pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ';
 const MAPBOX_STYLE: string = 'mapbox://styles/kverdult/cl6eris3u002115qgz3vg5l1n';
+const MAPBOX_LIGHT_STYLE: string = 'mapbox://styles/mapbox/light-v10';
 
 const store = useStore();
 const selectedAddress = computed(() => store.getters.getSelectedItem);
@@ -75,10 +76,9 @@ const clearShownAddresses = () => {
             :maxZoom="20"
             :minZoom="4"
             :zoom="10"
-            :mapStyle="MAPBOX_STYLE"
+            :mapStyle="MAPBOX_LIGHT_STYLE"
             @loaded="onMapLoaded"
-            @zoom="updateShownAddresses"
-            @move="updateShownAddresses">
+        >
           <mapbox-navigation-control position="bottom-right"/>
         </mapbox-map>
       </div>
