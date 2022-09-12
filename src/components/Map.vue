@@ -82,8 +82,11 @@ const getNumberOfDocuments = (): number => {
     </div>
     <div class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
          id="preview-items-container">
-      <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20"><strong>Totaal:</strong>
-        {{ shownAddresses.length }} adres{{shownAddresses.length !== 1 ? 'sen' : ''}} en {{ getNumberOfDocuments() }} document{{getNumberOfDocuments() !== 1 ? 'en' : ''}}</h1>
+      <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20" v-if="!selectedAddress">
+        <strong>Totaal:</strong>
+        {{ shownAddresses.length }} adres{{ shownAddresses.length !== 1 ? 'sen' : '' }} en {{ getNumberOfDocuments() }}
+        document{{ getNumberOfDocuments() !== 1 ? 'en' : '' }}
+      </h1>
       <div class="px-4 pt-4">
         <template v-if="selectedAddress">
           <address-preview
