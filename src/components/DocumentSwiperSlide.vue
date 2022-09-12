@@ -42,7 +42,7 @@
       <h2 class="text-2xl">Personen</h2>
       <ul class="list-disc">
         <li v-for="person in props.document.people">
-          <button @click="onPersonClicked(person.label)">
+          <button @click="onPersonClicked(person.label)" class="text-left">
             {{ person.label }}
           </button>
         </li>
