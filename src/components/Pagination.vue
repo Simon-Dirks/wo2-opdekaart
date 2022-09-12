@@ -42,9 +42,15 @@
 </template>
 
 <script setup lang="ts">
-import {computed, ComputedRef, PropType} from "vue";
+import {computed, ComputedRef, onMounted, PropType, watch} from "vue";
 import {useStore} from "vuex";
 import {PlayForward, PlayBack, PlaySkipForward, PlaySkipBack} from "@vicons/ionicons5";
+import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
+import {MapService} from "../services/map.service";
+
+const props = defineProps({
+  maxElements: {type: Number, required: true}
+});
 
 const store = useStore();
 const currentPage: ComputedRef<number> = computed(() => store.getters["pagination/getCurrentPage"]);
@@ -61,8 +67,12 @@ const goToPrevPage = () => store.dispatch("pagination/goToPrevPage");
 const goToFirstPage = () => store.commit("pagination/setPage", 0);
 const goToLastPage = () =>  store.commit("pagination/setPage", finalPageNum.value);
 
-const props = defineProps({
-  maxElements: {type: Number, required: true}
+watch(() => store.getters["map/getFilteredGeoJson"], (geoJson: AddressesGeoJsonModel | null) => {
+  goToFirstPage();
+});
+
+watch(() => store.getters["map/getShownAddresses"], () => {
+  goToFirstPage();
 });
 </script>
 

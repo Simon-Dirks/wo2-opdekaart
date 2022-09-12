@@ -22,11 +22,11 @@ const selectedAddress: ComputedRef<AddressModel | null> = computed(() => store.g
 
 const pageStartElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getStartElemIdx"]);
 const pageEndElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getEndElemIdx"]);
+const shownAddresses: ComputedRef<number> = computed(() => store.getters["map/getShownAddresses"]);
 
 const mapService: MapService = new MapService();
 
 const allAddresses: Ref<AddressModel[]> = ref([]);
-const shownAddresses: Ref<AddressModel[]> = ref([]);
 
 const loadingBar = useLoadingBar();
 
@@ -49,8 +49,7 @@ const onMapLoaded = (map: mapboxgl.Map) => {
 };
 
 const updateShownAddresses = async (map: mapboxgl.Map) => {
-  const addressesInBounds: AddressModel[] = await store.dispatch("map/getAddressesInBounds", map.getBounds());
-  shownAddresses.value = addressesInBounds;
+  await store.dispatch("map/updateShownAddressesInBounds", map.getBounds());
 }
 
 const getNumberOfDocuments = (): number => {
@@ -84,7 +83,7 @@ const getNumberOfDocuments = (): number => {
     <div class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
          id="preview-items-container">
       <h1 class="text-lg mb-4 sticky top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-20"><strong>Totaal:</strong>
-        {{ shownAddresses.length }} adressen en {{ getNumberOfDocuments() }} documenten</h1>
+        {{ shownAddresses.length }} adres{{shownAddresses.length !== 1 ? 'sen' : ''}} en {{ getNumberOfDocuments() }} document{{getNumberOfDocuments() !== 1 ? 'en' : ''}}</h1>
       <div class="px-4 pt-4">
         <template v-if="selectedAddress">
           <address-preview

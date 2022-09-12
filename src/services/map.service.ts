@@ -13,6 +13,9 @@ export class MapService {
 
     // @ts-ignore
     private _map: mapboxgl.Map;
+    public get map() {
+        return this._map;
+    }
 
     constructor() {
         if (MapService._instance) {

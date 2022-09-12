@@ -8,6 +8,7 @@ interface MapState {
     geoJson: AddressesGeoJsonModel | null;
     filteredGeoJson: AddressesGeoJsonModel | null;
     isInitialized: boolean;
+    shownAddresses: AddressModel[];
 }
 
 export const mapStoreModule = {
@@ -16,7 +17,8 @@ export const mapStoreModule = {
         return {
             geoJson: null,
             filteredGeoJson: null,
-            isInitialized: false
+            isInitialized: false,
+            shownAddresses: []
         };
     },
     getters: {
@@ -26,6 +28,9 @@ export const mapStoreModule = {
         getFilteredGeoJson(state: MapState): AddressesGeoJsonModel | null {
             return state.filteredGeoJson;
         },
+        getShownAddresses(state: MapState): AddressModel[] {
+            return state.shownAddresses;
+        },
         getIsInitialized(state: MapState): boolean {
             return state.isInitialized;
         }
@@ -34,6 +39,10 @@ export const mapStoreModule = {
         updateGeoJson: (context: ActionContext<MapState, State>, geoJson: AddressesGeoJsonModel) => {
             context.commit('setGeoJson', geoJson);
             context.commit('setFilteredGeoJson', geoJson);
+        },
+        updateShownAddressesInBounds: async (context: ActionContext<MapState, State>, mapBounds: LngLatBounds) => {
+            const addressesInBounds: AddressModel[] = await context.dispatch('getAddressesInBounds', mapBounds);
+            context.commit('setShownAddresses', addressesInBounds);
         },
         getAddressesInBounds: (context: ActionContext<MapState, State>, mapBounds: LngLatBounds): Promise<AddressModel[]> => {
             const geoJson: AddressesGeoJsonModel | null = context.state.filteredGeoJson;
@@ -54,6 +63,9 @@ export const mapStoreModule = {
         },
         setFilteredGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
             state.filteredGeoJson = geoJson;
+        },
+        setShownAddresses: (state: MapState, addresses: AddressModel[]) => {
+            state.shownAddresses = addresses;
         },
         setIsInitialized: (state: MapState, isInitialized: boolean) => {
             state.isInitialized = isInitialized;
