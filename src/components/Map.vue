@@ -22,7 +22,7 @@ const selectedAddress: ComputedRef<AddressModel | null> = computed(() => store.g
 
 const pageStartElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getStartElemIdx"]);
 const pageEndElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getEndElemIdx"]);
-const shownAddresses: ComputedRef<number> = computed(() => store.getters["map/getShownAddresses"]);
+const shownAddresses: ComputedRef<AddressModel[]> = computed(() => store.getters["map/getShownAddresses"]);
 
 const mapService: MapService = new MapService();
 

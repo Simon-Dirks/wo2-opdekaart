@@ -1,5 +1,5 @@
 import geojsonExtent from "@mapbox/geojson-extent";
-import mapboxgl, {LngLatBounds} from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 
 import {store} from "../store";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
@@ -28,7 +28,7 @@ export class MapService {
 
             const geoJsonHasFeatures: boolean = filteredGeoJson.features.length > 0;
             if (geoJsonHasFeatures && this._map) {
-                const markersBounds: LngLatBounds = geojsonExtent(filteredGeoJson);
+                const markersBounds: any = geojsonExtent(filteredGeoJson as any);
                 this._map.fitBounds(markersBounds);
             }
 

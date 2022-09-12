@@ -39,7 +39,7 @@ export class DataService {
 
         if (useCachedData) {
             documents = CachedDocuments;
-            people = CachedPeople;
+            people = CachedPeople as TripleStorePersonModel[];
             addresses = CachedAddresses;
             documentsForAddresses = CachedDocumentsForAddresses;
         } else {

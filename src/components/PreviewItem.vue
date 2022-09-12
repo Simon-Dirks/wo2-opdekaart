@@ -13,7 +13,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <n-card :title="props.item?.label" v-if="props.address && props.address?.documents.length > 0" hoverable class="mb-4">
+    <n-card :title="props.address?.label" v-if="props.address && props.address?.documents.length > 0" hoverable class="mb-4">
       <p>
         <strong>
           {{ props.address?.label }}
