@@ -14,6 +14,7 @@ const closeModal = () => store.commit("previewModal/setIsShown", false);
 <template>
   <n-modal v-model:show="isShown" :on-mask-click="closeModal" :on-esc="closeModal" :closable="true">
     <n-card
+        title=" "
         style="width: 95vw; height: auto"
         :bordered="false"
         size="huge"
