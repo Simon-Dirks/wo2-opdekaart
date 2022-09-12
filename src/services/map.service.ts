@@ -43,6 +43,8 @@ export class MapService {
     public async initialize(map: mapboxgl.Map): Promise<void> {
         this._map = map;
 
+        this._map.dragRotate.disable();
+
         // @ts-ignore
         this._map.addSource('markers-source', {
             type: 'geojson',

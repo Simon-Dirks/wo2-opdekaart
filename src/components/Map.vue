@@ -76,7 +76,7 @@ const getNumberOfDocuments = (): number => {
             @moveend="updateShownAddresses($event.target)"
             @loaded="onMapLoaded"
         >
-          <mapbox-navigation-control position="bottom-right"/>
+          <mapbox-navigation-control position="bottom-right" :show-compass="false"/>
         </mapbox-map>
       </div>
     </div>
