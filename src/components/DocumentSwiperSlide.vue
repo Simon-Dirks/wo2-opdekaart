@@ -34,6 +34,11 @@
         <p>
           Bron: {{document.source.label}}
         </p>
+        <button @click="onShareScanCommentsClicked">
+          <em>
+            Fout melden
+          </em>
+        </button>
       </div>
     </div>
 
@@ -100,6 +105,10 @@ const onPersonClicked = (personLabel: string) => {
   store.commit("updateSearchTerm", personLabel);
   store.commit("previewModal/setIsShown", false);
 };
+
+const onShareScanCommentsClicked = () => {
+  alert("Fout melden");
+}
 </script>
 
 <style>
