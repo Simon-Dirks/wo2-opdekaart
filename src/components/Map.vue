@@ -96,7 +96,8 @@ const getNumberOfDocuments = (): number => {
 
         </template>
       </div>
-      <div class="w-full sticky bottom-0 px-4 py-2 drop-shadow-2xl bg-slate-700 z-20">
+
+      <div class="w-full sticky bottom-0 px-4 py-2 drop-shadow-2xl bg-slate-700 z-20" v-if="!selectedAddress">
         <pagination :max-elements="shownAddresses.length"></pagination>
       </div>
     </div>
