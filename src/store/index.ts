@@ -1,6 +1,7 @@
 import {createStore} from 'vuex'
 import {mapStoreModule} from "./map";
 import {previewModalModule} from "./preview-modal";
+import {paginationModule} from "./pagination";
 import {AddressModel} from "../models/address.model";
 
 export interface State {
@@ -12,13 +13,14 @@ export interface State {
 export const store = createStore<State>({
     modules: {
         map: mapStoreModule,
-        previewModal: previewModalModule
+        previewModal: previewModalModule,
+        pagination: paginationModule
     },
     state() {
         return {
             selectedAddress: null,
             searchTerm: '',
-            shownSourceIds: new Set<string>([])
+            shownSourceIds: new Set<string>([]),
         }
     },
     getters: {

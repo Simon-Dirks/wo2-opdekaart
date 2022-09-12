@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, Ref, watch} from "vue";
+import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {MapboxMap, MapboxNavigationControl} from "vue-mapbox-ts";
 import {MapService} from "../services/map.service";
 import AddressPreview from "./PreviewItem.vue";
@@ -9,6 +9,7 @@ import SourceSelect from "./SourceSelect.vue";
 import {DataService} from "../services/data.service";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
 import PreviewItemModal from "./PreviewItemModal.vue";
+import Pagination from "./Pagination.vue";
 import {useLoadingBar} from "naive-ui";
 import {AddressModel} from "../models/address.model";
 
@@ -17,7 +18,11 @@ const MAPBOX_STYLE: string = 'mapbox://styles/kverdult/cl6eris3u002115qgz3vg5l1n
 const MAPBOX_LIGHT_STYLE: string = 'mapbox://styles/mapbox/light-v10';
 
 const store = useStore();
-const selectedAddress = computed(() => store.getters.getSelectedItem);
+const selectedAddress: ComputedRef<AddressModel | null> = computed(() => store.getters.getSelectedItem);
+
+const pageStartElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getStartElemIdx"]);
+const pageEndElemIdx: ComputedRef<number> = computed(() => store.getters["pagination/getEndElemIdx"]);
+
 const mapService: MapService = new MapService();
 
 const allAddresses: Ref<AddressModel[]> = ref([]);
@@ -46,10 +51,6 @@ const onMapLoaded = (map: mapboxgl.Map) => {
 const updateShownAddresses = async (map: mapboxgl.Map) => {
   const addressesInBounds: AddressModel[] = await store.dispatch("map/getAddressesInBounds", map.getBounds());
   shownAddresses.value = addressesInBounds;
-}
-
-const clearShownAddresses = () => {
-  shownAddresses.value = [];
 }
 
 const getNumberOfDocuments = (): number => {
@@ -90,9 +91,14 @@ const getNumberOfDocuments = (): number => {
               :address="selectedAddress"></address-preview>
         </template>
         <template v-if="!selectedAddress">
-          <!-- TODO: Handle showing more than a pre-defined number of addresses (scroll down to load additional items?) -->
-          <address-preview :address="shownAddress" v-for="shownAddress in shownAddresses.slice(0,50)"></address-preview>
+          <address-preview :address="shownAddress"
+                           v-for="shownAddress in shownAddresses.slice(pageStartElemIdx, pageEndElemIdx)"></address-preview>
+
+
         </template>
+      </div>
+      <div class="w-full sticky bottom-0 px-4 py-2 drop-shadow-2xl bg-slate-700 z-20">
+        <pagination :max-elements="shownAddresses.length"></pagination>
       </div>
     </div>
   </div>
