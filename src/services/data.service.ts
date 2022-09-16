@@ -8,12 +8,14 @@ import {PersonModel} from "../models/person.model";
 import {LngLatLike} from "mapbox-gl";
 import {store} from "../store";
 import {AddressesGeoJsonModel} from "../models/addresses-geo-json.model";
-import {SourceLabels} from "../models/source.model";
+import {SourceModel} from "../models/source.model";
 
+import CachedSources from "../assets/cached-data/sources.json";
 import CachedAddresses from "../assets/cached-data/addresses.json";
 import CachedDocuments from "../assets/cached-data/documents.json";
 import CachedDocumentsForAddresses from "../assets/cached-data/documents-for-addresses.json"
 import CachedPeople from "../assets/cached-data/people.json";
+import {TripleStoreSourceModel} from "../models/triple-store/triple-store-source.model";
 
 export class DataService {
     private static _instance: DataService;
@@ -21,6 +23,7 @@ export class DataService {
     private readonly ADDRESSES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen/run';
     private readonly DOCUMENTS_FOR_ADDRESSES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen-per-document/run?pageSize=10000';
     private readonly PEOPLE_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-personen/run';
+    private readonly SOURCES_QUERY_URL: string = 'https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-brontypes/run';
 
     constructor() {
         if (DataService._instance) {
@@ -36,8 +39,10 @@ export class DataService {
         let people: TripleStorePersonModel[] = [];
         let addresses: TripleStoreAddressModel[] = [];
         let documentsForAddresses: DocumentForAddressModel[] = [];
+        let sources : TripleStoreSourceModel[] = [];
 
         if (useCachedData) {
+            sources = CachedSources;
             documents = CachedDocuments;
             people = CachedPeople as TripleStorePersonModel[];
             addresses = CachedAddresses;
@@ -50,6 +55,8 @@ export class DataService {
                 documents = documents.concat(documentsPage);
             }
 
+            sources = await this._fetch(this.SOURCES_QUERY_URL);
+
             // TODO: Retrieve all people (paginated)
             people = await this._fetch(this.PEOPLE_QUERY_URL);
             addresses = await this._fetch(this.ADDRESSES_QUERY_URL);
@@ -60,22 +67,26 @@ export class DataService {
             }
         }
 
-        const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people);
+        const parsedSources: SourceModel[]  = this._parseSources(sources);
+
+        const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people, parsedSources);
         // store.commit("map/setDocuments", parsedDocuments);
 
         const parsedAddresses: AddressModel[] = this._parseAddresses(addresses, parsedDocuments, documentsForAddresses);
 
+        console.log("Sources:", parsedSources);
         console.log("Documents:", parsedDocuments);
         console.log("Addresses:", parsedAddresses);
         console.log("Documents per address:", documentsForAddresses);
         const geoJson: AddressesGeoJsonModel = this._parseGeoJson(parsedAddresses);
         console.log("SETTING", geoJson);
         await store.dispatch("map/updateGeoJson", geoJson);
+        await store.commit("setSources", parsedSources);
 
         return Promise.resolve();
     }
 
-    private _parseDocuments(tripleStoreDocuments: TripleStoreDocumentModel[], tripleStorePeople: TripleStorePersonModel[]): DocumentModel[] {
+    private _parseDocuments(tripleStoreDocuments: TripleStoreDocumentModel[], tripleStorePeople: TripleStorePersonModel[], sources:SourceModel[]): DocumentModel[] {
         const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
         for (const tripleStorePerson of tripleStorePeople) {
             const personDocumentId: string = tripleStorePerson.doc;
@@ -96,27 +107,33 @@ export class DataService {
         for (const tripleStoreDocument of tripleStoreDocuments) {
             const documentId: string = tripleStoreDocument.doc;
             const sourceId: string = tripleStoreDocument.bronType;
+
+            const source: SourceModel | undefined = sources.find((source) => source.id === sourceId)
             const document: DocumentModel = {
                 id: documentId,
                 imageUrl: tripleStoreDocument.image,
                 label: tripleStoreDocument.label,
                 people: peopleForDocuments[documentId],
-                source: {
-                    id: sourceId,
-                    label: this._getSourceLabelFromId(sourceId)
-                }
+                source: source, //hier moet een referentie komen naar een item in de SourceModel[]
             }
+
             documents.push(document);
         }
         return documents;
     }
 
-    private _getSourceLabelFromId(sourceId: string): string {
-        if (sourceId in SourceLabels) {
-            return SourceLabels[sourceId];
+    private _parseSources(tripleStoreSources: TripleStoreSourceModel[]) {
+        const sources: SourceModel[] = [];
+
+        for (const tripleStoreSource of tripleStoreSources) {
+            const sourceModel: SourceModel = {
+                id: tripleStoreSource.bronType,
+                label: tripleStoreSource.label
+            }
+            sources.push(sourceModel);
         }
-        console.warn("Failed to retrieve label for source ID...", sourceId);
-        return sourceId;
+
+        return sources;
     }
 
     private _parseAddresses(tripleStoreAddresses: TripleStoreAddressModel[], documents: DocumentModel[], documentsForAddresses: DocumentForAddressModel[]): AddressModel[] {

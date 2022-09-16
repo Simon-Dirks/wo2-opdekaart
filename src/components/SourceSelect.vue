@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import {SourceModel} from "../models/source.model";
-import {onMounted, Ref, ref} from "vue";
+import {computed, ComputedRef, onMounted, Ref, ref} from "vue";
 import {useStore} from "vuex";
 import {MapService} from "../services/map.service";
 import {useLoadingBar} from "naive-ui";
-
-const sources: SourceModel[] = [
-  {"id": "https://hetutrechtsarchief.nl/id/Inkwartiering", "label": "Inkwartiering"},
-  {"id": "ID2", "label": "Source #2"}
-]
+import {DocumentModel} from "../models/document.model";
 
 const store = useStore();
 
 const selectedSourceIds: Ref<Set<string>> = ref(new Set(["https://hetutrechtsarchief.nl/id/Inkwartiering"]));
 
+const sources: ComputedRef<SourceModel[]> = computed(() => store.getters["getSources"]);
+
 onMounted(() => {
+  console.log("sources",sources);
   store.commit("setShownSourceIds", selectedSourceIds);
 });
 

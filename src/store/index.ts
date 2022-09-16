@@ -8,6 +8,7 @@ export interface State {
     selectedAddress: AddressModel | null,
     searchTerm: string,
     shownSourceIds: Set<string>,
+    sources: SourceModel[]
 }
 
 export const store = createStore<State>({
@@ -21,6 +22,7 @@ export const store = createStore<State>({
             selectedAddress: null,
             searchTerm: '',
             shownSourceIds: new Set<string>([]),
+            sources: []
         }
     },
     getters: {
@@ -35,6 +37,9 @@ export const store = createStore<State>({
         },
         getSourceIdIsShown: (state) => (sourceId: string): boolean => {
             return state.shownSourceIds.has(sourceId);
+        },
+        getSources(state) {
+            return state.sources;
         }
     },
     mutations: {
@@ -50,5 +55,8 @@ export const store = createStore<State>({
         deselectAddress(state: State) {
             state.selectedAddress = null;
         },
+        setSources(state: State, sources: SourceModel[]) {
+            state.sources = sources;
+        }
     }
 })
