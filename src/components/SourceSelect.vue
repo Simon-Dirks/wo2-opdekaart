@@ -1,20 +1,21 @@
 <script setup lang="ts">
 import {SourceModel} from "../models/source.model";
-import {computed, ComputedRef, onMounted, Ref, ref} from "vue";
+import {computed, ComputedRef, onMounted, Ref, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {MapService} from "../services/map.service";
-import {useLoadingBar} from "naive-ui";
-import {DocumentModel} from "../models/document.model";
 
 const store = useStore();
 
-const selectedSourceIds: Ref<Set<string>> = ref(new Set(["https://hetutrechtsarchief.nl/id/Inkwartiering"]));
+const selectedSourceIds: Ref<Set<string>> = ref(new Set([]));
 
 const sources: ComputedRef<SourceModel[]> = computed(() => store.getters["getSources"]);
+watch(() => store.getters["getSources"], (newSources: SourceModel[]) => {
+  selectedSourceIds.value = new Set(newSources.map((source) => source.id));
+  store.commit("setShownSourceIds", selectedSourceIds);
+});
 
 onMounted(() => {
-  console.log("sources",sources);
-  store.commit("setShownSourceIds", selectedSourceIds);
+
 });
 
 const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
