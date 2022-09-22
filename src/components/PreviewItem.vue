@@ -14,11 +14,6 @@ const props = defineProps({
 
 <template>
     <n-card :title="props.address?.label" v-if="props.address && props.address?.documents.length > 0" hoverable class="mb-4">
-      <p>
-        <strong>
-          {{ props.address?.label }}
-        </strong>
-      </p>
       <p class="mb-3">Documenten: {{ props.address?.documents.length }}</p>
 
       <document-swiper :documents="props.address?.documents" :is-shown-fullscreen="false"></document-swiper>
