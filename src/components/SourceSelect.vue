@@ -3,6 +3,7 @@ import {SourceModel} from "../models/source.model";
 import {computed, ComputedRef, onMounted, Ref, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {MapService} from "../services/map.service";
+import {InformationCircle} from "@vicons/ionicons5";
 
 const store = useStore();
 
@@ -42,6 +43,18 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
                         @update:checked="onSourceSelect(source.id, $event)">
               {{ source.label }}
             </n-checkbox>
+
+            <n-tooltip trigger="hover">
+              <template #trigger>
+                <Icon size="20"
+                      class="relative top-[0.3rem] cursor-pointer text-gray-500 hover:text-gray-800 transition-colors ">
+                  <InformationCircle/>
+                </Icon>
+              </template>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              <br/>
+              Ab asperiores assumenda, blanditiis, consequuntur corporis doloremque dolores explicabo fuga in.
+            </n-tooltip>
           </div>
         </n-collapse-item>
       </n-collapse>
