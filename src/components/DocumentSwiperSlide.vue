@@ -50,14 +50,27 @@
 
     <div class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2"
          v-if="isShownFullscreen && documentRefersToPeople">
-      <h2 class="text-2xl">Personen</h2>
-      <ul class="list-disc">
-        <li v-for="person in props.document.people">
-          <button @click="onPersonClicked(person.label)" class="text-left">
-            {{ person.label }}
-          </button>
-        </li>
-      </ul>
+      <div v-if="peopleMatchingSearch.length > 0" class="mb-4">
+        <h2 class="text-2xl">Zoekresultaat</h2>
+        <ul class="list-disc">
+          <li v-for="person in peopleMatchingSearch">
+            <button @click="onPersonClicked(person.label)" class="text-left italic">
+              {{ person.label }}
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="text-2xl">Personen</h2>
+        <ul class="list-disc">
+          <li v-for="person in props.document.people">
+            <button @click="onPersonClicked(person.label)" class="text-left">
+              {{ person.label }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
     </div>
   </div>
 
@@ -69,6 +82,8 @@ import {PropType} from "vue";
 import {useSwiper} from "swiper/vue";
 import {DocumentModel} from "../models/document.model";
 import {useStore} from "vuex";
+import {PersonModel} from "../models/person.model";
+import {UtilService} from "../services/util.service";
 
 const store = useStore();
 
@@ -114,6 +129,11 @@ const onPersonClicked = (personLabel: string) => {
 
 const onShareScanCommentsClicked = () => {
   alert("Fout melden");
+}
+
+let peopleMatchingSearch: PersonModel[] = [];
+if(props.document.people) {
+  peopleMatchingSearch = props.document.people.filter((person: PersonModel) => UtilService.labelMatchesSearch(person.label, 'Dirks'));
 }
 </script>
 

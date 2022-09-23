@@ -3,6 +3,7 @@ import {mapStoreModule} from "./map";
 import {previewModalModule} from "./preview-modal";
 import {paginationModule} from "./pagination";
 import {AddressModel} from "../models/address.model";
+import {SourceModel} from "../models/source.model";
 
 export interface State {
     selectedAddress: AddressModel | null,

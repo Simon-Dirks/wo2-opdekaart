@@ -7,6 +7,7 @@ import {AddressModel} from "../models/address.model";
 import {DocumentModel} from "../models/document.model";
 import {PersonModel} from "../models/person.model";
 import {watch} from "vue";
+import {UtilService} from "./util.service";
 
 export class MapService {
     private static _instance: MapService;
@@ -207,7 +208,7 @@ export class MapService {
         const searchFilter: string = store.getters.getSearchTerm;
         const searchFilterLowered: string = searchFilter.toLowerCase();
 
-        if(!searchFilter) {
+        if (!searchFilter) {
             return address;
         }
 
@@ -222,7 +223,7 @@ export class MapService {
         }
 
         // Filter on address label
-        const addressLabelMatchesSearch: boolean = address.label.toLowerCase().includes(searchFilterLowered);
+        const addressLabelMatchesSearch: boolean = UtilService.labelMatchesSearch(address.label, searchFilterLowered, true);
         if (addressLabelMatchesSearch) {
             return filteredAddress;
         }
@@ -233,10 +234,10 @@ export class MapService {
                 return false;
             }
             const documentPeopleThatMatchSearch: PersonModel[] = doc?.people.filter((person: PersonModel) => {
-                const personLabelMatchesSearch: boolean = person.label.toLowerCase().includes(searchFilterLowered);
-                console.log(person.addressId, filteredAddress);
+                const personLabelMatchesSearch: boolean = UtilService.labelMatchesSearch(person.label, searchFilterLowered, true);
+                // console.log(person.addressId, filteredAddress);
                 const personAddressMatches: boolean = person.addressId === filteredAddress.id;
-                return personLabelMatchesSearch && personAddressMatches;
+                return personLabelMatchesSearch; // && personAddressMatches;
             });
             return documentPeopleThatMatchSearch.length > 0;
         });

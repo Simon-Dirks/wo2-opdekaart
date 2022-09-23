@@ -108,7 +108,7 @@ export class DataService {
         const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
         for (const tripleStorePerson of tripleStorePeople) {
             const personDocumentId: string = tripleStorePerson.doc;
-            console.log(personDocumentId);
+            // console.log(personDocumentId);
             if (!(personDocumentId in peopleForDocuments)) {
                 peopleForDocuments[personDocumentId] = [];
             }
