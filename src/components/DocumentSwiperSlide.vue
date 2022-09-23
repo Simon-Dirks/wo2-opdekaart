@@ -5,6 +5,12 @@
       <div class="flex-auto">
         <button @click="openModal" class="w-full" :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'">
           <!-- TODO: Add pinch to zoom-->
+          <div
+              class="absolute flex justify-center items-center w-full h-full bg-[rgba(0,0,0,0.5)] opacity-0 hover:opacity-100 transition-opacity text-white"
+              v-if="!isShownFullscreen">
+            <p class="p-0 m-0">{{ document.source.label }}</p>
+          </div>
+
           <img
               v-lazy="{
                     src: getImageUrl(document.imageUrl),
