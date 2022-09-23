@@ -30,7 +30,7 @@ export class MapService {
             const geoJsonHasFeatures: boolean = filteredGeoJson.features.length > 0;
             if (geoJsonHasFeatures && this._map) {
                 const markersBounds: any = geojsonExtent(filteredGeoJson as any);
-                this._map.fitBounds(markersBounds);
+                this._map.fitBounds(markersBounds, {padding: 10});
             }
 
             this._updateSourceData(filteredGeoJson);
