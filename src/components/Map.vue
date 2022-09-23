@@ -65,7 +65,7 @@ const getNumberOfDocuments = (): number => {
     <div class="md:col-span-4 h-full">
       <div class="h-full">
         <search class="absolute top-4 left-4 z-20"></search>
-        <source-select class="absolute top-20 left-4 z-20"></source-select>
+        <source-select class="absolute top-28 left-4 z-20"></source-select>
         <mapbox-map
             :accessToken="MAPBOX_TOKEN"
             :center="[5.079400243080665, 52.09049473634017]"
