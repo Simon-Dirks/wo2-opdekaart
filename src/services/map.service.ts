@@ -206,8 +206,12 @@ export class MapService {
         // TODO: Move to store?
         const searchFilter: string = store.getters.getSearchTerm;
         const searchFilterLowered: string = searchFilter.toLowerCase();
-        const addressLabelMatchesSearch: boolean = address.label.toLowerCase().includes(searchFilterLowered);
 
+        if(!searchFilter) {
+            return address;
+        }
+
+        // Filter on source
         const filteredAddress: AddressModel = address;
         filteredAddress.documents = filteredAddress.documents.filter((document) => {
             return store.getters.getSourceIdIsShown(document.source.id)
@@ -217,15 +221,23 @@ export class MapService {
             return undefined;
         }
 
+        // Filter on address label
+        const addressLabelMatchesSearch: boolean = address.label.toLowerCase().includes(searchFilterLowered);
         if (addressLabelMatchesSearch) {
             return filteredAddress;
         }
 
+        // Filter on people
         const documentsThatMatchPeopleSearch: DocumentModel[] = filteredAddress?.documents.filter((doc: DocumentModel) => {
             if (!doc.people) {
                 return false;
             }
-            const documentPeopleThatMatchSearch: PersonModel[] = doc?.people.filter((person: PersonModel) => person.label.toLowerCase().includes(searchFilterLowered));
+            const documentPeopleThatMatchSearch: PersonModel[] = doc?.people.filter((person: PersonModel) => {
+                const personLabelMatchesSearch: boolean = person.label.toLowerCase().includes(searchFilterLowered);
+                console.log(person.addressId, filteredAddress);
+                const personAddressMatches: boolean = person.addressId === filteredAddress.id;
+                return personLabelMatchesSearch && personAddressMatches;
+            });
             return documentPeopleThatMatchSearch.length > 0;
         });
         const addressDocumentsMatchesPeopleSearch: boolean = documentsThatMatchPeopleSearch.length > 0;

@@ -4,4 +4,6 @@ export type PersonModel = {
     occupation?: string;
     birthDate?: string;
     birthPlace?: string;
+    addressId?: string;
+    addressLabel?: string;
 }

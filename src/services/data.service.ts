@@ -39,7 +39,7 @@ export class DataService {
         let people: TripleStorePersonModel[] = [];
         let addresses: TripleStoreAddressModel[] = [];
         let documentsForAddresses: DocumentForAddressModel[] = [];
-        let sources : TripleStoreSourceModel[] = [];
+        let sources: TripleStoreSourceModel[] = [];
 
         if (useCachedData) {
             sources = CachedSources;
@@ -50,24 +50,41 @@ export class DataService {
         } else {
             // TODO: Dynamic check (run for loop until no results are returned anymore)
             // TODO: Optimize by running all requests asynchronously
+            const documentsPromises: Promise<TripleStoreDocumentModel[]>[] = [];
             for (let documentPageIdx = 1; documentPageIdx <= 2; documentPageIdx++) {
-                const documentsPage: TripleStoreDocumentModel[] = await this._fetch(this.DOCUMENTS_QUERY_URL + `&page=${documentPageIdx}`);
-                documents = documents.concat(documentsPage);
+                const documentsPagePromise: Promise<TripleStoreDocumentModel[]> = this._fetch(this.DOCUMENTS_QUERY_URL + `&page=${documentPageIdx}`).then((retrievedDocumentsPage: TripleStoreDocumentModel[]) => {
+                    documents = documents.concat(retrievedDocumentsPage);
+                });
+                documentsPromises.push(documentsPagePromise);
             }
 
-            sources = await this._fetch(this.SOURCES_QUERY_URL);
+            const sourcesPromise: Promise<TripleStoreSourceModel[]> = this._fetch(this.SOURCES_QUERY_URL).then((retrievedSources: TripleStoreSourceModel[]) => {
+                sources = retrievedSources;
+            });
 
             // TODO: Retrieve all people (paginated)
-            people = await this._fetch(this.PEOPLE_QUERY_URL);
-            addresses = await this._fetch(this.ADDRESSES_QUERY_URL);
+            const peoplePromise: Promise<PersonModel[]> = this._fetch(this.PEOPLE_QUERY_URL).then((retrievedPeople: PersonModel[]) => {
+                people = retrievedPeople;
+            })
+            const addressesPromise: Promise<AddressModel> = this._fetch(this.ADDRESSES_QUERY_URL).then((retrievedAddresses: TripleStoreAddressModel[]) => {
+                addresses = retrievedAddresses;
+            });
 
+            const documentsForAddressesPromises: Promise<DocumentForAddressModel[]>[] = [];
             for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
-                const documentsForAddressesPage: DocumentForAddressModel[] = await this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`);
-                documentsForAddresses = documentsForAddresses.concat(documentsForAddressesPage);
+                const documentsForAddressesPromise: Promise<DocumentForAddressModel[]> = this._fetch(this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`).then((documentsForAddressesPage: DocumentForAddressModel[]) => {
+                    documentsForAddresses = documentsForAddresses.concat(documentsForAddressesPage);
+                });
+                documentsForAddressesPromises.push(documentsForAddressesPromise)
             }
+
+            const dataPromises: Promise<any>[] = [sourcesPromise, peoplePromise, addressesPromise].concat(documentsPromises.concat(documentsForAddressesPromises));
+            await Promise.all(dataPromises);
         }
 
-        const parsedSources: SourceModel[]  = this._parseSources(sources);
+        console.log("Finished retrieving data!");
+
+        const parsedSources: SourceModel[] = this._parseSources(sources);
 
         const parsedDocuments: DocumentModel[] = this._parseDocuments(documents, people, parsedSources);
         // store.commit("map/setDocuments", parsedDocuments);
@@ -86,20 +103,24 @@ export class DataService {
         return Promise.resolve();
     }
 
-    private _parseDocuments(tripleStoreDocuments: TripleStoreDocumentModel[], tripleStorePeople: TripleStorePersonModel[], sources:SourceModel[]): DocumentModel[] {
+    private _parseDocuments(tripleStoreDocuments: TripleStoreDocumentModel[], tripleStorePeople: TripleStorePersonModel[], sources: SourceModel[]): DocumentModel[] {
+        console.log("Parsing documents...");
         const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
         for (const tripleStorePerson of tripleStorePeople) {
             const personDocumentId: string = tripleStorePerson.doc;
+            console.log(personDocumentId);
             if (!(personDocumentId in peopleForDocuments)) {
                 peopleForDocuments[personDocumentId] = [];
             }
 
-            peopleForDocuments[tripleStorePerson.doc].push({
+            peopleForDocuments[personDocumentId].push({
                 id: tripleStorePerson.persoon,
                 label: tripleStorePerson.label,
                 occupation: tripleStorePerson.beroep,
                 birthDate: tripleStorePerson.geboortedatum,
-                birthPlace: tripleStorePerson.geboortedatum
+                birthPlace: tripleStorePerson.geboortedatum,
+                address: tripleStorePerson.adres,
+                addressLabel: tripleStorePerson.adresLabel
             });
         }
 
@@ -114,15 +135,17 @@ export class DataService {
                 imageUrl: tripleStoreDocument.image,
                 label: tripleStoreDocument.label,
                 people: peopleForDocuments[documentId],
-                source: source, //hier moet een referentie komen naar een item in de SourceModel[]
+                source: source,
             }
 
             documents.push(document);
         }
+        console.log("Finished parsing documents...");
         return documents;
     }
 
     private _parseSources(tripleStoreSources: TripleStoreSourceModel[]) {
+        console.log("Parsing sources...");
         const sources: SourceModel[] = [];
 
         for (const tripleStoreSource of tripleStoreSources) {
@@ -133,10 +156,13 @@ export class DataService {
             sources.push(sourceModel);
         }
 
+        console.log("Finished parsing sources...");
         return sources;
     }
 
     private _parseAddresses(tripleStoreAddresses: TripleStoreAddressModel[], documents: DocumentModel[], documentsForAddresses: DocumentForAddressModel[]): AddressModel[] {
+        console.log("Parsing addresses...");
+
         const addresses: AddressModel[] = [];
 
         const documentsPerAddress: { [addressId: string]: DocumentModel[] } = {};
@@ -172,10 +198,12 @@ export class DataService {
             }
             addresses.push(address);
         }
+        console.log("Finished parsing addresses!");
         return addresses;
     }
 
     private _parseGeoJson(addresses: AddressModel[]): AddressesGeoJsonModel {
+        console.log("Parsing GeoJSON...");
         const markersGeoJson: AddressesGeoJsonModel = {
             "type": "FeatureCollection",
             "features": []
@@ -191,6 +219,7 @@ export class DataService {
                 }
             })
         }
+        console.log("Finished parsing GeoJSON...");
         return markersGeoJson;
     }
 

@@ -5,4 +5,6 @@ export type TripleStorePersonModel = {
     beroep?: string;
     geboortedatum?: string;
     geboorteplaats?: string;
+    adres?: string;
+    adresLabel?: string;
 }
