@@ -94,7 +94,7 @@ const store = useStore();
 
 onMounted(() => {
   if(props.isShownFullscreen) {
-    const panzoom = Panzoom(imageRef.value, {contain: 'outside'});
+    const panzoom = Panzoom(imageRef.value, {contain: 'outside', animate: true, cursor: 'default'});
     imageRef.value.addEventListener('wheel', panzoom.zoomWithWheel)
   }
 });
