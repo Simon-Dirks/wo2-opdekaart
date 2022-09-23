@@ -11,17 +11,19 @@
             <p class="p-0 m-0">{{ document.source.label }}</p>
           </div>
 
-          <img
-              v-lazy="{
+          <div class="overflow-hidden">
+            <img
+                v-lazy="{
                     src: getImageUrl(document.imageUrl),
                     lifecycle: {
-                      loaded: (el: any) => {
+                      loaded: (el) => {
                         if(!swiper) {
                           return;
                         }
+
                         swiper.updateAutoHeight()
                         },
-                      error: (el: any) => {
+                      error: (el) => {
                         if(!swiper) {
                           return;
                         }
@@ -29,8 +31,9 @@
                       }
                     }
                 }"
-              alt=""
-              class="w-full h-full max-h-[80vh] !object-contain select-none" loading="lazy">
+                alt=""
+                class="w-full h-full max-h-[80vh] !object-contain select-none" loading="lazy"  ref="imageRef">
+          </div>
         </button>
       </div>
       <div class="text-center drop-shadow flex-[0_1_20px]" v-if="isShownFullscreen">
@@ -78,14 +81,23 @@
 
 <script setup lang="ts">
 
-import {PropType} from "vue";
+import {onMounted, PropType, ref, Ref} from "vue";
 import {useSwiper} from "swiper/vue";
 import {DocumentModel} from "../models/document.model";
 import {useStore} from "vuex";
 import {PersonModel} from "../models/person.model";
 import {UtilService} from "../services/util.service";
+import Panzoom from '@panzoom/panzoom'
 
+const imageRef: Ref<any> = ref(null);
 const store = useStore();
+
+onMounted(() => {
+  if(props.isShownFullscreen) {
+    const panzoom = Panzoom(imageRef.value, {contain: 'outside'});
+    imageRef.value.addEventListener('wheel', panzoom.zoomWithWheel)
+  }
+});
 
 const props = defineProps({
   documents: {type: Object as PropType<DocumentModel[]>, required: true},
@@ -132,7 +144,7 @@ const onShareScanCommentsClicked = () => {
 }
 
 let peopleMatchingSearch: PersonModel[] = [];
-if(props.document.people) {
+if (props.document.people) {
   peopleMatchingSearch = props.document.people.filter((person: PersonModel) => UtilService.labelMatchesSearch(person.label, 'Dirks'));
 }
 </script>
@@ -145,5 +157,13 @@ if(props.document.people) {
 
 .image-slide .n-image {
   justify-content: space-around;
+}
+
+.zoom-transition {
+  transition: -moz-transform ease 200ms;
+  transition: -ms-transform ease 200ms;
+  transition: -o-transform ease 200ms;
+  transition: -webkit-transform ease 200ms;
+  transition: transform ease 200ms;
 }
 </style>

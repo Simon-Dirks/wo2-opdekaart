@@ -26,6 +26,7 @@ const props = defineProps({
       :auto-height="true"
       :keyboard="{enabled: isShownFullscreen, onlyInViewport: true}"
       :navigation="true"
+      :allow-touch-move="true"
       class="h-full px-12"
       :style="{'--swiper-navigation-size': '1rem', '--swiper-navigation-color': 'white'}"
   >
