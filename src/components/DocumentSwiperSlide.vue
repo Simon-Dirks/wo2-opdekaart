@@ -24,7 +24,7 @@
                     }
                 }"
               alt=""
-              class="w-full h-full max-h-[80vh] !object-contain" loading="lazy">
+              class="w-full h-full max-h-[80vh] !object-contain select-none" loading="lazy">
         </button>
       </div>
       <div class="text-center drop-shadow flex-[0_1_20px]" v-if="isShownFullscreen">
@@ -32,7 +32,7 @@
           <a :href="getDocumentUrl(document.id)" target="_blank"> {{ document.label }}</a>
         </p>
         <p>
-          Bron: {{document.source.label}}
+          Bron: {{ document.source.label }}
         </p>
         <button @click="onShareScanCommentsClicked">
           <em>
@@ -92,7 +92,7 @@ const swiper = useSwiper();
 const documentRefersToPeople: boolean = props.document?.people && props.document.people.length > 0;
 
 const getDocumentUrl = (documentId: string): string => {
-  if(!documentId) {
+  if (!documentId) {
     return 'https://hetutrechtsarchief.nl/';
   }
 

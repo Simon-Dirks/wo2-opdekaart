@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {Swiper, SwiperSlide} from 'swiper/vue';
-import {Keyboard, Mousewheel, Scrollbar} from 'swiper';
+import {Keyboard, Mousewheel, Navigation, Scrollbar} from 'swiper';
 import 'swiper/css';
 import 'swiper/css/scrollbar';
 import 'swiper/css/keyboard';
-import {computed, ComputedRef, PropType} from "vue";
+import 'swiper/css/navigation';
+import {PropType} from "vue";
 import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
 import {DocumentModel} from "../models/document.model";
-import {useStore} from "vuex";
 
-const modules = [Scrollbar, Mousewheel, Keyboard];
+const modules = [Scrollbar, Mousewheel, Keyboard, Navigation];
 
 const props = defineProps({
   documents: {type: Object as PropType<DocumentModel[]>, required: true},
@@ -25,7 +25,9 @@ const props = defineProps({
       :space-between="10"
       :auto-height="true"
       :keyboard="{enabled: isShownFullscreen, onlyInViewport: true}"
-      class="h-full"
+      :navigation="true"
+      class="h-full px-12"
+      :style="{'--swiper-navigation-size': '1rem', '--swiper-navigation-color': 'white'}"
   >
     <swiper-slide v-for="(document, idx) in props.documents" :key="document.id + idx" class="h-full image-slide"
                   v-if="props.documents">
