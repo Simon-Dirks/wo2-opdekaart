@@ -22,13 +22,15 @@ const radioOptions = [
   }
 ];
 
-const onUpdate = (search: string) => {
-  store.commit("updateSearchTerm", search);
+const onSearchButtonClicked = () => {
+  console.log("onUpdate", search)
+  store.commit("setSearchTerm", search.value);
 }
 
 onMounted(() => {
   watch(() => store.getters["getSearchTerm"], (searchTerm: string) => {
     search.value = searchTerm;
+    console.log(search);
   });
 });
 
@@ -36,7 +38,8 @@ onMounted(() => {
 
 <template>
   <div class="drop-shadow">
-    <input type="text" class="px-4 py-3 rounded-lg w-[93vw] md:w-80 mb-1" placeholder="Zoeken..." v-model.trim="search" v-debounce="onUpdate">
+    <n-input type="text" class="rounded-lg" placeholder="Zoeken" v-model:value="search"/>
+    <n-button class="bg-[rgba(255,255,255,0.8)] px-4 py-2 rounded-lg" @click="onSearchButtonClicked">Zoeken</n-button>
     <br/>
 
     <n-radio-group v-model:value="radioOption" name="radiogroup" class="bg-[rgba(255,255,255,0.8)] px-4 py-2 rounded-lg">
@@ -51,6 +54,7 @@ onMounted(() => {
     </n-radio-group>
 
 <!--    <n-input size="large" round placeholder="Zoeken..." v-model.trim="search"  v-debounce="onUpdate"/>-->
+
   </div>
 </template>
 
