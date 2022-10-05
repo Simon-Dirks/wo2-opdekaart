@@ -1,6 +1,6 @@
 export type TripleStoreDocumentModel = {
-    bronType: string;
-    doc: string;
-    image: string;
-    label: string;
-}
+  bronType: string;
+  doc: string;
+  image: string | null;
+  label: string;
+};
