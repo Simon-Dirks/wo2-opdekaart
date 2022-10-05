@@ -44,7 +44,7 @@ export const store = createStore<State>({
         }
     },
     mutations: {
-        updateSearchTerm(state: State, searchTerm: string) {
+        setSearchTerm(state: State, searchTerm: string) {
             state.searchTerm = searchTerm;
         },
         setShownSourceIds(state: State, shownSourceIds: Set<string>) {
