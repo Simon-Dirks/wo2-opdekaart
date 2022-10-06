@@ -30,6 +30,8 @@ watch(
   () => {
     console.log("Updated selected source ID");
     isLoading.value = true;
+
+    // TODO: Only start (blocking) update call after loading spinner is shown in the DOM...
     setTimeout(() => {
       new MapService().updateFilter().finally(() => {
         isLoading.value = false;
