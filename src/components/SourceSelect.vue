@@ -2,8 +2,8 @@
 import { SourceModel } from "../models/source.model";
 import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { MapService } from "../services/map.service";
 import { InformationCircle } from "@vicons/ionicons5";
+import { MapService } from "../services/map.service";
 
 const store = useStore();
 
@@ -12,6 +12,9 @@ const selectedSourceIds: Ref<Set<string>> = ref(new Set([]));
 const sources: ComputedRef<SourceModel[]> = computed(
   () => store.getters["getSources"]
 );
+
+const isLoading: Ref<boolean> = ref(false);
+
 watch(
   () => store.getters["getSources"],
   (newSources: SourceModel[]) => {
@@ -31,8 +34,12 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
 
   store.commit("setShownSourceIds", selectedSourceIds);
 
-  // TODO: Add loading bar
-  await new MapService().updateFilter();
+  isLoading.value = true;
+  setTimeout(() => {
+    new MapService().updateFilter().finally(() => {
+      isLoading.value = false;
+    });
+  }, 10);
 };
 </script>
 
@@ -41,11 +48,17 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
     <n-card>
       <n-collapse>
         <n-collapse-item title="Bronnen" class="pr-4">
+          <p v-if="isLoading">
+            <n-spin size="small"></n-spin>
+            <span class="relative ml-3 bottom-2 italic">Laden...</span>
+          </p>
+
           <div v-for="source in sources">
             <n-checkbox
               :id="source.id"
               :checked="selectedSourceIds.has(source.id)"
               @update:checked="onSourceSelect(source.id, $event)"
+              :disabled="isLoading"
             >
               {{ source.label }}
             </n-checkbox>
