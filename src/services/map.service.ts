@@ -149,16 +149,15 @@ export class MapService {
       // @ts-ignore
       const clusterId = features[0].properties.cluster_id;
       // @ts-ignore
-      this._map
-        .getSource("markers-source")
-        .getClusterExpansionZoom(clusterId, (err: any, zoom: any) => {
-          if (err) return;
+      // prettier-ignore
+      this._map.getSource("markers-source").getClusterExpansionZoom(clusterId, (err: any, zoom: any) => {
+        if (err) return;
 
-          this._map.easeTo({
-            center: (features[0].geometry as any).coordinates,
-            zoom: zoom,
-          });
+        this._map.easeTo({
+          center: (features[0].geometry as any).coordinates,
+          zoom: zoom,
         });
+      });
     });
 
     this._map.on("mouseenter", "clusters", () => {
