@@ -227,10 +227,6 @@ export class MapService {
   }
 
   private _getFilteredAddress(address: AddressModel): AddressModel | undefined {
-    // TODO: Move to store?
-    const searchFilter: string = store.getters.getSearchTerm;
-    const searchFilterLowered: string = searchFilter.toLowerCase();
-
     // Filter on source
     const filteredAddress: AddressModel = address;
     filteredAddress.documents = filteredAddress.documents.filter((document) => {
@@ -240,6 +236,10 @@ export class MapService {
     if (filteredAddress.documentCount <= 0) {
       return undefined;
     }
+
+    // TODO: Move to store?
+    const searchFilter: string = store.getters.getSearchTerm;
+    const searchFilterLowered: string = searchFilter.toLowerCase();
 
     if (!searchFilter) {
       return address;
