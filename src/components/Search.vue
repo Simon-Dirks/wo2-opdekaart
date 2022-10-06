@@ -82,8 +82,4 @@ onMounted(() => {
   display: inline-block;
   width: 15rem;
 }
-
-.n-button {
-  background-color: var(--n-color);
-}
 </style>

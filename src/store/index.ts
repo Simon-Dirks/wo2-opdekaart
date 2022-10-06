@@ -41,7 +41,7 @@ export const store = createStore<State>({
       (sourceId: string): boolean => {
         return state.shownSourceIds.has(sourceId);
       },
-    getSources(state) {
+    getSources(state): SourceModel[] {
       return state.sources;
     },
   },

@@ -25,6 +25,30 @@ watch(
 
 onMounted(() => {});
 
+watch(
+  () => store.getters["getShownSourceIds"].keys(),
+  () => {
+    console.log("Updated selected source ID");
+    isLoading.value = true;
+    setTimeout(() => {
+      new MapService().updateFilter().finally(() => {
+        isLoading.value = false;
+      });
+    }, 10);
+  }
+);
+
+const onSelectAllSources = () => {
+  const allSourceIds: Set<string> = new Set(
+    store.getters["getSources"].map((source: SourceModel) => source.id)
+  );
+  store.commit("setShownSourceIds", allSourceIds);
+};
+
+const onDeselectAllSources = () => {
+  store.commit("setShownSourceIds", new Set([]));
+};
+
 const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
   if (isSelected) {
     selectedSourceIds.value.add(sourceId);
@@ -33,13 +57,6 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
   }
 
   store.commit("setShownSourceIds", selectedSourceIds);
-
-  isLoading.value = true;
-  setTimeout(() => {
-    new MapService().updateFilter().finally(() => {
-      isLoading.value = false;
-    });
-  }, 10);
 };
 </script>
 
@@ -53,6 +70,12 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
             <span class="relative ml-3 bottom-2 italic">Laden...</span>
           </p>
 
+          <n-button primary class="rounded-lg mr-2" @click="onSelectAllSources"
+            >Selecteer alles
+          </n-button>
+          <n-button primary class="rounded-lg" @click="onDeselectAllSources"
+            >Deselecteer alles
+          </n-button>
           <div v-for="source in sources">
             <n-checkbox
               :id="source.id"
