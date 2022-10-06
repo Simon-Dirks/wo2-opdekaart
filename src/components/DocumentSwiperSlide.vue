@@ -134,7 +134,7 @@ const openModal = () => {
   store.commit("previewModal/setIsShown", true);
 };
 
-const getImageUrl = (imgUrl: string): string => {
+const getImageUrl = (imgUrl: string | undefined | null): string => {
   if (!imgUrl) {
     return "https://via.placeholder.com/350x150";
   }

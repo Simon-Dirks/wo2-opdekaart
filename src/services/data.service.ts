@@ -90,7 +90,7 @@ export class DataService {
         );
 
       const documentsForAddressesPromises: Promise<
-        DocumentForAddressModel[]
+        void | DocumentForAddressModel[]
       >[] = [];
       for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
         const documentsForAddressesPromise: Promise<
@@ -109,7 +109,9 @@ export class DataService {
         sourcesPromise,
         peoplePromise,
         addressesPromise,
-      ].concat(documentsPromises.concat(documentsForAddressesPromises));
+        ...documentsPromises,
+        ...documentsForAddressesPromises,
+      ];
       await Promise.all(dataPromises);
     }
 
@@ -162,7 +164,7 @@ export class DataService {
         occupation: tripleStorePerson.beroep,
         birthDate: tripleStorePerson.geboortedatum,
         birthPlace: tripleStorePerson.geboortedatum,
-        address: tripleStorePerson.adres,
+        addressId: tripleStorePerson.adres,
         addressLabel: tripleStorePerson.adresLabel,
       });
     }

@@ -4,7 +4,7 @@ import {SourceModel} from "./source.model";
 export type DocumentModel = {
     id: string;
     source: SourceModel;
-    imageUrl: string;
+    imageUrl?: string | null;
     label: string;
     people: PersonModel[];
 }
