@@ -52,6 +52,8 @@ export class MapService {
 
     this._map.dragRotate.disable();
 
+    // this._addHistoricalMapOverlay();
+
     // @ts-ignore
     this._map.addSource("markers-source", {
       type: "geojson",
@@ -184,6 +186,19 @@ export class MapService {
     });
 
     store.commit("map/setIsInitialized", true);
+  }
+
+  private _addHistoricalMapOverlay() {
+    this._map.addSource("historical", {
+      type: "raster",
+      url: "mapbox://simondirks.037q7ytk",
+    });
+
+    this._map.addLayer({
+      id: "historical",
+      source: "historical",
+      type: "raster",
+    });
   }
 
   public async updateFilter() {
