@@ -1,35 +1,50 @@
 <script setup lang="ts">
-import {useStore} from "vuex";
-import {computed, ComputedRef} from "vue";
-import {Close} from "@vicons/ionicons5";
+import { useStore } from "vuex";
+import { computed, ComputedRef } from "vue";
+import { Close } from "@vicons/ionicons5";
 import DocumentSwiper from "./DocumentSwiper.vue";
-import {DocumentModel} from "../models/document.model";
+import { DocumentModel } from "../models/document.model";
 
 const store = useStore();
-const isShown: ComputedRef<boolean> = computed(() => store.getters["previewModal/getIsShown"]);
-const shownDocuments: ComputedRef<DocumentModel[]> = computed(() => store.getters["previewModal/getShownDocuments"]);
+const isShown: ComputedRef<boolean> = computed(
+  () => store.getters["previewModal/getIsShown"]
+);
+const shownDocuments: ComputedRef<DocumentModel[]> = computed(
+  () => store.getters["previewModal/getShownDocuments"]
+);
 const closeModal = () => store.commit("previewModal/setIsShown", false);
 </script>
 
 <template>
-  <n-modal v-model:show="isShown" :on-mask-click="closeModal" :on-esc="closeModal" :closable="true">
+  <n-modal
+    v-model:show="isShown"
+    :on-mask-click="closeModal"
+    :on-esc="closeModal"
+    :closable="true"
+  >
     <n-card
-        title=" "
-        style="width: 95vw; height: auto"
-        :bordered="false"
-        size="huge"
-        role="dialog"
-        aria-modal="true"
+      title=" "
+      style="width: 95vw; height: auto"
+      :bordered="false"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
     >
       <template #header-extra>
         <button @click="closeModal" class="relative right-1 top-1">
-          <Icon size="20" class="transition-colors text-white hover:text-primary">
-            <Close/>
+          <Icon
+            size="20"
+            class="transition-colors text-white hover:text-primary"
+          >
+            <Close />
           </Icon>
         </button>
       </template>
 
-      <document-swiper :documents="shownDocuments" :isShownFullscreen="true"></document-swiper>
+      <document-swiper
+        :documents="shownDocuments"
+        :isShownFullscreen="true"
+      ></document-swiper>
     </n-card>
   </n-modal>
 </template>

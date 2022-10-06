@@ -1,32 +1,35 @@
-import {DocumentModel} from "../../models/document.model";
+import { DocumentModel } from "../../models/document.model";
 
 interface PreviewModalState {
-    shownDocuments: DocumentModel[]
-    isShown: boolean;
+  shownDocuments: DocumentModel[];
+  isShown: boolean;
 }
 
 export const previewModalModule = {
-    namespaced: true,
-    state() {
-        return {
-            shownDocuments: [],
-            isShown: false,
-        };
+  namespaced: true,
+  state() {
+    return {
+      shownDocuments: [],
+      isShown: false,
+    };
+  },
+  getters: {
+    getIsShown(state: PreviewModalState) {
+      return state.isShown;
     },
-    getters: {
-        getIsShown(state: PreviewModalState) {
-            return state.isShown;
-        },
-        getShownDocuments(state: PreviewModalState) {
-            return state.shownDocuments;
-        }
+    getShownDocuments(state: PreviewModalState) {
+      return state.shownDocuments;
     },
-    mutations: {
-        setShownDocuments: (state: PreviewModalState, shownDocuments: DocumentModel[]) => {
-            state.shownDocuments = shownDocuments;
-        },
-        setIsShown: (state: PreviewModalState, isShown: boolean) => {
-            state.isShown = isShown;
-        }
-    }
+  },
+  mutations: {
+    setShownDocuments: (
+      state: PreviewModalState,
+      shownDocuments: DocumentModel[]
+    ) => {
+      state.shownDocuments = shownDocuments;
+    },
+    setIsShown: (state: PreviewModalState, isShown: boolean) => {
+      state.isShown = isShown;
+    },
+  },
 };
