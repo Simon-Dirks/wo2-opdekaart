@@ -231,10 +231,6 @@ export class MapService {
     const searchFilter: string = store.getters.getSearchTerm;
     const searchFilterLowered: string = searchFilter.toLowerCase();
 
-    if (!searchFilter) {
-      return address;
-    }
-
     // Filter on source
     const filteredAddress: AddressModel = address;
     filteredAddress.documents = filteredAddress.documents.filter((document) => {
@@ -243,6 +239,10 @@ export class MapService {
     filteredAddress.documentCount = filteredAddress.documents.length;
     if (filteredAddress.documentCount <= 0) {
       return undefined;
+    }
+
+    if (!searchFilter) {
+      return address;
     }
 
     // Filter on address label
