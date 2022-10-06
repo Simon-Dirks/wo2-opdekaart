@@ -115,6 +115,7 @@ export class MapService {
             'id': 'poi-labels',
             'type': 'symbol',
             'source': 'markers-source',
+            'filter': ['>', ['zoom'], 16],
             'layout': {
                 'text-field': [
                     'format',
