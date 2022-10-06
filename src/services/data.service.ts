@@ -137,7 +137,7 @@ export class DataService {
     console.log("Addresses:", parsedAddresses);
     console.log("Documents per address:", documentsForAddresses);
     const geoJson: AddressesGeoJsonModel = this._parseGeoJson(parsedAddresses);
-    console.log("SETTING", geoJson);
+    // console.log("SETTING", geoJson);
     await store.dispatch("map/updateGeoJson", geoJson);
     await store.commit("setSources", parsedSources);
 
@@ -193,7 +193,7 @@ export class DataService {
 
       documents.push(document);
     }
-    console.log("Finished parsing documents...");
+    // console.log("Finished parsing documents...");
     return documents;
   }
 
@@ -209,7 +209,7 @@ export class DataService {
       sources.push(sourceModel);
     }
 
-    console.log("Finished parsing sources...");
+    // console.log("Finished parsing sources...");
     return sources;
   }
 
@@ -257,7 +257,7 @@ export class DataService {
       };
       addresses.push(address);
     }
-    console.log("Finished parsing addresses!");
+    // console.log("Finished parsing addresses!");
     return addresses;
   }
 
@@ -278,7 +278,7 @@ export class DataService {
         },
       });
     }
-    console.log("Finished parsing GeoJSON...");
+    // console.log("Finished parsing GeoJSON...");
     return markersGeoJson;
   }
 
