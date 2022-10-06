@@ -49,7 +49,9 @@ onMounted(() => {
       />
 
       <n-button
-        class="bg-[rgba(255,255,255,0.8)] px-4 py-2 rounded-lg inline-block"
+        primary
+        class="px-4 py-2 rounded-lg inline-block"
+        type="primary"
         @click="onSearchButtonClicked"
       >
         Zoeken
@@ -79,5 +81,9 @@ onMounted(() => {
 .n-input {
   display: inline-block;
   width: 15rem;
+}
+
+.n-button {
+  background-color: var(--n-color);
 }
 </style>
