@@ -271,7 +271,7 @@ export class MapService {
             // console.log(person.addressId, filteredAddress);
             const personAddressMatches: boolean =
               person.addressId === filteredAddress.id;
-            return personLabelMatchesSearch; // && personAddressMatches;
+            return personLabelMatchesSearch && personAddressMatches;
           }
         );
         return documentPeopleThatMatchSearch.length > 0;
