@@ -14,21 +14,25 @@ import CachedSources from "../assets/cached-data/sources.json";
 import CachedAddresses from "../assets/cached-data/addresses.json";
 import CachedDocuments from "../assets/cached-data/documents.json";
 import CachedDocumentsForAddresses from "../assets/cached-data/documents-for-addresses.json";
+import CachedPeopleForDocumentAddresses from "../assets/cached-data/people-for-document-addresses.json";
 import CachedPeople from "../assets/cached-data/people.json";
 import { TripleStoreSourceModel } from "../models/triple-store/triple-store-source.model";
+import { PersonForDocumentAddress } from "../models/triple-store/person-for-document-address";
 
 export class DataService {
   private static _instance: DataService;
   private readonly DOCUMENTS_QUERY_URL: string =
     "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-documenten/run?pageSize=10000";
   private readonly ADDRESSES_QUERY_URL: string =
-    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen/run";
+    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen/run?pageSize=10000";
   private readonly DOCUMENTS_FOR_ADDRESSES_QUERY_URL: string =
     "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-adressen-per-document/run?pageSize=10000";
   private readonly PEOPLE_QUERY_URL: string =
-    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-personen/run";
+    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-personen/run?pageSize=10000";
   private readonly SOURCES_QUERY_URL: string =
-    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-brontypes/run";
+    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-brontypes/run?pageSize=10000";
+  private readonly PEOPLE_FOR_DOCUMENT_ADDRESSES_QUERY_URL: string =
+    "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/wo2-persoon-op-adres-per-document/run?pageSize=10000";
 
   constructor() {
     if (DataService._instance) {
@@ -37,13 +41,32 @@ export class DataService {
     DataService._instance = this;
   }
 
-  public async updateFromServer(useCachedData: boolean = true): Promise<void> {
+  private _retrieveFromTripleStore(
+    queryUrl: string,
+    numPages: number,
+    results: any[]
+  ): Promise<void | any>[] {
+    // TODO: Dynamic check (run for loop until no results are returned anymore)
+
+    const promises: Promise<void | any[]>[] = [];
+    for (let pageIdx = 1; pageIdx <= numPages; pageIdx++) {
+      const paginatedQueryUrl: string = queryUrl + `&page=${pageIdx}`;
+      // console.log("Retrieving", paginatedQueryUrl);
+      const promise: Promise<void | any[]> = this._fetch(paginatedQueryUrl);
+      // TODO: Concat results to results parameter
+      promises.push(promise);
+    }
+    return promises;
+  }
+
+  public async updateFromServer(useCachedData: boolean = false): Promise<void> {
     console.log("Retrieving data...");
 
     let documents: TripleStoreDocumentModel[] = [];
     let people: TripleStorePersonModel[] = [];
     let addresses: TripleStoreAddressModel[] = [];
     let documentsForAddresses: DocumentForAddressModel[] = [];
+    let peopleForDocumentAddresses: PersonForDocumentAddress[] = [];
     let sources: TripleStoreSourceModel[] = [];
 
     if (useCachedData) {
@@ -53,67 +76,73 @@ export class DataService {
       people = CachedPeople as TripleStorePersonModel[];
       addresses = CachedAddresses;
       documentsForAddresses = CachedDocumentsForAddresses;
+      peopleForDocumentAddresses = CachedPeopleForDocumentAddresses;
     } else {
-      // TODO: Dynamic check (run for loop until no results are returned anymore)
-      // TODO: Optimize by running all requests asynchronously
       const documentsPromises: Promise<void | TripleStoreDocumentModel[]>[] =
-        [];
-      for (let documentPageIdx = 1; documentPageIdx <= 2; documentPageIdx++) {
-        const documentsPagePromise: Promise<void | TripleStoreDocumentModel[]> =
-          this._fetch(
-            this.DOCUMENTS_QUERY_URL + `&page=${documentPageIdx}`
-          ).then((retrievedDocumentsPage: TripleStoreDocumentModel[]) => {
-            documents = documents.concat(retrievedDocumentsPage);
-          });
-        documentsPromises.push(documentsPagePromise);
-      }
+        this._retrieveFromTripleStore(this.DOCUMENTS_QUERY_URL, 1, documents);
+      // TODO: Avoid code duplication and handle this inside the retrieval function
+      documentsPromises.forEach((documentPromise) =>
+        documentPromise.then((r) => (documents = documents.concat(r)))
+      );
 
-      const sourcesPromise: Promise<void | TripleStoreSourceModel[]> =
-        this._fetch(this.SOURCES_QUERY_URL).then(
-          (retrievedSources: TripleStoreSourceModel[]) => {
-            sources = retrievedSources;
-          }
-        );
+      const sourcesPromises: Promise<void | TripleStoreSourceModel[]>[] =
+        this._retrieveFromTripleStore(this.SOURCES_QUERY_URL, 1, sources);
+      sourcesPromises.forEach((promise) =>
+        promise.then((r) => (sources = sources.concat(r)))
+      );
 
-      // TODO: Retrieve all people (paginated)
-      const peoplePromise: Promise<void | TripleStorePersonModel[]> =
-        this._fetch(this.PEOPLE_QUERY_URL).then(
-          (retrievedPeople: TripleStorePersonModel[]) => {
-            people = retrievedPeople;
-          }
-        );
-      const addressesPromise: Promise<void | TripleStoreAddressModel[]> =
-        this._fetch(this.ADDRESSES_QUERY_URL).then(
-          (retrievedAddresses: TripleStoreAddressModel[]) => {
-            addresses = retrievedAddresses;
-          }
-        );
+      const peoplePromises: Promise<void | TripleStorePersonModel[]>[] =
+        this._retrieveFromTripleStore(this.PEOPLE_QUERY_URL, 2, people);
+      peoplePromises.forEach((promise) =>
+        promise.then((r) => (people = people.concat(r)))
+      );
+
+      const addressesPromises: Promise<void | TripleStoreAddressModel[]>[] =
+        this._retrieveFromTripleStore(this.ADDRESSES_QUERY_URL, 1, addresses);
+      addressesPromises.forEach((promise) =>
+        promise.then((r) => (addresses = addresses.concat(r)))
+      );
 
       const documentsForAddressesPromises: Promise<
         void | DocumentForAddressModel[]
-      >[] = [];
-      for (let pageIdx = 1; pageIdx <= 2; pageIdx++) {
-        const documentsForAddressesPromise: Promise<
-          void | DocumentForAddressModel[]
-        > = this._fetch(
-          this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL + `&page=${pageIdx}`
-        ).then((documentsForAddressesPage: DocumentForAddressModel[]) => {
-          documentsForAddresses = documentsForAddresses.concat(
-            documentsForAddressesPage
-          );
-        });
-        documentsForAddressesPromises.push(documentsForAddressesPromise);
-      }
+      >[] = this._retrieveFromTripleStore(
+        this.DOCUMENTS_FOR_ADDRESSES_QUERY_URL,
+        2,
+        documentsForAddresses
+      );
+      documentsForAddressesPromises.forEach((promise) =>
+        promise.then(
+          (r) => (documentsForAddresses = documentsForAddresses.concat(r))
+        )
+      );
+
+      const peopleForDocumentAddressesPromises: Promise<
+        void | TripleStorePersonModel[]
+      >[] = this._retrieveFromTripleStore(
+        this.PEOPLE_FOR_DOCUMENT_ADDRESSES_QUERY_URL,
+        2,
+        peopleForDocumentAddresses
+      );
+      peopleForDocumentAddressesPromises.forEach((promise) =>
+        promise.then(
+          (r) =>
+            (peopleForDocumentAddresses = peopleForDocumentAddresses.concat(r))
+        )
+      );
 
       const dataPromises: Promise<any>[] = [
-        sourcesPromise,
-        peoplePromise,
-        addressesPromise,
+        ...sourcesPromises,
+        ...peoplePromises,
+        ...addressesPromises,
+        ...peopleForDocumentAddressesPromises,
         ...documentsPromises,
         ...documentsForAddressesPromises,
       ];
+
       await Promise.all(dataPromises);
     }
+
+    console.log("People for document addresses", peopleForDocumentAddresses);
 
     console.log("Finished retrieving data!");
 
@@ -122,7 +151,8 @@ export class DataService {
     const parsedDocuments: DocumentModel[] = this._parseDocuments(
       documents,
       people,
-      parsedSources
+      parsedSources,
+      peopleForDocumentAddresses
     );
     // store.commit("map/setDocuments", parsedDocuments);
 
@@ -147,27 +177,43 @@ export class DataService {
   private _parseDocuments(
     tripleStoreDocuments: TripleStoreDocumentModel[],
     tripleStorePeople: TripleStorePersonModel[],
-    sources: SourceModel[]
+    sources: SourceModel[],
+    peopleForDocumentAddresses: PersonForDocumentAddress[]
   ): DocumentModel[] {
     console.log("Parsing documents...");
     const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
-    for (const tripleStorePerson of tripleStorePeople) {
-      const personDocumentId: string = tripleStorePerson.doc;
-      // console.log(personDocumentId);
-      if (!(personDocumentId in peopleForDocuments)) {
-        peopleForDocuments[personDocumentId] = [];
+    for (const personForDocumentAddress: PersonForDocumentAddress of peopleForDocumentAddresses) {
+      const docId: string = personForDocumentAddress.doc;
+      const addressId: string = personForDocumentAddress.adres;
+      const addressLabel: string = personForDocumentAddress.adresLabel;
+      const personId: string = personForDocumentAddress.persoonsvermelding;
+      const person: TripleStorePersonModel = tripleStorePeople.find(
+        (p) => p.persoon === personId
+      );
+      if (!person) {
+        console.warn(
+          "Could not find person with ID",
+          personId,
+          tripleStorePeople
+        );
       }
 
-      peopleForDocuments[personDocumentId].push({
-        id: tripleStorePerson.persoon,
-        label: tripleStorePerson.label,
-        occupation: tripleStorePerson.beroep,
-        birthDate: tripleStorePerson.geboortedatum,
-        birthPlace: tripleStorePerson.geboortedatum,
-        addressId: tripleStorePerson.adres,
-        addressLabel: tripleStorePerson.adresLabel,
+      if (!(docId in peopleForDocuments)) {
+        peopleForDocuments[docId] = [];
+      }
+
+      peopleForDocuments[docId].push({
+        id: person.persoon,
+        label: person.label,
+        occupation: person.beroep,
+        birthDate: person.geboortedatum,
+        birthPlace: person.geboortedatum,
+        addressId: addressId,
+        addressLabel: addressLabel,
       });
     }
+
+    // console.log(peopleForDocuments);
 
     const documents: DocumentModel[] = [];
     for (const tripleStoreDocument of tripleStoreDocuments) {

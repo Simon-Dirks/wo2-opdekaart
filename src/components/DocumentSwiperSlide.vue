@@ -15,7 +15,6 @@
           class="w-full"
           :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'"
         >
-          <!-- TODO: Add pinch to zoom-->
           <div
             class="absolute flex justify-center items-center w-full h-full bg-[rgba(0,0,0,0.5)] opacity-0 hover:opacity-100 transition-opacity text-white"
             v-if="!isShownFullscreen"
@@ -80,9 +79,7 @@
             <button
               @click="onPersonClicked(person.label)"
               class="text-left italic"
-            >
-              {{ person.label }}
-            </button>
+            ></button>
           </li>
         </ul>
       </div>
@@ -91,7 +88,7 @@
         <ul class="list-disc">
           <li v-for="person in props.document.people">
             <button @click="onPersonClicked(person.label)" class="text-left">
-              {{ person.label }}
+              {{ person.label }} ({{ person.addressLabel }})
             </button>
           </li>
         </ul>
@@ -167,7 +164,7 @@ const getDocumentUrl = (documentId: string): string => {
 };
 
 const onPersonClicked = (personLabel: string) => {
-  store.commit("updateSearchTerm", personLabel);
+  store.commit("setSearchTerm", personLabel);
   store.commit("previewModal/setIsShown", false);
 };
 
