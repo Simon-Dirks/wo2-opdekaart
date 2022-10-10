@@ -46,6 +46,7 @@ onMounted(() => {
         class="rounded-lg mr-2"
         placeholder="Zoeken"
         v-model:value="search"
+        @keyup.enter="onSearchButtonClicked"
       />
 
       <n-button
