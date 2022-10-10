@@ -108,8 +108,9 @@ import { useSwiper } from "swiper/vue";
 import { DocumentModel } from "../models/document.model";
 import { useStore } from "vuex";
 import { PersonModel } from "../models/person.model";
-import { UtilService } from "../services/util.service";
 import Panzoom from "@panzoom/panzoom";
+import { SearchOptionModel } from "../models/search-option.model";
+import { UtilService } from "../services/util.service";
 
 const imageRef: Ref<any> = ref(null);
 const store = useStore();
@@ -184,10 +185,21 @@ const peopleMatchingSearch: ComputedRef<PersonModel[] | undefined> = computed(
       if (!search) {
         return [];
       }
+
+      const searchOption: SearchOptionModel = store.getters["getSearchOption"];
       const matchingPeople: PersonModel[] = props.document.people.filter(
-        (person: PersonModel) =>
-          UtilService.labelMatchesSearch(person.label, search) ||
-          UtilService.labelMatchesSearch(person.addressLabel, search)
+        (person: PersonModel) => {
+          if (searchOption === SearchOptionModel.Addresses) {
+            return UtilService.labelMatchesSearch(person.addressLabel, search);
+          }
+          if (searchOption === SearchOptionModel.People) {
+            return UtilService.labelMatchesSearch(person.label, search);
+          }
+          return (
+            UtilService.labelMatchesSearch(person.label, search) ||
+            UtilService.labelMatchesSearch(person.addressLabel, search)
+          );
+        }
       );
 
       return matchingPeople;
