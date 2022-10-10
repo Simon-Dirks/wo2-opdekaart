@@ -1,26 +1,41 @@
 <script setup lang="ts">
 import { MapService } from "../services/map.service";
 import { onMounted, Ref, ref, watch } from "vue";
-import { store } from "../store";
+import { useStore } from "vuex";
+import { SearchOptionModel } from "../models/search-option.model";
 
 const mapService: MapService = new MapService();
 const search: Ref<string> = ref("");
-const radioOption: Ref<string> = ref("all");
+const searchOption: Ref<string> = ref(SearchOptionModel.All);
 
-const radioOptions = [
+const searchOptions = [
   {
-    value: "all",
+    value: SearchOptionModel.All,
     label: "Alles",
   },
   {
-    value: "people",
+    value: SearchOptionModel.People,
     label: "Personen",
   },
   {
-    value: "addresses",
+    value: SearchOptionModel.Addresses,
     label: "Adressen",
   },
 ];
+
+const store = useStore();
+
+watch(
+  searchOption,
+  (currentOption: SearchOptionModel, prevOption: SearchOptionModel) => {
+    console.log(
+      SearchOptionModel[prevOption],
+      "->",
+      SearchOptionModel[currentOption]
+    );
+    store.commit("setSearchOption", currentOption);
+  }
+);
 
 const onSearchButtonClicked = () => {
   console.log("onUpdate", search);
@@ -32,7 +47,7 @@ onMounted(() => {
     () => store.getters["getSearchTerm"],
     (searchTerm: string) => {
       search.value = searchTerm;
-      console.log(search);
+      // console.log(search);
     }
   );
 });
@@ -60,21 +75,19 @@ onMounted(() => {
     </div>
 
     <n-radio-group
-      v-model:value="radioOption"
+      v-model:value="searchOption"
       name="radiogroup"
       class="bg-[rgba(255,255,255,0.8)] px-4 py-2 rounded-lg"
     >
       <n-space>
         <n-radio
-          v-for="option in radioOptions"
+          v-for="option in searchOptions"
           :key="option.value"
           :value="option.value"
           :label="option.label"
         />
       </n-space>
     </n-radio-group>
-
-    <!--    <n-input size="large" round placeholder="Zoeken..." v-model.trim="search"  v-debounce="onUpdate"/>-->
   </div>
 </template>
 

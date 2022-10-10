@@ -4,10 +4,12 @@ import { previewModalModule } from "./preview-modal";
 import { paginationModule } from "./pagination";
 import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
+import { SearchOptionModel } from "../models/search-option.model";
 
 export interface State {
   selectedAddress: AddressModel | null;
   searchTerm: string;
+  searchOption: SearchOptionModel;
   shownSourceIds: Set<string>;
   sources: SourceModel[];
 }
@@ -24,6 +26,7 @@ export const store = createStore<State>({
       searchTerm: "",
       shownSourceIds: new Set<string>([]),
       sources: [],
+      searchOption: SearchOptionModel.All,
     };
   },
   getters: {
@@ -32,6 +35,9 @@ export const store = createStore<State>({
     },
     getSearchTerm(state) {
       return state.searchTerm;
+    },
+    getSearchOption(state) {
+      return state.searchOption;
     },
     getShownSourceIds(state): Set<string> {
       return state.shownSourceIds;
@@ -48,6 +54,9 @@ export const store = createStore<State>({
   mutations: {
     setSearchTerm(state: State, searchTerm: string) {
       state.searchTerm = searchTerm;
+    },
+    setSearchOption(state: State, searchOption: SearchOptionModel) {
+      state.searchOption = searchOption;
     },
     setShownSourceIds(state: State, shownSourceIds: Set<string>) {
       state.shownSourceIds = shownSourceIds;
