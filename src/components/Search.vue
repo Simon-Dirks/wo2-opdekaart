@@ -6,7 +6,7 @@ import { SearchOptionModel } from "../models/search-option.model";
 
 const mapService: MapService = new MapService();
 const search: Ref<string> = ref("");
-const searchOption: Ref<string> = ref(SearchOptionModel.All);
+const searchOption: Ref<SearchOptionModel> = ref(SearchOptionModel.All);
 
 const searchOptions = [
   {
@@ -25,17 +25,14 @@ const searchOptions = [
 
 const store = useStore();
 
-watch(
-  searchOption,
-  (currentOption: SearchOptionModel, prevOption: SearchOptionModel) => {
-    console.log(
-      SearchOptionModel[prevOption],
-      "->",
-      SearchOptionModel[currentOption]
-    );
-    store.commit("setSearchOption", currentOption);
-  }
-);
+watch(searchOption, (currentOption, prevOption) => {
+  console.log(
+    SearchOptionModel[prevOption],
+    "->",
+    SearchOptionModel[currentOption]
+  );
+  store.commit("setSearchOption", currentOption);
+});
 
 const onSearchButtonClicked = () => {
   console.log("Searching:", search);
