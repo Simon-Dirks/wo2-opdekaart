@@ -79,7 +79,9 @@
             <button
               @click="onPersonClicked(person.label)"
               class="text-left italic"
-            ></button>
+            >
+              {{ person.label }} ({{ person.addressLabel }})
+            </button>
           </li>
         </ul>
       </div>
@@ -98,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, PropType, ref, Ref } from "vue";
+import { computed, ComputedRef, onMounted, PropType, ref, Ref } from "vue";
 import { useSwiper } from "swiper/vue";
 import { DocumentModel } from "../models/document.model";
 import { useStore } from "vuex";
@@ -172,12 +174,18 @@ const onShareScanCommentsClicked = () => {
   alert("Fout melden");
 };
 
-let peopleMatchingSearch: PersonModel[] = [];
-if (props.document.people) {
-  peopleMatchingSearch = props.document.people.filter((person: PersonModel) =>
-    UtilService.labelMatchesSearch(person.label, "Dirks")
-  );
-}
+const peopleMatchingSearch: ComputedRef<PersonModel[]> = computed(() => {
+  if (props.document.people) {
+    const search: string = store.getters["getSearchTerm"];
+    const matchingPeople: PersonModel[] = props.document.people.filter(
+      (person: PersonModel) =>
+        UtilService.labelMatchesSearch(person.label, search) ||
+        UtilService.labelMatchesSearch(person.addressLabel, search)
+    );
+
+    return matchingPeople;
+  }
+});
 </script>
 
 <style>
