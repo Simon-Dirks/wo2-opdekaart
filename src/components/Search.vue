@@ -35,7 +35,7 @@ watch(searchOption, (currentOption, prevOption) => {
 });
 
 const onSearchButtonClicked = () => {
-  console.log("Searching:", search);
+  console.log("Searching:", search.value);
   store.commit("setSearchTerm", search.value);
 };
 
