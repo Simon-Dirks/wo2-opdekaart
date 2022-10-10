@@ -77,7 +77,7 @@ onMounted(() => {
     <n-radio-group
       v-model:value="searchOption"
       name="radiogroup"
-      class="bg-[rgba(255,255,255,0.8)] px-4 py-2 rounded-lg"
+      class="bg-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.95)] px-4 py-2 rounded-lg transition-colors duration-500"
     >
       <n-space>
         <n-radio

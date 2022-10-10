@@ -64,7 +64,9 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
 
 <template>
   <div class="">
-    <n-card>
+    <n-card
+      class="bg-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.95)] transition-colors duration-500"
+    >
       <n-collapse>
         <n-collapse-item title="Bronnen" class="pr-4">
           <p v-if="isLoading">
