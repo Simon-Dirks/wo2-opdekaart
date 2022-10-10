@@ -8,6 +8,7 @@ import { DocumentModel } from "../models/document.model";
 import { PersonModel } from "../models/person.model";
 import { watch } from "vue";
 import { UtilService } from "./util.service";
+import { SearchOptionModel } from "../models/search-option.model";
 
 export class MapService {
   private static _instance: MapService;
@@ -41,6 +42,13 @@ export class MapService {
 
     watch(
       () => store.getters["getSearchTerm"],
+      () => {
+        void this.updateFilter();
+      }
+    );
+
+    watch(
+      () => store.getters["getSearchOption"],
       () => {
         void this.updateFilter();
       }
@@ -226,6 +234,8 @@ export class MapService {
   }
 
   private _getFilteredAddress(address: AddressModel): AddressModel | undefined {
+    // TODO: Move to store?
+
     // Filter on source
     const filteredAddress: AddressModel = address;
     filteredAddress.documents = filteredAddress.documents.filter((document) => {
@@ -236,56 +246,62 @@ export class MapService {
       return undefined;
     }
 
-    // TODO: Move to store?
+    // Filter on search
     const searchFilter: string = store.getters.getSearchTerm;
+    const searchOption: SearchOptionModel = store.getters.getSearchOption;
     const searchFilterLowered: string = searchFilter.toLowerCase();
 
     if (!searchFilter) {
       return address;
     }
 
-    // Filter on address label
-    const addressLabelMatchesSearch: boolean = UtilService.labelMatchesSearch(
-      address.label,
-      searchFilterLowered,
-      true
-    );
-    if (addressLabelMatchesSearch) {
-      return filteredAddress;
+    if (searchOption !== SearchOptionModel.People) {
+      const addressLabelMatchesSearch: boolean = UtilService.labelMatchesSearch(
+        address.label,
+        searchFilterLowered,
+        true
+      );
+      if (addressLabelMatchesSearch) {
+        return filteredAddress;
+      }
     }
 
     // Filter on people
-    const documentsThatMatchPeopleSearch: DocumentModel[] =
-      filteredAddress?.documents.filter((doc: DocumentModel) => {
-        if (!doc.people) {
-          return false;
-        }
-        const documentPeopleThatMatchSearch: PersonModel[] = doc?.people.filter(
-          (person: PersonModel) => {
-            const personLabelMatchesSearch: boolean =
-              UtilService.labelMatchesSearch(
-                person.label,
-                searchFilterLowered,
-                true
-              );
-            // console.log(person.addressId, filteredAddress);
-            const personAddressMatches: boolean =
-              person.addressId === filteredAddress.id;
-            return personLabelMatchesSearch && personAddressMatches;
+    if (searchOption !== SearchOptionModel.Addresses) {
+      const documentsThatMatchPeopleSearch: DocumentModel[] =
+        filteredAddress?.documents.filter((doc: DocumentModel) => {
+          if (!doc.people) {
+            return false;
           }
-        );
-        return documentPeopleThatMatchSearch.length > 0;
-      });
-    const addressDocumentsMatchesPeopleSearch: boolean =
-      documentsThatMatchPeopleSearch.length > 0;
+          const documentPeopleThatMatchSearch: PersonModel[] =
+            doc?.people.filter((person: PersonModel) => {
+              const personLabelMatchesSearch: boolean =
+                UtilService.labelMatchesSearch(
+                  person.label,
+                  searchFilterLowered,
+                  true
+                );
+              // console.log(person.addressId, filteredAddress);
+              const personAddressMatches: boolean =
+                person.addressId === filteredAddress.id;
+              return personLabelMatchesSearch && personAddressMatches;
+            });
+          return documentPeopleThatMatchSearch.length > 0;
+        });
 
-    if (!addressDocumentsMatchesPeopleSearch) {
-      return undefined;
+      const addressDocumentsMatchesPeopleSearch: boolean =
+        documentsThatMatchPeopleSearch.length > 0;
+
+      if (!addressDocumentsMatchesPeopleSearch) {
+        return undefined;
+      }
+
+      filteredAddress.documents = documentsThatMatchPeopleSearch;
+      filteredAddress.documentCount = filteredAddress.documents.length;
+      return filteredAddress;
     }
 
-    filteredAddress.documents = documentsThatMatchPeopleSearch;
-    filteredAddress.documentCount = filteredAddress.documents.length;
-    return filteredAddress;
+    return undefined;
   }
 
   private _updateSourceData(geoJson: AddressesGeoJsonModel): void {

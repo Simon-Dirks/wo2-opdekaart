@@ -38,7 +38,7 @@ watch(
 );
 
 const onSearchButtonClicked = () => {
-  console.log("onUpdate", search);
+  console.log("Searching:", search);
   store.commit("setSearchTerm", search.value);
 };
 
