@@ -181,6 +181,9 @@ const peopleMatchingSearch: ComputedRef<PersonModel[] | undefined> = computed(
   () => {
     if (props.document.people) {
       const search: string = store.getters["getSearchTerm"];
+      if (!search) {
+        return [];
+      }
       const matchingPeople: PersonModel[] = props.document.people.filter(
         (person: PersonModel) =>
           UtilService.labelMatchesSearch(person.label, search) ||
