@@ -10,12 +10,12 @@ import { store } from "../store";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
 import { SourceModel } from "../models/source.model";
 
-import CachedSources from "../assets/cached-data/sources.json";
-import CachedAddresses from "../assets/cached-data/addresses.json";
-import CachedDocuments from "../assets/cached-data/documents.json";
-import CachedDocumentsForAddresses from "../assets/cached-data/documents-for-addresses.json";
-import CachedPeopleForDocumentAddresses from "../assets/cached-data/people-for-document-addresses.json";
-import CachedPeople from "../assets/cached-data/people.json";
+// import CachedSources from "../assets/cached-data/sources.json";
+// import CachedAddresses from "../assets/cached-data/addresses.json";
+// import CachedDocuments from "../assets/cached-data/documents.json";
+// import CachedDocumentsForAddresses from "../assets/cached-data/documents-for-addresses.json";
+// import CachedPeopleForDocumentAddresses from "../assets/cached-data/people-for-document-addresses.json";
+// import CachedPeople from "../assets/cached-data/people.json";
 import { TripleStoreSourceModel } from "../models/triple-store/triple-store-source.model";
 import { PersonForDocumentAddress } from "../models/triple-store/person-for-document-address";
 
@@ -70,14 +70,14 @@ export class DataService {
     let sources: TripleStoreSourceModel[] = [];
 
     if (useCachedData) {
-      sources = CachedSources;
-      // @ts-ignore
-      documents = CachedDocuments;
-      people = CachedPeople as TripleStorePersonModel[];
-      addresses = CachedAddresses;
-      documentsForAddresses = CachedDocumentsForAddresses;
-      // @ts-ignore
-      peopleForDocumentAddresses = CachedPeopleForDocumentAddresses;
+      // sources = CachedSources;
+      // // @ts-ignore
+      // documents = CachedDocuments;
+      // people = CachedPeople as TripleStorePersonModel[];
+      // addresses = CachedAddresses;
+      // documentsForAddresses = CachedDocumentsForAddresses;
+      // // @ts-ignore
+      // peopleForDocumentAddresses = CachedPeopleForDocumentAddresses;
     } else {
       const documentsPromises: Promise<void | TripleStoreDocumentModel[]>[] =
         this._retrieveFromTripleStore(this.DOCUMENTS_QUERY_URL, 1, documents);
