@@ -72,7 +72,10 @@
       class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2"
       v-if="isShownFullscreen && documentRefersToPeople"
     >
-      <div v-if="peopleMatchingSearch.length > 0" class="mb-4">
+      <div
+        v-if="peopleMatchingSearch && peopleMatchingSearch.length > 0"
+        class="mb-4"
+      >
         <h2 class="text-2xl">Zoekresultaat</h2>
         <ul class="list-disc">
           <li v-for="person in peopleMatchingSearch">
@@ -174,18 +177,20 @@ const onShareScanCommentsClicked = () => {
   alert("Fout melden");
 };
 
-const peopleMatchingSearch: ComputedRef<PersonModel[]> = computed(() => {
-  if (props.document.people) {
-    const search: string = store.getters["getSearchTerm"];
-    const matchingPeople: PersonModel[] = props.document.people.filter(
-      (person: PersonModel) =>
-        UtilService.labelMatchesSearch(person.label, search) ||
-        UtilService.labelMatchesSearch(person.addressLabel, search)
-    );
+const peopleMatchingSearch: ComputedRef<PersonModel[] | undefined> = computed(
+  () => {
+    if (props.document.people) {
+      const search: string = store.getters["getSearchTerm"];
+      const matchingPeople: PersonModel[] = props.document.people.filter(
+        (person: PersonModel) =>
+          UtilService.labelMatchesSearch(person.label, search) ||
+          UtilService.labelMatchesSearch(person.addressLabel, search)
+      );
 
-    return matchingPeople;
+      return matchingPeople;
+    }
   }
-});
+);
 </script>
 
 <style>

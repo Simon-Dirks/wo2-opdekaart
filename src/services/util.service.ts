@@ -1,10 +1,10 @@
 export class UtilService {
   public static labelMatchesSearch(
-    label: string,
+    label: string | undefined,
     search: string,
     searchIsLowered = false
   ) {
-    if (!search) {
+    if (!search || !label) {
       return true;
     }
 

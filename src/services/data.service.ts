@@ -76,31 +76,34 @@ export class DataService {
       people = CachedPeople as TripleStorePersonModel[];
       addresses = CachedAddresses;
       documentsForAddresses = CachedDocumentsForAddresses;
+      // @ts-ignore
       peopleForDocumentAddresses = CachedPeopleForDocumentAddresses;
     } else {
       const documentsPromises: Promise<void | TripleStoreDocumentModel[]>[] =
         this._retrieveFromTripleStore(this.DOCUMENTS_QUERY_URL, 1, documents);
       // TODO: Avoid code duplication and handle this inside the retrieval function
       documentsPromises.forEach((documentPromise) =>
-        documentPromise.then((r) => (documents = documents.concat(r)))
+        documentPromise.then(
+          (r) => (documents = r ? documents.concat(r) : documents)
+        )
       );
 
       const sourcesPromises: Promise<void | TripleStoreSourceModel[]>[] =
         this._retrieveFromTripleStore(this.SOURCES_QUERY_URL, 1, sources);
       sourcesPromises.forEach((promise) =>
-        promise.then((r) => (sources = sources.concat(r)))
+        promise.then((r) => (sources = r ? sources.concat(r) : sources))
       );
 
       const peoplePromises: Promise<void | TripleStorePersonModel[]>[] =
         this._retrieveFromTripleStore(this.PEOPLE_QUERY_URL, 2, people);
       peoplePromises.forEach((promise) =>
-        promise.then((r) => (people = people.concat(r)))
+        promise.then((r) => (people = r ? people.concat(r) : people))
       );
 
       const addressesPromises: Promise<void | TripleStoreAddressModel[]>[] =
         this._retrieveFromTripleStore(this.ADDRESSES_QUERY_URL, 1, addresses);
       addressesPromises.forEach((promise) =>
-        promise.then((r) => (addresses = addresses.concat(r)))
+        promise.then((r) => (addresses = r ? addresses.concat(r) : addresses))
       );
 
       const documentsForAddressesPromises: Promise<
@@ -112,12 +115,15 @@ export class DataService {
       );
       documentsForAddressesPromises.forEach((promise) =>
         promise.then(
-          (r) => (documentsForAddresses = documentsForAddresses.concat(r))
+          (r) =>
+            (documentsForAddresses = r
+              ? documentsForAddresses.concat(r)
+              : documentsForAddresses)
         )
       );
 
       const peopleForDocumentAddressesPromises: Promise<
-        void | TripleStorePersonModel[]
+        void | PersonForDocumentAddress[]
       >[] = this._retrieveFromTripleStore(
         this.PEOPLE_FOR_DOCUMENT_ADDRESSES_QUERY_URL,
         2,
@@ -126,7 +132,9 @@ export class DataService {
       peopleForDocumentAddressesPromises.forEach((promise) =>
         promise.then(
           (r) =>
-            (peopleForDocumentAddresses = peopleForDocumentAddresses.concat(r))
+            (peopleForDocumentAddresses = r
+              ? peopleForDocumentAddresses.concat(r)
+              : peopleForDocumentAddresses)
         )
       );
 
@@ -182,12 +190,12 @@ export class DataService {
   ): DocumentModel[] {
     console.log("Parsing documents...");
     const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
-    for (const personForDocumentAddress: PersonForDocumentAddress of peopleForDocumentAddresses) {
+    for (const personForDocumentAddress of peopleForDocumentAddresses) {
       const docId: string = personForDocumentAddress.doc;
       const addressId: string = personForDocumentAddress.adres;
       const addressLabel: string = personForDocumentAddress.adresLabel;
       const personId: string = personForDocumentAddress.persoonsvermelding;
-      const person: TripleStorePersonModel = tripleStorePeople.find(
+      const person: TripleStorePersonModel | undefined = tripleStorePeople.find(
         (p) => p.persoon === personId
       );
       if (!person) {
@@ -196,8 +204,8 @@ export class DataService {
           personId,
           tripleStorePeople
         );
+        continue;
       }
-
       if (!(docId in peopleForDocuments)) {
         peopleForDocuments[docId] = [];
       }
@@ -205,7 +213,7 @@ export class DataService {
       peopleForDocuments[docId].push({
         id: person.persoon,
         label: person.label,
-        occupation: person.beroep,
+        occupation: person?.beroep,
         birthDate: person.geboortedatum,
         birthPlace: person.geboortedatum,
         addressId: addressId,
