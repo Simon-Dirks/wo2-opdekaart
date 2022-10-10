@@ -83,6 +83,8 @@
               @click="onPersonClicked(person.label)"
               class="text-left italic"
             >
+              <!-- TODO: Make person label and address label clickable separately -->
+
               {{ person.label }} ({{ person.addressLabel }})
             </button>
           </li>
@@ -92,6 +94,7 @@
         <h2 class="text-2xl">Personen</h2>
         <ul class="list-disc">
           <li v-for="person in props.document.people">
+            <!-- TODO: Make person label and address label clickable separately -->
             <button @click="onPersonClicked(person.label)" class="text-left">
               {{ person.label }} ({{ person.addressLabel }})
             </button>
