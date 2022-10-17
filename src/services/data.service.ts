@@ -179,6 +179,7 @@ export class DataService {
     await store.dispatch("map/updateGeoJson", geoJson);
     await store.commit("setSources", parsedSources);
 
+  
     return Promise.resolve();
   }
 
