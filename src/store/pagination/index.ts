@@ -17,13 +17,16 @@ export const paginationModule = {
       return state.page;
     },
     getStartElemIdx(state: PaginationState, getters: any): number {
+      console.log("getStartElemIdx", state.page, getters.getElemCount);
       return state.page * getters.getElemCount;
     },
     getEndElemIdx(state: PaginationState, getters: any): number {
       return getters.getStartElemIdx + getters.getElemCount;
     },
     getElemCount(state: PaginationState): number {
-      return parseInt(import.meta.env.VITE_RESULTS_PER_PAGE);
+      const resultsPerPage = import.meta.env.VITE_RESULTS_PER_PAGE;
+      if (!resultsPerPage) console.warn("VITE_RESULTS_PER_PAGE is undefined");
+      return parseInt(resultsPerPage);
     },
     prevPageIsAvailable(state: PaginationState): boolean {
       return state.page - 1 >= 0;
