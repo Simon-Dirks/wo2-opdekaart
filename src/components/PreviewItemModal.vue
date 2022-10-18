@@ -12,7 +12,10 @@ const isShown: ComputedRef<boolean> = computed(
 const shownDocuments: ComputedRef<DocumentModel[]> = computed(
   () => store.getters["previewModal/getShownDocuments"]
 );
-const closeModal = () => store.commit("previewModal/setIsShown", false);
+const initialSlideIndex: ComputedRef<number> = computed(
+  () => store.getters["previewModal/getInitialSlideIndex"]
+);
+const closeModal = () => store.dispatch("previewModal/close");
 </script>
 
 <template>
@@ -44,6 +47,7 @@ const closeModal = () => store.commit("previewModal/setIsShown", false);
       <document-swiper
         :documents="shownDocuments"
         :isShownFullscreen="true"
+        :initial-slide="initialSlideIndex"
       ></document-swiper>
     </n-card>
   </n-modal>

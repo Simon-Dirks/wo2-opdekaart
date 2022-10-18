@@ -12,7 +12,11 @@ import { DocumentModel } from "../models/document.model";
 const modules = [Scrollbar, Mousewheel, Keyboard, Navigation];
 
 const props = defineProps({
-  documents: { type: Object as PropType<DocumentModel[]>, required: true },
+  documents: {
+    type: Object as PropType<DocumentModel[] | undefined>,
+    required: false,
+  },
+  initialSlide: { type: Number, required: false },
   isShownFullscreen: { type: Boolean, required: false },
 });
 </script>
@@ -26,6 +30,7 @@ const props = defineProps({
     :keyboard="{ enabled: isShownFullscreen, onlyInViewport: true }"
     :navigation="true"
     :allow-touch-move="true"
+    :initial-slide="props.initialSlide ?? 0"
     class="h-full px-12"
     :style="{
       '--swiper-navigation-size': '1rem',
@@ -42,6 +47,7 @@ const props = defineProps({
         :is-shown-fullscreen="isShownFullscreen"
         :documents="documents"
         :document="document"
+        :slide-index="idx"
       ></document-swiper-slide>
     </swiper-slide>
   </swiper>

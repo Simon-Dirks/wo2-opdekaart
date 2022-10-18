@@ -20,7 +20,7 @@ const props = defineProps({
     <p class="mb-3">Documenten: {{ props.address?.documents.length }}</p>
 
     <document-swiper
-      :documents="props.address?.documents"
+      :documents="props.address.documents"
       :is-shown-fullscreen="false"
     ></document-swiper>
   </n-card>
