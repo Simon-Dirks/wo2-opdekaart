@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { computed, ComputedRef, onMounted, ref, Ref, watch } from "vue";
+import { computed, ComputedRef, onMounted } from "vue";
 import { AddressModel } from "../models/address.model";
 import AddressPreview from "./PreviewItem.vue";
-import Pagination from "./Pagination.vue";
 
 const store = useStore();
 const selectedAddress: ComputedRef<AddressModel | null> = computed(
@@ -59,17 +58,6 @@ const getNumberOfDocuments = (): number => {
           v-for="shownAddress in shownAddresses.slice(0, 10)"
         ></address-preview>
       </template>
-    </div>
-
-    <!--        pageStartElemIdx,-->
-    <!--    pageEndElemIdx-->
-    <!--    )"-->
-    <!--    -->
-    <div
-      class="w-full bottom-0 px-4 py-2 drop-shadow-2xl bg-slate-700 z-10"
-      v-if="!selectedAddress"
-    >
-      <pagination :max-elements="shownAddresses.length"></pagination>
     </div>
   </div>
 </template>
