@@ -130,16 +130,19 @@ onMounted(() => {
 });
 
 const props = defineProps({
-  documents: { type: Object as PropType<DocumentModel[]>, required: true },
+  documents: {
+    type: Object as PropType<DocumentModel[] | undefined>,
+    required: true,
+  },
   document: { type: Object as PropType<DocumentModel>, required: true },
-  slideIndex: { type: Number, required: true },
+  slideIndex: { type: Number, required: false },
   isShownFullscreen: { type: Boolean, required: false },
 });
 
 const openModal = () => {
   store.dispatch("previewModal/show", {
     documents: props.documents,
-    initialSlideIndex: props.slideIndex,
+    initialSlideIndex: props.slideIndex ?? 0,
   });
 };
 

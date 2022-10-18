@@ -1,43 +1,43 @@
 <template>
   <teleport to="body">
-  <div @click="$emit('close')"></div>
-  <dialog open>
-    <header>
-      <slot name="header">
-        <h2>Utrechtse WO2 Kaart</h2>
-      </slot>
-    </header>
-    <section>
-      <p>
-        Zoekt u naar een persoon die in Utrecht leefde tijdens de oorlogsjaren?
-        Bent u benieuwd wat tijdens de Tweede Wereldoorlog is gebeurd op uw
-        adres, in uw buurt of in uw omgeving? Via deze WO2 kaart kunt u zoeken
-        in zo'n 20.000 Utrechtse adressen en personen.
-      </p>
-      <img
-        v-if="isLoading"
-        src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-        width="200"
-      />
-      <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>
-      <button
-        v-if="!isLoading"
-        class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
-        @click="$emit('close')"
-      >
-        Naar de kaart!
-      </button>
-    </section>
-    <!-- <menu>
-        <slot name="actions">
-          <base-button @click="$emit('close')">close</base-button>
+    <div @click="$emit('close')"></div>
+    <dialog open>
+      <header>
+        <slot name="header">
+          <h2>Utrechtse WO2 Kaart</h2>
         </slot>
-      </menu> -->
-  </dialog>
+      </header>
+      <section>
+        <p>
+          Zoekt u naar een persoon die in Utrecht leefde tijdens de
+          oorlogsjaren? Bent u benieuwd wat tijdens de Tweede Wereldoorlog is
+          gebeurd op uw adres, in uw buurt of in uw omgeving? Via deze WO2 kaart
+          kunt u zoeken in zo'n 20.000 Utrechtse adressen en personen.
+        </p>
+        <img
+          v-if="isLoading"
+          src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
+          width="200"
+        />
+        <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>
+        <button
+          v-if="!isLoading"
+          class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
+          @click="$emit('close')"
+        >
+          Naar de kaart!
+        </button>
+      </section>
+      <!-- <menu>
+          <slot name="actions">
+            <base-button @click="$emit('close')">close</base-button>
+          </slot>
+        </menu> -->
+    </dialog>
   </teleport>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   emits: ["close"],
   props: ["is-loading"],
@@ -51,7 +51,7 @@ div {
   left: 0;
   height: 100vh;
   width: 100%;
-  border:1px solid red;
+  border: 1px solid red;
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }

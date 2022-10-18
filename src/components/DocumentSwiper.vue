@@ -12,8 +12,11 @@ import { DocumentModel } from "../models/document.model";
 const modules = [Scrollbar, Mousewheel, Keyboard, Navigation];
 
 const props = defineProps({
-  documents: { type: Object as PropType<DocumentModel[]>, required: false },
-  initialSlide: { type: Number, required: true },
+  documents: {
+    type: Object as PropType<DocumentModel[] | undefined>,
+    required: false,
+  },
+  initialSlide: { type: Number, required: false },
   isShownFullscreen: { type: Boolean, required: false },
 });
 </script>
