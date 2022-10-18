@@ -3,6 +3,7 @@ import { ActionContext } from "vuex";
 import { State } from "../index";
 import { LngLatBounds } from "mapbox-gl";
 import { AddressModel } from "../../models/address.model";
+import { UtilService } from "../../services/util.service";
 
 interface MapState {
   geoJson: AddressesGeoJsonModel | null;
@@ -68,7 +69,10 @@ export const mapStoreModule = {
         .filter((feature: any) => {
           return mapBounds.contains(feature["geometry"]["coordinates"]);
         })
-        .map((feature: any) => feature.properties);
+        .map((feature: any) => feature.properties)
+        .sort((feature: AddressModel, feature2: AddressModel) => {
+          return UtilService.compareAddressesForSorting(feature, feature2);
+        });
       return Promise.resolve(addressesWithinBounds);
     },
   },
