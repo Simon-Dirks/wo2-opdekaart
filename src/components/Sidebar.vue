@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { computed, ComputedRef, onMounted } from "vue";
+import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
 import { AddressModel } from "../models/address.model";
 import AddressPreview from "./PreviewItem.vue";
+
+const numShownAddresses: Ref<number> = ref(10);
 
 const store = useStore();
 const selectedAddress: ComputedRef<AddressModel | null> = computed(
@@ -29,12 +31,21 @@ const getNumberOfDocuments = (): number => {
   );
   return shownDocumentsNums.reduce((prev, curr) => prev + curr, 0);
 };
+
+const onScroll = (e) => {
+  const { scrollTop, offsetHeight, scrollHeight } = e.target;
+  const hasScrolledToBottom = scrollTop + offsetHeight >= scrollHeight;
+  if (hasScrolledToBottom) {
+    numShownAddresses.value += 10;
+  }
+};
 </script>
 
 <template>
   <div
     class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
     id="preview-items-container"
+    @scroll="onScroll($event)"
   >
     <h1
       class="text-lg mb-4 top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-10"
@@ -55,7 +66,7 @@ const getNumberOfDocuments = (): number => {
       <template v-if="!selectedAddress">
         <address-preview
           :address="shownAddress"
-          v-for="shownAddress in shownAddresses.slice(0, 10)"
+          v-for="shownAddress in shownAddresses.slice(0, numShownAddresses)"
         ></address-preview>
       </template>
     </div>
