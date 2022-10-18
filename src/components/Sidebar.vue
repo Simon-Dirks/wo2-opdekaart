@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useStore } from "vuex";
-import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
+import { computed, ComputedRef, onMounted, ref, Ref, watch } from "vue";
 import { AddressModel } from "../models/address.model";
 import AddressPreview from "./PreviewItem.vue";
 
 const numShownAddresses: Ref<number> = ref(10);
+const previewItemsContainerRef: Ref<HTMLDivElement | null> = ref(null);
 
 const store = useStore();
 const selectedAddress: ComputedRef<AddressModel | null> = computed(
@@ -23,6 +24,15 @@ const shownAddresses: ComputedRef<AddressModel[]> = computed(
 
 onMounted(() => {
   console.log(shownAddresses); //store.getters["map/getShownAddresses"])
+
+  watch(
+    () => store.getters["map/getShownAddresses"],
+    () => {
+      // console.log("Showing new addresses, resetting scroll.");
+      previewItemsContainerRef.value?.scrollTo({ top: 0, behavior: "smooth" });
+      numShownAddresses.value = 10;
+    }
+  );
 });
 
 const getNumberOfDocuments = (): number => {
@@ -45,6 +55,7 @@ const onScroll = (e) => {
   <div
     class="md:col-span-2 bg-slate-600 py-0 overflow-y-auto h-[50vh] md:h-full text-white"
     id="preview-items-container"
+    ref="previewItemsContainerRef"
     @scroll="onScroll($event)"
   >
     <h1
