@@ -132,12 +132,15 @@ onMounted(() => {
 const props = defineProps({
   documents: { type: Object as PropType<DocumentModel[]>, required: true },
   document: { type: Object as PropType<DocumentModel>, required: true },
+  slideIndex: { type: Number, required: true },
   isShownFullscreen: { type: Boolean, required: false },
 });
 
 const openModal = () => {
-  store.commit("previewModal/setShownDocuments", props.documents);
-  store.commit("previewModal/setIsShown", true);
+  store.dispatch("previewModal/show", {
+    documents: props.documents,
+    initialSlideIndex: props.slideIndex,
+  });
 };
 
 const getImageUrl = (imgUrl: string | undefined | null): string => {
@@ -174,7 +177,7 @@ const getDocumentUrl = (documentId: string): string => {
 
 const onPersonClicked = (personLabel: string) => {
   store.commit("setSearchTerm", personLabel);
-  store.commit("previewModal/setIsShown", false);
+  store.dispatch("previewModal/close");
 };
 
 const onShareScanCommentsClicked = () => {
