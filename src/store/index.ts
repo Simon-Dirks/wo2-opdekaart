@@ -1,7 +1,6 @@
 import { createStore } from "vuex";
 import { mapStoreModule } from "./map";
 import { previewModalModule } from "./preview-modal";
-import { paginationModule } from "./pagination";
 import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
 import { SearchOptionModel } from "../models/search-option.model";
@@ -18,7 +17,6 @@ export const store = createStore<State>({
   modules: {
     map: mapStoreModule,
     previewModal: previewModalModule,
-    pagination: paginationModule,
   },
   state() {
     return {
