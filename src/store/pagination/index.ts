@@ -17,7 +17,6 @@ export const paginationModule = {
       return state.page;
     },
     getStartElemIdx(state: PaginationState, getters: any): number {
-      console.log("getStartElemIdx", state.page, getters.getElemCount);
       return state.page * getters.getElemCount;
     },
     getEndElemIdx(state: PaginationState, getters: any): number {
