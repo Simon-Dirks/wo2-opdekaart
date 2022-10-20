@@ -1,4 +1,4 @@
 export type DocumentForAddressModel = {
-   adres: string;
-   doc: string;
-}
+  addressId: string;
+  docId: string;
+};

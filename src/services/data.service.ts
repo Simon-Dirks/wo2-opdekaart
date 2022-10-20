@@ -179,7 +179,6 @@ export class DataService {
     await store.dispatch("map/updateGeoJson", geoJson);
     await store.commit("setSources", parsedSources);
 
-  
     return Promise.resolve();
   }
 
@@ -192,12 +191,12 @@ export class DataService {
     console.log("Parsing documents...");
     const peopleForDocuments: { [documentId: string]: PersonModel[] } = {};
     for (const personForDocumentAddress of peopleForDocumentAddresses) {
-      const docId: string = personForDocumentAddress.doc;
-      const addressId: string = personForDocumentAddress.adres;
+      const docId: string = personForDocumentAddress.docId;
+      const addressId: string = personForDocumentAddress.addressId;
       const addressLabel: string = personForDocumentAddress.adresLabel;
-      const personId: string = personForDocumentAddress.persoonsvermelding;
+      const personId: string = personForDocumentAddress.personId;
       const person: TripleStorePersonModel | undefined = tripleStorePeople.find(
-        (p) => p.persoon === personId
+        (p) => p.personId === personId
       );
       if (!person) {
         console.warn(
@@ -212,7 +211,7 @@ export class DataService {
       }
 
       peopleForDocuments[docId].push({
-        id: person.persoon,
+        id: person.personId,
         label: person.label,
         occupation: person?.beroep,
         birthDate: person.geboortedatum,
@@ -226,8 +225,8 @@ export class DataService {
 
     const documents: DocumentModel[] = [];
     for (const tripleStoreDocument of tripleStoreDocuments) {
-      const documentId: string = tripleStoreDocument.doc;
-      const sourceId: string = tripleStoreDocument.bronType;
+      const documentId: string = tripleStoreDocument.docId;
+      const sourceId: string = tripleStoreDocument.sourceId;
 
       const source: SourceModel | undefined = sources.find(
         (source) => source.id === sourceId
@@ -258,7 +257,7 @@ export class DataService {
 
     for (const tripleStoreSource of tripleStoreSources) {
       const sourceModel: SourceModel = {
-        id: tripleStoreSource.bronType,
+        id: tripleStoreSource.sourceId,
         label: tripleStoreSource.label,
       };
       sources.push(sourceModel);
@@ -279,20 +278,20 @@ export class DataService {
 
     const documentsPerAddress: { [addressId: string]: DocumentModel[] } = {};
     for (const documentForAddress of documentsForAddresses) {
-      if (!(documentForAddress.adres in documentsPerAddress)) {
-        documentsPerAddress[documentForAddress.adres] = [];
+      if (!(documentForAddress.addressId in documentsPerAddress)) {
+        documentsPerAddress[documentForAddress.addressId] = [];
       }
 
       const document: DocumentModel | undefined = documents.find(
-        (doc) => doc.id === documentForAddress.doc
+        (doc) => doc.id === documentForAddress.docId
       );
       if (document) {
-        documentsPerAddress[documentForAddress.adres].push(document);
+        documentsPerAddress[documentForAddress.addressId].push(document);
       }
     }
 
     for (const tripleStoreAddress of tripleStoreAddresses) {
-      const addressId: string = tripleStoreAddress.adres;
+      const addressId: string = tripleStoreAddress.addressId;
       let documents: DocumentModel[] = [];
       if (addressId in documentsPerAddress) {
         documents = documentsPerAddress[addressId];

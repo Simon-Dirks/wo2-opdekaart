@@ -497,7 +497,7 @@ export class DataService {
     });
     if (!rawResponse) {
       // TODO: Use more beautiful alert box
-      alert("ERROR: Could not retrieve data.");
+      console.log("ERROR: Could not retrieve data.");
       return Promise.reject();
     }
     const response: any = await rawResponse.json();

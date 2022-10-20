@@ -1,7 +1,7 @@
 export type PersonForDocumentAddress = {
-  doc: string;
-  adres: string;
-  persoonsvermelding: string;
+  docId: string;
+  addressId: string;
+  personId: string;
   persoonLabel: string;
   adresLabel: string;
 };

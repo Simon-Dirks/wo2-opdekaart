@@ -1,5 +1,5 @@
 export type TripleStorePersonModel = {
-  persoon: string;
+  personId: string;
   label: string;
   beroep?: string;
   geboortedatum?: string;
