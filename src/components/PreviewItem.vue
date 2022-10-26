@@ -17,7 +17,9 @@ const props = defineProps({
     hoverable
     class="mb-4"
   >
-    <p class="mb-3">Documenten: {{ props.address?.documents.length }}</p>
+    <p v-if="props.address?.documents.length > 1" class="mb-3">
+      {{ props.address?.documents.length }} documenten
+    </p>
 
     <document-swiper
       :documents="props.address.documents"
