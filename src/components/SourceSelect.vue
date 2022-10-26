@@ -28,7 +28,10 @@ onMounted(() => {});
 watch(
   () => store.getters["getShownSourceIds"].keys(),
   () => {
-    console.log("Updated selected source ID");
+    console.log(
+      "Updated selected source ID",
+      store.getters["getShownSourceIds"]
+    );
     isLoading.value = true;
 
     // TODO: Only start (blocking) update call after loading spinner is shown in the DOM...
