@@ -209,6 +209,7 @@ export class MapService {
   }
 
   public async updateFilter() {
+    console.log("updateFilter");
     // TODO: Move to store?
     const geoJson = store.getters["map/getGeoJson"];
     const filteredGeoJson: AddressesGeoJsonModel = {
@@ -238,6 +239,7 @@ export class MapService {
 
     // Filter on source
     const filteredAddress: AddressModel = address;
+
     filteredAddress.documents = filteredAddress.documents.filter((document) => {
       return store.getters.getSourceIdIsShown(document.source.id);
     });
