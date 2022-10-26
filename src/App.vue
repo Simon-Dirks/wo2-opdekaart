@@ -1,29 +1,40 @@
 <script setup lang="ts">
 import { GlobalThemeOverrides } from "naive-ui";
+import { Ref, ref, watch } from "vue";
 
-const themeOverrides: GlobalThemeOverrides = {
-  common: {
-    primaryColor: "#D72F19",
-    primaryColorHover: "#A42312",
-    primaryColorPressed: "#D72F19",
-  },
+import MapRick from "./components/MapRick.vue";
+import { DataRickService } from "./services/data-rick.service";
+import { DataModel } from "./models/data.model";
+import { AddressModel } from "./models/address.model";
+import { SearchOptionModel } from "./models/search-option.model";
+import { AddressesGeoJsonModel } from "./models/addresses-geo-json.model";
+import { useStore } from "vuex";
+const store = useStore();
+
+// const loadData = async () => {
+//
+// };
+
+const onMapLoaded = async () => {
+  console.log("App.onMapLoaded");
+  // loadData();
+
+  // watch(
+  //   () => store.getters["map/getFilteredGeoJson"],
+  //   (geoJson: AddressesGeoJsonModel | null) => {
+  //     console.log("cb");
+  //     // updateShownAddresses(map);
+  //   }
+  // );
 };
+//
+// const updateShownAddresses = async (map: mapboxgl.Map) => {
+//   await store.dispatch("map/updateShownAddressesInBounds", map.getBounds());
+// };
 </script>
 
 <template>
-  <IconConfigProvider>
-    <n-config-provider :theme-overrides="themeOverrides" class="h-full">
-      <n-loading-bar-provider>
-        <n-message-provider>
-          <n-notification-provider>
-            <n-dialog-provider>
-              <router-view />
-            </n-dialog-provider>
-          </n-notification-provider>
-        </n-message-provider>
-      </n-loading-bar-provider>
-    </n-config-provider>
-  </IconConfigProvider>
+  <MapRick ref="map" @onMapLoaded="onMapLoaded" data=""></MapRick>
 </template>
 
 <style scoped></style>

@@ -1,17 +1,17 @@
-import {DocumentModel} from "./document.model";
-import {LngLatLike} from "mapbox-gl";
+import { DocumentModel } from "./document.model";
+import { LngLatLike } from "mapbox-gl";
+import { PersonModel } from "./person.model";
 
 export type AddressModel = {
-    id: string;
-    label: string;
-    coordinates: LngLatLike;
-    houseLetter?: string;
-    houseNumber?: string;
-    houseNumberAddition?: string;
-    streetName?: string;
-    place?: string;
-
-    documentCount: number;
-    // documentIds: string[];
-    documents: DocumentModel[];
-}
+  addressId: string;
+  label: string;
+  houseLetter?: string;
+  houseNumber?: string;
+  houseNumberAddition?: string;
+  streetName?: string;
+  place?: string;
+  coordinates: LngLatLike;
+  documentCount: number;
+  documents: DocumentModel[];
+  persons: PersonModel[];
+};

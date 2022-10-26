@@ -1,9 +1,14 @@
 import { DataModel } from "../models/data.model";
 import { TripleStoreDataModel } from "../models/triple-store-data.model";
 import { SearchOptionModel } from "../models/search-option.model";
-import { SourceRickModel } from "../models/source-rick.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
 import { store } from "../store";
+import { AddressModel } from "../models/address.model";
+import { SourceModel } from "../models/source.model";
+import { DocumentModel } from "../models/document.model";
+import { PersonModel } from "../models/person.model";
+import { LngLatLike } from "mapbox-gl";
+import { TripleStoreAddressModel } from "../models/triple-store/triple-store-address.model";
 
 export class DataRickService {
   private static _instance: DataRickService;
@@ -49,50 +54,15 @@ export class DataRickService {
   }
 
   private _retrieveFromTripleStore(queryUrl, numPages): Promise<any>[] {
-    //, results) {
     // TODO: Dynamic check (run for loop until no results are returned anymore)
     const promises: Promise<any>[] = [];
     for (let pageIdx = 1; pageIdx <= numPages; pageIdx++) {
       const paginatedQueryUrl = queryUrl + `&page=${pageIdx}`;
-      // console.log("Retrieving", paginatedQueryUrl);
       const promise: Promise<any> = this._fetch(paginatedQueryUrl);
       // TODO: Concat results to results parameter
       promises.push(promise);
     }
-
     return promises;
-  }
-
-  private _parseGeoJson(addresses: any): AddressesGeoJsonModel {
-    console.log("Parsing GeoJSON...", addresses);
-
-    const markersGeoJson: AddressesGeoJsonModel = {
-      type: "FeatureCollection",
-      features: [],
-    };
-    for (const address of addresses) {
-      markersGeoJson.features.push({
-        properties: address,
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: [5.097939670669287, 52.09408062362957], // TODO: Use actual coordinates
-        },
-      });
-    }
-    // markersGeoJson.features = addresses.map((address) => {
-    //   return {
-    //     properties: address,
-    //     type: "Feature",
-    //     geometry: {
-    //       type: "Point",
-    //       coordinates: [5, 2], // TODO: Use actual coordinates
-    //     },
-    //   };
-    // });
-
-    console.log("Finished parsing GeoJSON...", markersGeoJson);
-    return markersGeoJson;
   }
 
   async retrieveAllDataFromTripleStore(): Promise<TripleStoreDataModel> {
@@ -189,31 +159,40 @@ export class DataRickService {
   }
 
   parseDataFromTripleStore(tripleStoreData: TripleStoreDataModel) {
-    const parsedData: DataModel = {};
-
     //create lookup tables
-    parsedData.sourcesById = Object.assign(
+    const sourcesById: { [name: string]: SourceModel } = Object.assign(
       {},
       ...tripleStoreData.sources.map((x) => ({
         [x.sourceId]: x,
       }))
     );
 
-    parsedData.documentsById = Object.assign(
+    const documentsById: { [name: string]: DocumentModel } = Object.assign(
       {},
       ...tripleStoreData.documents.map((x) => ({
         [x.docId]: x,
       }))
     );
 
-    parsedData.addressesById = Object.assign(
+    const addressesById: { [name: string]: AddressModel } = Object.assign(
       {},
-      ...tripleStoreData.addresses.map((x) => ({
-        [x.addressId]: x,
-      }))
+      ...tripleStoreData.addresses.map(
+        (tripleStoreAddress: TripleStoreAddressModel) => ({
+          [tripleStoreAddress.addressId]: {
+            addressId: tripleStoreAddress.addressId,
+            label: tripleStoreAddress.label,
+            place: tripleStoreAddress.woonplaats,
+            streetName: tripleStoreAddress.straatnaam,
+            houseLetter: tripleStoreAddress.huisletter,
+            houseNumber: tripleStoreAddress.huisnummer,
+            houseNumberAddition: tripleStoreAddress.huisnummer_toevoeging,
+            coordinates: this._parseGeoCoords(tripleStoreAddress.geo),
+          },
+        })
+      )
     );
 
-    parsedData.personsById = Object.assign(
+    const personsById = Object.assign(
       {},
       ...tripleStoreData.persons.map((x) => ({
         [x.personId]: x,
@@ -221,22 +200,21 @@ export class DataRickService {
     );
 
     //create arrays
-    parsedData.sources = Object.values(parsedData.sourcesById);
-    parsedData.documents = Object.values(parsedData.documentsById);
-    parsedData.addresses = Object.values(parsedData.addressesById);
-    parsedData.persons = Object.values(parsedData.personsById);
+    const sources: SourceModel[] = Object.values(sourcesById);
+    const documents: DocumentModel[] = Object.values(documentsById);
+    const addresses: AddressModel[] = Object.values(addressesById);
+    const persons: PersonModel[] = Object.values(personsById);
 
-    //link documentsById to sourcesById on key 'bronType'
-    const items = parsedData.documentsById;
-    const lut = parsedData.sourcesById;
-    for (const id in items) {
-      items[id]["sourceItem"] = lut[items[id]["sourceId"]];
+    //link documentsById to sourcesById on key 'sourceId'
+    for (const id in documentsById) {
+      documentsById[id]["sourceItem"] =
+        sourcesById[documentsById[id]["sourceId"]];
     }
 
     //link addresses to documents (and the other vice versa)
     for (const item of tripleStoreData.addressesPerDocument) {
-      const doc = parsedData.documentsById[item.docId];
-      const address = parsedData.addressesById[item.addressId];
+      const doc = documentsById[item.docId];
+      const address = addressesById[item.addressId];
 
       //store address in list with address for certain document
       if (!doc.addresses) doc.addresses = [];
@@ -249,10 +227,9 @@ export class DataRickService {
 
     // persons per address per document
     for (const item of tripleStoreData.personsPerAddressPerDocument) {
-      // console.log("item",item); //alleen id's + een labeltje niet perse nodig is
-      const doc = parsedData.documentsById[item.docId];
-      const person = parsedData.personsById[item.personId];
-      const address = parsedData.addressesById[item.addressId];
+      const doc = documentsById[item.docId];
+      const person = personsById[item.personId];
+      const address = addressesById[item.addressId];
 
       //list of persons associated with address on certain document
       if (!doc.personAtAddressItems) doc.personAtAddressItems = [];
@@ -267,15 +244,15 @@ export class DataRickService {
     }
 
     //store documents per sourceType
-    for (const source of parsedData.sources) {
-      source.documents = parsedData.documents.filter((doc) => {
+    for (const source of sources) {
+      source.documents = documents.filter((doc) => {
         return doc.sourceItem == source;
       });
     }
 
     //store addresses per sourceType
-    for (const source of parsedData.sources) {
-      source.addresses = parsedData.addresses.filter((address) => {
+    for (const source of sources) {
+      source.addresses = addresses.filter((address) => {
         for (const doc of source.documents) {
           if (
             doc.addresses?.find((o) => {
@@ -288,92 +265,106 @@ export class DataRickService {
       });
     }
 
-    // TODO: Parse address coordinates
-    for (const address of parsedData.addresses) {
+    //parse geo coords from string to LatLonLike
+    for (const address of addresses) {
       address.documentCount = address.documents.length;
-      address.coordinates = [5.097939670669287, 52.09408062362957];
-      // console.log(address);
+      // address.coordinates = this._parseGeoCoords(address.geo);
     }
 
-    console.log("all addresses (unique):", parsedData.addresses.length);
-    console.log("all documents:", parsedData.documents.length);
-    console.log("all persons (mentions):", parsedData.persons.length);
-    console.log("all sources:", parsedData.sources.length);
+    console.log("all addresses (unique):", addresses.length);
+    console.log("all documents:", documents.length);
+    console.log("all persons (mentions):", persons.length);
+    console.log("all sources:", sources.length);
 
-    return parsedData;
+    return {
+      addresses,
+      addressesById,
+      documents,
+      documentsById,
+      persons,
+      personsById,
+      sources,
+      sourcesById,
+    };
   }
 
-  async init() {
-    let parsedData: DataModel = {};
-
+  async init(): Promise<DataModel> {
+    let parsedData: any;
     console.log("loading");
-
     await this.retrieveAllDataFromTripleStore()
       .then(async (data) => {
-        console.log("linking");
-
+        console.log("linking/parsing");
         parsedData = this.parseDataFromTripleStore(data);
-        console.log("FINAL", parsedData);
-        const searchTerm = "willem";
-        const searchSources = [
-          parsedData.sources[0],
-          parsedData.sources[1],
-          parsedData.sources[2],
-        ];
-
-        console.log(parsedData.sources);
-
-        console.log("filtering");
-        const filteredData = this.filterData(
-          parsedData,
-          searchTerm,
-          SearchOptionModel.All,
-          searchSources
-        );
-
-        const geoJson: AddressesGeoJsonModel = this._parseGeoJson(
-          parsedData.addresses
-        );
-        // console.log("SETTING", geoJson);
-        await store.dispatch("map/updateGeoJson", geoJson);
-
-        console.log("filteredData", filteredData);
-
-        console.log(
-          'example: filterData(linkedData, "willem", "all", [linkedData.sources[1]])'
-        );
       })
       .catch((err) => {
         console.log("error", err);
       });
-
-    console.log(
-      "%c Hallo Simon!!!",
-      "font-weight: bold; font-size: 50px;color: red; text-shadow: 3px 3px 0 rgb(217,31,38) , 6px 6px 0 rgb(226,91,14) , 9px 9px 0 rgb(245,221,8) , 12px 12px 0 rgb(5,148,68) , 15px 15px 0 rgb(2,135,206) , 18px 18px 0 rgb(4,77,145) , 21px 21px 0 rgb(42,21,113)"
-    );
+    return parsedData;
   }
 
-  filterData(
-    data: DataModel,
+  public getGeoJSON(addresses: AddressModel[]): AddressesGeoJsonModel {
+    const markersGeoJson: AddressesGeoJsonModel = {
+      type: "FeatureCollection",
+      features: [],
+    };
+    for (const address of addresses) {
+      markersGeoJson.features.push({
+        properties: {
+          //cannot pass 'address' itself in here because Mapbox gets confused about circular reference
+          addressId: address.addressId,
+          streetName: address.streetName,
+          houseNumber: address.houseNumber,
+          documentCount: address.documentCount,
+        },
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: address.coordinates,
+        },
+      });
+    }
+    console.log("Finished parsing GeoJSON...", markersGeoJson);
+    return markersGeoJson;
+  }
+
+  private _parseGeoCoords(geo: string | undefined): LngLatLike {
+    if (!geo) {
+      console.warn(
+        "_parseGeoCoords: No coordinates passed... Using center of the Netherlands."
+      );
+      return [5.2793703, 52.2129919];
+    }
+
+    if (geo.includes("polygon")) {
+      console.warn(
+        "_parseGeoCoords: Can not handle polygon coordinates... Using center of the Netherlands instead.",
+        geo
+      );
+      return [5.2793703, 52.2129919];
+    }
+
+    const coordsStr: string[] = geo
+      .replace("POINT (", "")
+      .replace(")", "")
+      .split(" ");
+    // @ts-ignore
+    const coords: LngLatLike = coordsStr.map((coord: string) => {
+      const coordNum: number = parseFloat(coord);
+      if (!coordNum) {
+        console.log("_parseGeoCoords:", geo, coord, coordNum);
+      }
+      return coordNum;
+    });
+    return coords;
+  }
+
+  filterAddresses(
+    addresses: AddressModel[],
     searchTerm: string,
     searchOption: SearchOptionModel,
-    selectedSources: SourceRickModel[]
-  ) {
-    console.log("SOURCES", selectedSources);
-    if (!selectedSources) selectedSources = data.sources; //default = all sources
-
-    console.log(
-      `searching for '${searchTerm}' in '${searchOption}' of '${selectedSources.map(
-        (o) => {
-          return " " + o.label;
-        }
-      )}'`
-    );
-
-    //deze gaat álle adressen af en matcht ze met selectedSources[].addresses[]
-    let filteredData = data.addresses.filter((address) => {
-      if (selectedSources == data.sources) return true; //shortlane: all sources selected
-
+    selectedSources: SourceModel[]
+  ): AddressModel[] {
+    let filteredAddresses = addresses.filter((address) => {
       for (const source of selectedSources) {
         if (source.addresses?.indexOf(address) != -1) {
           return true;
@@ -398,8 +389,8 @@ export class DataRickService {
 
     if (searchTerm) {
       //filter by all: either persons or addresses
-      if (searchOption == SearchOptionModel.All) {
-        filteredData = filteredData.filter((address) => {
+      if (searchOption === SearchOptionModel.All) {
+        filteredAddresses = filteredAddresses.filter((address) => {
           return (
             doesAnyPersonContain(address.persons, searchTerm) ||
             doesAddressContain(address, searchTerm)
@@ -408,15 +399,15 @@ export class DataRickService {
       }
 
       //filter by person name
-      else if (searchOption == SearchOptionModel.People) {
-        filteredData = filteredData.filter((address) => {
+      else if (searchOption === SearchOptionModel.People) {
+        filteredAddresses = filteredAddresses.filter((address) => {
           return doesAnyPersonContain(address.persons, searchTerm);
         });
       }
 
       //filter by address
-      else if (searchOption == SearchOptionModel.Addresses) {
-        filteredData = filteredData.filter((address) => {
+      else if (searchOption === SearchOptionModel.Addresses) {
+        filteredAddresses = filteredAddresses.filter((address) => {
           return doesAddressContain(address, searchTerm);
         });
       } else {
@@ -424,6 +415,6 @@ export class DataRickService {
       }
     }
 
-    return filteredData;
+    return filteredAddresses;
   }
 }

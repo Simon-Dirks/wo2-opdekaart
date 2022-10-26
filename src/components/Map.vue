@@ -12,6 +12,7 @@ import { DataService } from "../services/data.service";
 import IntroDialog from "./IntroDialog.vue";
 import Sidebar from "./Sidebar.vue";
 import PreviewItemModal from "./PreviewItemModal.vue";
+import { DataRickService } from "../services/data-rick.service";
 
 const MAPBOX_TOKEN: string =
   "pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ";
@@ -25,8 +26,8 @@ const mapService: MapService = new MapService();
 
 const allAddresses: Ref<AddressModel[]> = ref([]);
 
-const isLoading: Ref<boolean> = ref(true);
-const introDialogVisible: Ref<boolean> = ref(true);
+const isLoading: Ref<boolean> = ref(false);
+const introDialogVisible: Ref<boolean> = ref(false);
 
 // const loadingBar = useLoadingBar();
 
@@ -35,16 +36,19 @@ const onMapLoaded = (map: mapboxgl.Map) => {
     // loadingBar.start();
     isLoading.value = true;
 
-    const dataService: DataService = new DataService();
-    await dataService
-      .updateFromServer()
-      .then(() => {
-        isLoading.value = false;
-        // loadingBar.finish();
-      })
-      .catch(() => {
-        // loadingBar.error();
-      });
+    const dataRickService: DataRickService = new DataRickService();
+    await dataRickService.init();
+
+    // const dataService: DataService = new DataService();
+    // await dataService
+    //   .updateFromServer()
+    //   .then(() => {
+    //     isLoading.value = false;
+    //     // loadingBar.finish();
+    //   })
+    //   .catch(() => {
+    //     // loadingBar.error();
+    //   });
     void updateShownAddresses(map);
   });
 
