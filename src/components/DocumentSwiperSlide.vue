@@ -76,34 +76,45 @@
         class="mb-4"
       >
         <h2 class="text-2xl">Zoekresultaat</h2>
-        <ul class="list-disc">
-          <li v-for="personAtAddress in peopleMatchingSearch">
-            <button
-              @click="onPersonClicked(personAtAddress.person.label)"
-              class="text-left italic"
-            >
-              <!-- TODO: Make person label and address label clickable separately -->
-              {{ personAtAddress.person.label }} ({{
-                personAtAddress.address.label
-              }})
-            </button>
-          </li>
-        </ul>
+        <div
+          class="grid grid-cols-2"
+          v-for="personAtAddress in peopleMatchingSearch"
+        >
+          <button
+            @click="onPersonClicked(personAtAddress.person.label)"
+            class="text-left italic"
+          >
+            {{ personAtAddress.person.label }}
+          </button>
+
+          <button
+            @click="onPersonClicked(personAtAddress.address.label)"
+            class="text-left italic"
+          >
+            {{ personAtAddress.address.label }}
+          </button>
+        </div>
       </div>
       <div>
         <h2 class="text-2xl">Personen</h2>
-        <ul class="list-disc">
-          <li v-for="personAtAddress in props.document.personAtAddressItems">
-            <button
-              @click="onPersonClicked(personAtAddress.person.label)"
-              class="text-left"
-            >
-              {{ personAtAddress.person.label }} ({{
-                personAtAddress.address.label
-              }})
-            </button>
-          </li>
-        </ul>
+        <div
+          class="grid grid-cols-2"
+          v-for="personAtAddress in props.document.personAtAddressItems"
+        >
+          <button
+            @click="onPersonClicked(personAtAddress.person.label)"
+            class="text-left"
+          >
+            {{ personAtAddress.person.label }}
+          </button>
+
+          <button
+            @click="onPersonClicked(personAtAddress.address.label)"
+            class="text-left"
+          >
+            {{ personAtAddress.address.label }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
