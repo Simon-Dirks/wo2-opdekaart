@@ -47,7 +47,7 @@
             />
 
             <div v-if="!isShownFullscreen">
-              <p class="p-0 m-0 text-left">
+              <p class="p-0 m-0 text-left font-mono text-xs mt-2">
                 Bron: {{ document.sourceItem.label }}
               </p>
             </div>
@@ -63,7 +63,7 @@
             {{ document.label }}</a
           >
         </p>
-        <p>Bron: {{ document.sourceItem.label }}</p>
+        <p class="font-mono">Bron: {{ document.sourceItem.label }}</p>
         <button @click="onShareScanCommentsClicked">
           <em> Fout melden </em>
         </button>
@@ -71,7 +71,7 @@
     </div>
 
     <div
-      class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2"
+      class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2 p-4"
       v-if="isShownFullscreen && documentRefersToPeople"
     >
       <div
@@ -98,7 +98,7 @@
           </button>
         </div>
       </div>
-      <div class="p-4">
+      <div>
         <h2 class="text-2xl">Personen</h2>
         <div
           class="grid grid-cols-2"

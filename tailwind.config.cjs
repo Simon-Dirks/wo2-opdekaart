@@ -9,7 +9,8 @@ module.exports = {
             colors: {
                 primary: "#437f74",
                 black: 'rgb(54,54,54)'
-            }
+            },
+            fontFamily: {},
         },
     },
     plugins: [],

@@ -18,12 +18,12 @@ const props = defineProps({
   >
     <template #header>
       <p>{{ props.address?.label }}</p>
-      <pre class="text-sm" v-if="props.address?.documents.length === 1"
-        >{{ props.address.documents.length }} document</pre
-      >
-      <pre class="text-sm" v-else
-        >{{ props.address.documents.length }} documenten</pre
-      >
+      <p class="text-xs font-mono" v-if="props.address?.documents.length === 1">
+        {{ props.address.documents.length }} document
+      </p>
+      <p class="text-xs font-mono" v-else>
+        {{ props.address.documents.length }} documenten
+      </p>
     </template>
 
     <document-swiper

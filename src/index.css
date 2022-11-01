@@ -1,7 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+
+@font-face {
+    font-family: 'AkzidenzGrotesk';
+    src: url('assets/fonts/AkzidGrtskNext-Med.woff') format('woff')
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .n-button {
     background-color: var(--n-color);
+}
+
+html, body {
+    font-family: 'AKZIDENZGROTESK', sans-serif;
+}
+
+.font-mono {
+    font-family: 'Space Mono', monospace;
 }
