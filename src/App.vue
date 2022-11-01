@@ -13,19 +13,16 @@ import PreviewItemModal from "./components/PreviewItemModal.vue";
 
 const store = useStore();
 
-const onMapLoaded = async () => {
-  console.log("App.onMapLoaded");
-
-  new DataRickService().init();
-};
-
 const exampleFilter = () => {
   const data = store.getters["getAllData"];
 
-  new DataRickService().filterAddresses(
+  console.log(data);
+
+  new DataRickService().filterAddressesAndDocuments(
     data.addresses,
+    data.documents,
     "willem",
-    SearchOptionModel.All,
+    SearchOptionModel.People,
     data.sources
   );
 };
@@ -34,14 +31,19 @@ const resetExampleFilter = () => {
   new DataRickService().resetFilter();
 };
 
+const onMapLoaded = async () => {
+  console.log("App.onMapLoaded");
+  new DataRickService().init();
+};
+
 watch(
   () => store.getters["getAllData"],
   (allData: DataModel) => {
     console.log("App allData changed");
 
+    exampleFilter();
     //when allData is loaded then set filteredData to allData.addresses
     //same as new DataRickService().resetFilter();
-    store.commit("setFilteredAddresses", allData.addresses);
   }
 );
 
