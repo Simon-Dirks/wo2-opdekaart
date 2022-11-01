@@ -25,6 +25,7 @@ export const store = createStore<State>({
     return {
       allData: null,
       filteredAddresses: null,
+      filteredDocuments: null,
       // selectedAddress: null,
       searchTerm: "",
       shownSourceIds: new Set<string>([]),
@@ -39,6 +40,9 @@ export const store = createStore<State>({
     },
     getFilteredAddresses(state) {
       return state.filteredAddresses;
+    },
+    getFilteredDocuments(state) {
+      return state.filteredDocuments;
     },
     // getSelectedItem(state) {
     //   return state.selectedAddress;
@@ -72,6 +76,9 @@ export const store = createStore<State>({
     },
     setFilteredAddresses(state: State, filteredAddresses: AddressModel[]) {
       state.filteredAddresses = filteredAddresses;
+    },
+    setFilteredDocuments(state: State, filteredDocuments: DocumentModel[]) {
+      state.filteredDocuments = filteredDocuments;
     },
     setSearchOption(state: State, searchOption: SearchOptionModel) {
       state.searchOption = searchOption;
