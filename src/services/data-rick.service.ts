@@ -343,54 +343,53 @@ export class DataRickService {
   }
 
   updateFilterFromStore() {
-    this.filterAddresses(
+    this.filterAddressesAndDocuments(
       store.getters["getAllData"].addresses,
+      store.getters["getAllData"].documents,
       store.getters["getSearchTerm"],
       store.getters["getSearchOption"],
       store.getters["getShownSources"]
     );
   }
 
-  filterDocuments(
-    //this should make a subselection of documents based on wether searchTerm etc is part of an address or person on this document
+  // filterDocuments(
+  //   //this should make a subselection of documents based on wether searchTerm etc is part of an address or person on this document
+  //   documents: DocumentModel[],
+  //   searchTerm: string,
+  //   searchOption: SearchOptionModel,
+  //   selectedSources: SourceModel[]
+  // ) {
+  //   let filteredDocuments = documents.filter((doc) => {
+  //     for (const source of selectedSources) {
+  //       if (source.documents?.indexOf(doc) != -1) {
+  //         return true;
+  //       }
+  //     }
+  //     return false;
+  //   });
+  //
+  //   console.log("hoi!");
+  //
+  //   return filteredDocuments;
+  // }
+
+  filterAddressesAndDocuments(
+    addresses: AddressModel[],
     documents: DocumentModel[],
     searchTerm: string,
     searchOption: SearchOptionModel,
     selectedSources: SourceModel[]
   ) {
-    let filteredDocuments = documents.filter((doc) => {
-      for (const source of selectedSources) {
-        if (source.documents?.indexOf(doc) != -1) {
-          return true;
-        }
-      }
-      return false;
-    });
+    //inline helper functions
 
-    return filteredDocuments;
-  }
-
-  filterAddresses(
-    addresses: AddressModel[],
-    searchTerm: string,
-    searchOption: SearchOptionModel,
-    selectedSources: SourceModel[]
-  ) {
-    console.log("FIXME filterAddresses > searchOption", searchOption);
-
-    let filteredAddresses = addresses.filter((address) => {
-      for (const source of selectedSources) {
-        if (source.addresses?.indexOf(address) != -1) {
-          return true;
-        }
-      }
-      return false;
-    });
+    const doesPersonContain = (person, searchTerm) => {
+      return person.label?.toLowerCase().includes(searchTerm.toLowerCase());
+    };
 
     const doesAnyPersonContain = (persons, searchTerm) => {
       if (!persons) return false;
       for (const person of persons) {
-        if (person.label?.toLowerCase().includes(searchTerm.toLowerCase())) {
+        if (doesPersonContain(person, searchTerm)) {
           return true;
         }
       }
@@ -400,6 +399,18 @@ export class DataRickService {
     const doesAddressContain = (address, searchTerm) => {
       return address.label?.toLowerCase().includes(searchTerm.toLowerCase());
     };
+
+    //filter on source
+    let filteredAddresses = addresses.filter((address) => {
+      for (const source of selectedSources) {
+        if (source.addresses?.indexOf(address) != -1) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    //filter addresses on searchTerm
 
     if (searchTerm) {
       //filter by all: either persons or addresses
@@ -430,6 +441,39 @@ export class DataRickService {
     }
 
     store.commit("setFilteredAddresses", filteredAddresses);
+
+    //--------------
+    // now filter documents
+    // console.log("selectedSources", selectedSources);
+
+    let filteredDocuments = documents.filter((doc) => {
+      for (const source of selectedSources) {
+        if (source.documents?.indexOf(doc) != -1) {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    //filter by person name
+    if (searchOption === SearchOptionModel.People) {
+      filteredDocuments = filteredDocuments.filter((doc) => {
+        if (!doc.personAtAddressItems) return false;
+
+        for (const personAddressItem of doc.personAtAddressItems) {
+          const person = personAddressItem.person;
+
+          if (doesPersonContain(person, searchTerm)) {
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+
+    console.log("filteredDocuments", filteredDocuments);
+
+    store.commit("setFilteredDocuments", filteredDocuments);
     // return filteredAddresses;
   }
 }
