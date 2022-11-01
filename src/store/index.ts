@@ -94,6 +94,7 @@ export const store = createStore<State>({
     //   state.selectedAddress = null;
     // },
     setSources(state: State, sources: SourceModel[]) {
+      console.log("setSources", sources);
       state.sources = sources;
     },
   },
