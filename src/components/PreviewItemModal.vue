@@ -26,20 +26,21 @@ const closeModal = () => store.dispatch("previewModal/close");
     :closable="true"
   >
     <n-card
-      title=" "
       :bordered="false"
       size="huge"
       role="dialog"
       aria-modal="true"
       class="w-[95vw] h-auto"
     >
-      <template #header-extra>
-        <button @click="closeModal" class="relative right-1 top-1">
-          <Icon size="20" class="text-black">
-            <Close />
-          </Icon>
-        </button>
-      </template>
+      <!--      <template #header-extra>-->
+
+      <!--      </template>-->
+
+      <button @click="closeModal" class="absolute right-1 top-1 z-40">
+        <Icon size="20" class="text-white">
+          <Close />
+        </Icon>
+      </button>
 
       <document-swiper
         :documents="shownDocuments"
@@ -64,7 +65,7 @@ const closeModal = () => store.dispatch("previewModal/close");
 }
 
 .n-modal > .n-card__content {
-  padding: 0 1rem 0.5rem;
+  padding: 0 !important;
   background: theme("colors.primary");
   color: white;
 }

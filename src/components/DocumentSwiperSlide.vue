@@ -6,8 +6,11 @@
     v-if="document"
   >
     <div
-      class="col-span-6 h-full flex-initial"
-      :class="[documentRefersToPeople ? 'md:col-start-3 md:col-span-4' : '']"
+      class="col-span-6 h-full flex-initial bg-black"
+      :class="[
+        documentRefersToPeople ? 'md:col-start-3 md:col-span-4' : '',
+        isShownFullscreen ? 'p-4' : '',
+      ]"
     >
       <div class="flex-auto">
         <button
@@ -95,7 +98,7 @@
           </button>
         </div>
       </div>
-      <div>
+      <div class="p-4">
         <h2 class="text-2xl">Personen</h2>
         <div
           class="grid grid-cols-2"
