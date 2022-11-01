@@ -27,18 +27,15 @@ const closeModal = () => store.dispatch("previewModal/close");
   >
     <n-card
       title=" "
-      style="width: 95vw; height: auto"
       :bordered="false"
       size="huge"
       role="dialog"
       aria-modal="true"
+      class="w-[95vw] h-auto"
     >
       <template #header-extra>
         <button @click="closeModal" class="relative right-1 top-1">
-          <Icon
-            size="20"
-            class="transition-colors text-white hover:text-primary"
-          >
+          <Icon size="20" class="text-black">
             <Close />
           </Icon>
         </button>
@@ -58,11 +55,17 @@ const closeModal = () => store.dispatch("previewModal/close");
   --n-color-modal: rgba(0, 0, 0, 0.3) !important;
 }
 
+.n-card > .n-card-header .n-card-header__main {
+  color: white;
+}
+
 .n-modal > .n-card-header {
   padding: 0;
 }
 
 .n-modal > .n-card__content {
   padding: 0 1rem 0.5rem;
+  background: theme("colors.primary");
+  color: white;
 }
 </style>

@@ -4,9 +4,11 @@ module.exports = {
         "./index.html",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
     ], theme: {
+        colors: {},
         extend: {
             colors: {
-                primary: "#D72F19"
+                primary: "#437f74",
+                black: 'rgb(54,54,54)'
             }
         },
     },
