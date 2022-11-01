@@ -265,6 +265,11 @@ export class DataRickService {
       });
     }
 
+    //set selected to true for all sources
+    for (const source of sources) {
+      source.selected = true;
+    }
+
     //parse geo coords from string to LatLonLike
     for (const address of addresses) {
       address.documentCount = address.documents.length;
