@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, onMounted, ref, Ref } from "vue";
+import { computed, ComputedRef, ref, Ref } from "vue";
 import { AddressModel } from "../models/address.model";
 import { useStore } from "vuex";
 import PreviewItem from "./PreviewItem.vue";
@@ -10,11 +10,6 @@ const numShownAddresses: Ref<number> = ref(10);
 const filteredAddresses: ComputedRef<AddressModel[]> = computed(
   () => store.getters["getFilteredAddresses"]
 );
-onMounted(() => {
-  setTimeout(() => {
-    console.log("FIL", filteredAddresses.value);
-  }, 100);
-});
 
 const onScroll = (e) => {
   const { scrollTop, offsetHeight, scrollHeight } = e.target;

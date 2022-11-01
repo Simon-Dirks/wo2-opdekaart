@@ -1,7 +1,6 @@
 import { DataModel } from "../models/data.model";
 import { TripleStoreDataModel } from "../models/triple-store-data.model";
 import { SearchOptionModel } from "../models/search-option.model";
-import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
 import { store } from "../store";
 import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
@@ -348,7 +347,7 @@ export class DataRickService {
       store.getters["getAllData"].addresses,
       store.getters["getSearchTerm"],
       store.getters["getSearchOption"],
-      store.getters["getAllData"].sources
+      store.getters["getShownSources"]
     );
   }
 

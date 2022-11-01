@@ -75,6 +75,7 @@ watch(
       "APP Updated selected source ID",
       store.getters["getShownSourceIds"]
     );
+    new DataRickService().updateFilterFromStore();
   }
 );
 
