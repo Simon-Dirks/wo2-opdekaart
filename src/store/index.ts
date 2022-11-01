@@ -38,7 +38,6 @@ export const store = createStore<State>({
       return state.allData;
     },
     getFilteredAddresses(state) {
-      console.log(state.filteredAddresses);
       return state.filteredAddresses;
     },
     // getSelectedItem(state) {
@@ -53,10 +52,6 @@ export const store = createStore<State>({
     getShownSourceIds(state): Set<string> {
       return state.shownSourceIds;
     },
-    // getShownSources(state): Set<SourceModel> {
-    //   console.log("getShownSources", state.shownSources);
-    //   return state.shownSources;
-    // },
     getSourceIdIsShown:
       (state) =>
       (sourceId: string): boolean => {
@@ -64,6 +59,11 @@ export const store = createStore<State>({
       },
     getSources(state): SourceModel[] {
       return state.sources;
+    },
+    getShownSources(state, getters): SourceModel[] {
+      return state.sources.filter((source) => {
+        return getters.getSourceIdIsShown(source.sourceId);
+      });
     },
   },
   mutations: {
@@ -93,7 +93,6 @@ export const store = createStore<State>({
     //   state.selectedAddress = null;
     // },
     setSources(state: State, sources: SourceModel[]) {
-      console.log("setSources", sources);
       state.sources = sources;
     },
   },

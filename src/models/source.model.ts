@@ -5,8 +5,7 @@ export type SourceModel = {
   sourceId: string;
   label: string;
   description: string;
-
-  selected: boolean;
+  // selected: boolean;
 
   documents: DocumentModel[];
   addresses: AddressModel[];

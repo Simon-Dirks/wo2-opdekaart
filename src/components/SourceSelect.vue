@@ -1,84 +1,38 @@
 <script setup lang="ts">
-import { SourceModel } from "../models/source.model";
-import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { InformationCircle } from "@vicons/ionicons5";
-import { MapService } from "../services/map.service";
+import { computed, ComputedRef } from "vue";
+import { SourceModel } from "../models/source.model";
 
 const store = useStore();
-
-// const selectedSourceIds: Ref<Set<string>> = ref(new Set([]));
-// const selectedSources: Ref<Set<SourceModel>> = ref(new Set([]));
 
 const sources: ComputedRef<SourceModel[]> = computed(
   () => store.getters["getSources"]
 );
-
-watch(
-  () => store.getters["getSources"],
-  (newSources: SourceModel[]) => {
-    console.log("sources updated");
-    // selectedSourceIds.value = new Set(
-    //   newSources.map((source) => source.sourceId)
-    // );
-    // // selectedSources.value = new Set(newSources.map((source) => source));
-    // store.commit("setShownSourceIds", selectedSourceIds);
-    // store.commit("setShownSources", selectedSources);
-  }
+const shownSourceIds: ComputedRef<Set<string>> = computed(
+  () => store.getters["getShownSourceIds"]
 );
 
-onMounted(() => {});
+const allSourcesAreSelected: ComputedRef<boolean> = computed(() => {
+  return shownSourceIds.value.size === sources.value.length;
+});
 
-// watch(
-//   () => store.getters["getShownSourceIds"].keys(),
-//   () => {
-//     console.log(
-//       "Updated selected source ID",
-//       store.getters["getShownSourceIds"]
-//     );
-//   }
-// );
-
-const onSelectAllSources = () => {
-  console.log("onSelectAllSources");
-  for (const source of sources.value) {
-    source.selected = true;
+const onToggleAllSources = () => {
+  let sourceIds: string[] = [];
+  if (!allSourcesAreSelected.value) {
+    sourceIds = sources.value.map((source) => source.sourceId);
   }
-  console.log(sources.value);
-  store.commit("setSources", sources.value);
-
-  // const allSourceIds: Set<string> = new Set(
-  //   store.getters["getSources"].map((source: SourceModel) => source.sourceId)
-  // );
-  // const allSources: Set<SourceModel> = new Set(
-  //   store.getters["getSources"].map((source: SourceModel) => source)
-  // );
-  // store.commit("setShownSourceIds", allSourceIds);
-  // store.commit("setShownSources", allSources);
+  store.commit("setShownSourceIds", new Set(sourceIds));
 };
-//
-// const onDeselectAllSources = () => {
-//   store.commit("setShownSourceIds", new Set([]));
-//   // store.commit("setShownSources", new Set([]));
-// };
 
-const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
-  console.log("onSourceSelect");
-  //   sourceId,
-  //   isSelected
-  //   // store.getters["getSources"][sourceId]
-  // );
-  // if (isSelected) {
-  //   selectedSourceIds.value.add(sourceId);
-  //   // selectedSources.value.add(store.getters["getSources"][sourceId]);
-  // } else {
-  //   selectedSourceIds.value.delete(sourceId);
-  //   // selectedSources.value.delete(store.getters["getSources"][sourceId]);
-  // }
-  // // console.log("onSourceSelect", selectedSources);
-  //
-  // store.commit("setShownSourceIds", selectedSourceIds);
-  // store.commit("setShownSources", selectedSources);
+const onSourceToggled = (sourceId: string) => {
+  const currentShownSourceIds = shownSourceIds.value;
+  if (currentShownSourceIds.has(sourceId)) {
+    currentShownSourceIds.delete(sourceId);
+  } else {
+    currentShownSourceIds.add(sourceId);
+  }
+  store.commit("setShownSourceIds", currentShownSourceIds);
 };
 </script>
 
@@ -89,12 +43,16 @@ const onSourceSelect = async (sourceId: string, isSelected: boolean) => {
     >
       <n-collapse>
         <n-collapse-item title="Bronnen" class="pr-4">
-          <n-button primary class="rounded-lg mr-2" @click="onSelectAllSources"
-            >Selecteer alles
+          <n-button primary class="rounded-lg mr-2" @click="onToggleAllSources"
+            >{{ allSourcesAreSelected ? "Deselecteer" : "Selecteer" }} alles
           </n-button>
 
           <div v-for="source in sources">
-            <n-checkbox :id="source.sourceId" v-model:checked="source.selected">
+            <n-checkbox
+              :id="source.sourceId"
+              @click="onSourceToggled(source.sourceId)"
+              :checked="shownSourceIds.has(source.sourceId)"
+            >
               {{ source.label }}
             </n-checkbox>
 
