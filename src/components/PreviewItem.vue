@@ -12,18 +12,24 @@ const props = defineProps({
 
 <template>
   <n-card
-    :title="props.address?.label"
     v-if="props.address && props.address?.documents.length > 0"
     hoverable
-    class="mb-4"
+    class="mb-4 preview-item-card"
   >
-    <p v-if="props.address?.documents.length > 1" class="mb-3">
-      {{ props.address?.documents.length }} documenten
-    </p>
+    <template #header>
+      <p>{{ props.address?.label }}</p>
+      <p class="text-xs font-mono" v-if="props.address?.documents.length === 1">
+        {{ props.address.documents.length }} document
+      </p>
+      <p class="text-xs font-mono" v-else>
+        {{ props.address.documents.length }} documenten
+      </p>
+    </template>
 
     <document-swiper
       :documents="props.address.documents"
       :is-shown-fullscreen="false"
+      class="mt-4"
     ></document-swiper>
   </n-card>
 </template>
@@ -31,5 +37,16 @@ const props = defineProps({
 <style>
 #preview-items-container .n-card-header {
   padding-bottom: 0 !important;
+}
+
+.n-card > .n-card-header {
+  background: theme("colors.primary");
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.preview-item-card > .n-card__content {
+  background: theme("colors.black");
+  color: white;
 }
 </style>

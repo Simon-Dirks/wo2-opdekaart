@@ -80,15 +80,7 @@ export class MapService {
       source: "markers-source",
       filter: ["has", "document_count"],
       paint: {
-        "circle-color": [
-          "step",
-          ["get", "document_count"],
-          "#51bbd6",
-          100,
-          "#f1f075",
-          750,
-          "#f28cb1",
-        ],
+        "circle-color": "blue",
         "circle-radius": [
           "step",
           ["get", "document_count"],
@@ -101,17 +93,17 @@ export class MapService {
       },
     });
 
-    this._map.addLayer({
-      id: "cluster-count",
-      type: "symbol",
-      source: "markers-source",
-      filter: ["has", "point_count"],
-      layout: {
-        "text-field": "{document_count}",
-        "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-        "text-size": 12,
-      },
-    });
+    // this._map.addLayer({
+    //   id: "cluster-count",
+    //   type: "symbol",
+    //   source: "markers-source",
+    //   filter: ["has", "point_count"],
+    //   layout: {
+    //     "text-field": "{document_count}",
+    //     "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+    //     "text-size": 12,
+    //   },
+    // });
 
     this._map.addLayer({
       id: "unclustered-point",
@@ -159,13 +151,13 @@ export class MapService {
       // @ts-ignore
       // prettier-ignore
       this._map.getSource("markers-source").getClusterExpansionZoom(clusterId, (err: any, zoom: any) => {
-        if (err) return;
+                if (err) return;
 
-        this._map.easeTo({
-          center: (features[0].geometry as any).coordinates,
-          zoom: zoom,
-        });
-      });
+                this._map.easeTo({
+                    center: (features[0].geometry as any).coordinates,
+                    zoom: zoom,
+                });
+            });
     });
 
     this._map.on("mouseenter", "clusters", () => {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStore } from "vuex";
 import { InformationCircle } from "@vicons/ionicons5";
-import { computed, ComputedRef } from "vue";
+import { computed, ComputedRef, watch } from "vue";
 import { SourceModel } from "../models/source.model";
 
 const store = useStore();
@@ -34,6 +34,13 @@ const onSourceToggled = (sourceId: string) => {
   }
   store.commit("setShownSourceIds", currentShownSourceIds);
 };
+
+watch(
+  () => store.getters["getSources"],
+  (sources: SourceModel[]) => {
+    onToggleAllSources();
+  }
+);
 </script>
 
 <template>

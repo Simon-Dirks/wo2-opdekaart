@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
-import { onMounted, watch } from "vue";
+import { watch } from "vue";
 import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
+
 const store = useStore();
 
 const MAPBOX_TOKEN: string =
@@ -36,15 +37,7 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     source: "markers-source",
     filter: ["has", "document_count"],
     paint: {
-      "circle-color": [
-        "step",
-        ["get", "document_count"],
-        "#51bbd6",
-        100,
-        "#f1f075",
-        750,
-        "#f28cb1",
-      ],
+      "circle-color": "#22B49C",
       "circle-radius": [
         "step",
         ["get", "document_count"],
@@ -67,6 +60,9 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
       "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
       "text-size": 12,
     },
+    paint: {
+      "text-color": "white",
+    },
   });
 
   map.addLayer({
@@ -75,7 +71,7 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     source: "markers-source",
     filter: ["!", ["has", "point_count"]],
     paint: {
-      "circle-color": "#D72F19",
+      "circle-color": "#22B49C",
       "circle-radius": 7,
       "circle-stroke-width": 1,
       "circle-stroke-color": "#fff",
