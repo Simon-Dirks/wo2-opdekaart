@@ -10,7 +10,7 @@ import { AddressModel } from "../models/address.model";
 import { DataService } from "../services/data.service";
 // import { useLoadingBar } from "naive-ui";
 import IntroDialog from "./IntroDialog.vue";
-import Sidebar from "./Sidebar.vue";
+import Sidebar from "./_Sidebar.vue";
 import PreviewItemModal from "./PreviewItemModal.vue";
 import { DataRickService } from "../services/data-rick.service";
 

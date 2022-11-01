@@ -7,27 +7,34 @@ import DocumentSwiper from "./DocumentSwiper.vue";
 
 const props = defineProps({
   address: { type: Object as PropType<AddressModel | null>, required: true },
+  index: Number,
 });
 </script>
 
 <template>
   <n-card
-    v-if="props.address && props.address?.documents.length > 0"
+    :bordered="false"
+    v-if="props.address && props.address?.filteredDocuments.length > 0"
     hoverable
     class="mb-4 preview-item-card"
   >
     <template #header>
       <p>{{ props.address?.label }}</p>
-      <p class="text-xs font-mono" v-if="props.address?.documents.length === 1">
-        {{ props.address.documents.length }} document
+      <p
+        class="text-xs font-mono"
+        v-if="props.address?.filteredDocuments.length === 1"
+      >
+        #{{ props.index }}:
+        {{ props.address.filteredDocuments.length }} document
       </p>
       <p class="text-xs font-mono" v-else>
-        {{ props.address.documents.length }} documenten
+        #{{ props.index }}:
+        {{ props.address.filteredDocuments.length }} documenten
       </p>
     </template>
 
     <document-swiper
-      :documents="props.address.documents"
+      :documents="props.address.filteredDocuments"
       :is-shown-fullscreen="false"
       class="mt-4"
     ></document-swiper>
@@ -49,4 +56,10 @@ const props = defineProps({
   background: theme("colors.black");
   color: white;
 }
+
+/*.preview-item-card > .n-card__content img {*/
+/*  !*min-height: 200px;*!*/
+/*  !*max-height: 300px;*!*/
+/*  height: 300px;*/
+/*}*/
 </style>

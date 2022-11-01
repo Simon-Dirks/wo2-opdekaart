@@ -8,7 +8,8 @@ import { DataModel } from "../models/data.model";
 export interface State {
   allData: DataModel | null;
   filteredAddresses: AddressModel[] | null;
-  // selectedAddress: AddressModel | null;
+  // filteredAddressesById: { [name: string]: AddressModel } | null;
+  selectedAddress: AddressModel | null;
   searchTerm: string;
   searchOption: SearchOptionModel;
   shownSourceIds: Set<string>;
@@ -25,8 +26,9 @@ export const store = createStore<State>({
     return {
       allData: null,
       filteredAddresses: null,
+      // filteredAddressesById: null,
       filteredDocuments: null,
-      // selectedAddress: null,
+      selectedAddress: null,
       searchTerm: "",
       shownSourceIds: new Set<string>([]),
       // shownSources: new Set<SourceModel>([]),
@@ -41,12 +43,15 @@ export const store = createStore<State>({
     getFilteredAddresses(state) {
       return state.filteredAddresses;
     },
+    // getFilteredAddressesById(state) {
+    //   return state.filteredAddressesById;
+    // },
     getFilteredDocuments(state) {
       return state.filteredDocuments;
     },
-    // getSelectedItem(state) {
-    //   return state.selectedAddress;
-    // },
+    getSelectedItem(state) {
+      return state.selectedAddress;
+    },
     getSearchTerm(state) {
       return state.searchTerm;
     },
@@ -77,6 +82,12 @@ export const store = createStore<State>({
     setFilteredAddresses(state: State, filteredAddresses: AddressModel[]) {
       state.filteredAddresses = filteredAddresses;
     },
+    // setFilteredAddressesById(
+    //   state: State,
+    //   filteredAddressesById: { [name: string]: AddressModel }
+    // ) {
+    //   state.filteredAddressesById = filteredAddressesById;
+    // },
     setFilteredDocuments(state: State, filteredDocuments: DocumentModel[]) {
       state.filteredDocuments = filteredDocuments;
     },
@@ -84,6 +95,7 @@ export const store = createStore<State>({
       state.searchOption = searchOption;
     },
     setSearchTerm(state: State, searchTerm: string) {
+      console.log("setSearchTerm", searchTerm);
       state.searchTerm = searchTerm;
     },
     setShownSourceIds(state: State, shownSourceIds: Set<string>) {
@@ -93,9 +105,9 @@ export const store = createStore<State>({
     //   console.log("setShownSources", shownSources);
     //   state.shownSources = shownSources;
     // },
-    // selectAddress(state: State, selectedAddress: AddressModel) {
-    //   state.selectedAddress = selectedAddress;
-    // },
+    selectAddress(state: State, selectedAddress: AddressModel) {
+      state.selectedAddress = selectedAddress;
+    },
     // deselectAddress(state: State) {
     //   state.selectedAddress = null;
     // },

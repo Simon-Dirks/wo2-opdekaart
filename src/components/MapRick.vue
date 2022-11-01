@@ -102,11 +102,6 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     },
   });
 
-  //TODO: this should be in a watch() right?
-  // (map.getSource("markers-source") as any).setData(geoJSON);
-
-  // store.getters["map/getGeoJson"]
-
   console.log("Map onMapLoaded...");
 
   watch(

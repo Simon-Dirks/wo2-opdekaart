@@ -13,5 +13,6 @@ export type AddressModel = {
   coordinates: LngLatLike;
   documentCount: number;
   documents: DocumentModel[];
+  filteredDocuments: DocumentModel[];
   persons: PersonModel[];
 };

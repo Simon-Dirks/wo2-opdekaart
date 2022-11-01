@@ -25,8 +25,8 @@ const props = defineProps({
   <swiper
     :modules="modules"
     :slides-per-view="isShownFullscreen ? 1 : 1"
-    :space-between="10"
     :auto-height="true"
+    :space-between="10"
     :keyboard="{ enabled: isShownFullscreen, onlyInViewport: true }"
     :navigation="true"
     :allow-touch-move="true"

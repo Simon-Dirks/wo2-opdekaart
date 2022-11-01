@@ -264,11 +264,6 @@ export class DataRickService {
       });
     }
 
-    //set selected to true for all sources
-    for (const source of sources) {
-      source.selected = true;
-    }
-
     //parse geo coords from string to LatLonLike
     for (const address of addresses) {
       address.documentCount = address.documents.length;
@@ -440,40 +435,89 @@ export class DataRickService {
       }
     }
 
-    store.commit("setFilteredAddresses", filteredAddresses);
+    //filteredDocuments in filteredAddress
 
-    //--------------
-    // now filter documents
-    // console.log("selectedSources", selectedSources);
+    for (const address of filteredAddresses) {
+      address.filteredDocuments = address.documents.filter(
+        (doc: DocumentModel) => {
+          const persons = doc.personAtAddressItems
+            ? doc.personAtAddressItems.map(
+                (personAddressItem) => personAddressItem.person
+              )
+            : [];
 
-    let filteredDocuments = documents.filter((doc) => {
-      for (const source of selectedSources) {
-        if (source.documents?.indexOf(doc) != -1) {
-          return true;
-        }
-      }
-      return false;
-    });
-
-    //filter by person name
-    if (searchOption === SearchOptionModel.People) {
-      filteredDocuments = filteredDocuments.filter((doc) => {
-        if (!doc.personAtAddressItems) return false;
-
-        for (const personAddressItem of doc.personAtAddressItems) {
-          const person = personAddressItem.person;
-
-          if (doesPersonContain(person, searchTerm)) {
-            return true;
+          if (searchOption === SearchOptionModel.All) {
+            if (
+              doesAddressContain(address, searchTerm) ||
+              doesAnyPersonContain(persons, searchTerm)
+            )
+              return true;
+          } else if (searchOption === SearchOptionModel.People) {
+            if (doesAnyPersonContain(persons, searchTerm)) return true;
+          } else if (searchOption === SearchOptionModel.Addresses) {
+            if (doesAddressContain(address, searchTerm)) return true;
           }
         }
-        return false;
-      });
+      );
+
+      // .length = 0; //clear array
+      // for (const doc of address.documents) {
+      //
+      // }
     }
 
-    console.log("filteredDocuments", filteredDocuments);
+    // update documentCount
+    for (const address of filteredAddresses) {
+      address.documentCount = address.filteredDocuments.length;
+    }
 
-    store.commit("setFilteredDocuments", filteredDocuments);
+    store.commit("setFilteredAddresses", filteredAddresses);
+
+    // console.log(filteredAddresses[0]);
+
+    // const filteredAddressesById = {};
+    //
+    // for (const address of filteredAddresses) {
+    //   address.filteredDocuments = []; //make filteredDocuments empty for address. will be filled again later
+    //   filteredAddressesById[address.addressId] = address;
+    // }
+    //
+    //
+    // //filter documents by filteredAddresses
+    // let filteredDocuments = documents.filter((doc) => {
+    //   if (!doc.addresses) return false;
+    //   for (const docAddress of doc.addresses) {
+    //     const filteredAddress = filteredAddressesById[docAddress.addressId];
+    //     if (filteredAddress) {
+    //       filteredAddress.filteredDocuments.push(doc);
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // });
+    //
+    // // console.log("filteredDocuments", filteredDocuments.length);
+    // //
+    // console.log("filteredAddresses0", filteredAddresses);
+    // //filter by person name
+    // if (searchOption === SearchOptionModel.People) {
+    //   filteredDocuments = filteredDocuments.filter((doc) => {
+    //     if (!doc.personAtAddressItems) return false;
+    //
+    //     for (const personAddressItem of doc.personAtAddressItems) {
+    //       const person = personAddressItem.person;
+    //
+    //       if (doesPersonContain(person, searchTerm)) {
+    //         return true;
+    //       }
+    //     }
+    //     return false;
+    //   });
+    // }
+
+    // console.log("filteredDocuments", filteredDocuments);
+    //
+    // store.commit("setFilteredDocuments", filteredDocuments);
     // return filteredAddresses;
   }
 }

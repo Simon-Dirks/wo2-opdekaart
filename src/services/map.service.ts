@@ -168,6 +168,7 @@ export class MapService {
     });
 
     this._map.on("click", "unclustered-point", (e: any) => {
+      console.log("click selectAddress");
       e.preventDefault();
 
       this._onMapAddressClicked(e);

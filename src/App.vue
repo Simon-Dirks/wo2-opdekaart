@@ -41,7 +41,7 @@ watch(
   (allData: DataModel) => {
     console.log("App allData changed");
 
-    exampleFilter();
+    // exampleFilter();
     //when allData is loaded then set filteredData to allData.addresses
     //same as new DataRickService().resetFilter();
   }
