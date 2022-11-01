@@ -7,9 +7,9 @@ import { UtilService } from "../../services/util.service";
 
 interface MapState {
   geoJson: AddressesGeoJsonModel | null;
-  filteredGeoJson: AddressesGeoJsonModel | null;
-  isInitialized: boolean;
-  shownAddresses: AddressModel[];
+  // filteredGeoJson: AddressesGeoJsonModel | null;
+  // isInitialized: boolean;
+  // shownAddresses: AddressModel[];
 }
 
 export const mapStoreModule = {
@@ -17,24 +17,24 @@ export const mapStoreModule = {
   state() {
     return {
       geoJson: null,
-      filteredGeoJson: null,
-      isInitialized: false,
-      shownAddresses: [],
+      // filteredGeoJson: null,
+      // isInitialized: false,
+      // shownAddresses: [],
     };
   },
   getters: {
     getGeoJson(state: MapState): AddressesGeoJsonModel | null {
       return state.geoJson;
     },
-    getFilteredGeoJson(state: MapState): AddressesGeoJsonModel | null {
-      return state.filteredGeoJson;
-    },
-    getShownAddresses(state: MapState): AddressModel[] {
-      return state.shownAddresses;
-    },
-    getIsInitialized(state: MapState): boolean {
-      return state.isInitialized;
-    },
+    // getFilteredGeoJson(state: MapState): AddressesGeoJsonModel | null {
+    //   return state.filteredGeoJson;
+    // },
+    // getShownAddresses(state: MapState): AddressModel[] {
+    //   return state.shownAddresses;
+    // },
+    // getIsInitialized(state: MapState): boolean {
+    //   return state.isInitialized;
+    // },
   },
   actions: {
     updateGeoJson: (
@@ -42,52 +42,52 @@ export const mapStoreModule = {
       geoJson: AddressesGeoJsonModel
     ) => {
       context.commit("setGeoJson", geoJson);
-      context.commit("setFilteredGeoJson", geoJson);
+      // context.commit("setFilteredGeoJson", geoJson);
     },
-    updateShownAddressesInBounds: async (
-      context: ActionContext<MapState, State>,
-      mapBounds: LngLatBounds
-    ) => {
-      const addressesInBounds: AddressModel[] = await context.dispatch(
-        "getAddressesInBounds",
-        mapBounds
-      );
-      context.commit("setShownAddresses", addressesInBounds);
-    },
-    getAddressesInBounds: (
-      context: ActionContext<MapState, State>,
-      mapBounds: LngLatBounds
-    ): Promise<AddressModel[]> => {
-      const geoJson: AddressesGeoJsonModel | null =
-        context.state.filteredGeoJson;
-      if (!geoJson || !("features" in geoJson)) {
-        return Promise.resolve([]);
-      }
-
-      // @ts-ignore
-      const addressesWithinBounds: AddressModel[] = geoJson["features"]
-        .filter((feature: any) => {
-          return mapBounds.contains(feature["geometry"]["coordinates"]);
-        })
-        .map((feature: any) => feature.properties)
-        .sort((feature: AddressModel, feature2: AddressModel) => {
-          return UtilService.compareAddressesForSorting(feature, feature2);
-        });
-      return Promise.resolve(addressesWithinBounds);
-    },
+    // updateShownAddressesInBounds: async (
+    //   context: ActionContext<MapState, State>,
+    //   mapBounds: LngLatBounds
+    // ) => {
+    //   const addressesInBounds: AddressModel[] = await context.dispatch(
+    //     "getAddressesInBounds",
+    //     mapBounds
+    //   );
+    //   context.commit("setShownAddresses", addressesInBounds);
+    // },
+    // getAddressesInBounds: (
+    //   context: ActionContext<MapState, State>,
+    //   mapBounds: LngLatBounds
+    // ): Promise<AddressModel[]> => {
+    //   const geoJson: AddressesGeoJsonModel | null =
+    //     context.state.filteredGeoJson;
+    //   if (!geoJson || !("features" in geoJson)) {
+    //     return Promise.resolve([]);
+    //   }
+    //
+    //   // @ts-ignore
+    //   const addressesWithinBounds: AddressModel[] = geoJson["features"]
+    //     .filter((feature: any) => {
+    //       return mapBounds.contains(feature["geometry"]["coordinates"]);
+    //     })
+    //     .map((feature: any) => feature.properties)
+    //     .sort((feature: AddressModel, feature2: AddressModel) => {
+    //       return UtilService.compareAddressesForSorting(feature, feature2);
+    //     });
+    //   return Promise.resolve(addressesWithinBounds);
+    // },
   },
   mutations: {
     setGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
       state.geoJson = geoJson;
     },
-    setFilteredGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
-      state.filteredGeoJson = geoJson;
-    },
-    setShownAddresses: (state: MapState, addresses: AddressModel[]) => {
-      state.shownAddresses = addresses;
-    },
-    setIsInitialized: (state: MapState, isInitialized: boolean) => {
-      state.isInitialized = isInitialized;
-    },
+    // setFilteredGeoJson: (state: MapState, geoJson: AddressesGeoJsonModel) => {
+    //   state.filteredGeoJson = geoJson;
+    // },
+    // setShownAddresses: (state: MapState, addresses: AddressModel[]) => {
+    //   state.shownAddresses = addresses;
+    // },
+    // setIsInitialized: (state: MapState, isInitialized: boolean) => {
+    //   state.isInitialized = isInitialized;
+    // },
   },
 };

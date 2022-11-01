@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
-import { DataRickService } from "../services/data-rick.service";
-import { DataModel } from "../models/data.model";
+import { onMounted, watch } from "vue";
+import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
-import { SearchOptionModel } from "../models/search-option.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
+const store = useStore();
 
 const MAPBOX_TOKEN: string =
   "pk.eyJ1Ijoic2ltb25kaXJrcyIsImEiOiJjazdkazBxeXYweDluM2RtcmVkZzVsMGFoIn0.6fDvUqYNALXv5wJtZjjxrQ";
@@ -106,31 +106,53 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     },
   });
 
-  /////////////////////////////
-  //TODO: This should be moved
-  ////////////////////////////
+  //TODO: this should be in a watch() right?
+  // (map.getSource("markers-source") as any).setData(geoJSON);
 
-  const dataRickService: DataRickService = new DataRickService();
-  const data: DataModel = await dataRickService.init();
+  // store.getters["map/getGeoJson"]
 
-  console.log("data", data);
+  console.log("Map onMapLoaded...");
 
-  const filteredAddresses: AddressModel[] = dataRickService.filterAddresses(
-    data.addresses,
-    "willem",
-    SearchOptionModel.All,
-    data.sources
+  watch(
+    () => store.getters["getFilteredAddresses"],
+    (filteredAddresses: AddressModel[]) => {
+      console.log("Map getFilteredAddresses changed", filteredAddresses.length);
+
+      const geoJSON = getGeoJSON(filteredAddresses);
+
+      //TODO: map.getSource("markers-source") gaat fout bij HotReloading
+      (map.getSource("markers-source") as any).setData(geoJSON);
+    }
   );
-
-  const geoJSON: AddressesGeoJsonModel = dataRickService.getGeoJSON(
-    data.addresses //filteredAddresses
-  );
-
-  // console.log(geoJSON);
-
-  (map.getSource("markers-source") as any).setData(geoJSON);
 
   emit("onMapLoaded");
+};
+
+// getGeoJSON
+// AddressesGeoJsonModel
+const getGeoJSON = (addresses: AddressModel[]) => {
+  const markersGeoJson: AddressesGeoJsonModel = {
+    type: "FeatureCollection",
+    features: [],
+  };
+  for (const address of addresses) {
+    markersGeoJson.features.push({
+      properties: {
+        //cannot pass 'address' itself in here because Mapbox gets confused about circular reference
+        addressId: address.addressId,
+        streetName: address.streetName,
+        houseNumber: address.houseNumber,
+        documentCount: address.documentCount,
+      },
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: address.coordinates,
+      },
+    });
+  }
+  console.log("Finished parsing GeoJSON...", markersGeoJson);
+  return markersGeoJson;
 };
 </script>
 

@@ -288,43 +288,23 @@ export class DataRickService {
     };
   }
 
-  async init(): Promise<DataModel> {
-    let parsedData: any;
+  init() {
     console.log("loading");
-    await this.retrieveAllDataFromTripleStore()
+    this.retrieveAllDataFromTripleStore()
       .then(async (data) => {
         console.log("linking/parsing");
-        parsedData = this.parseDataFromTripleStore(data);
+        const parsedData = this.parseDataFromTripleStore(data);
+        store.commit("setAllData", parsedData);
+        store.commit("setSources", parsedData.sources); //would it be possible to jst use setAllData ?
       })
       .catch((err) => {
         console.log("error", err);
       });
-    return parsedData;
   }
 
-  public getGeoJSON(addresses: AddressModel[]): AddressesGeoJsonModel {
-    const markersGeoJson: AddressesGeoJsonModel = {
-      type: "FeatureCollection",
-      features: [],
-    };
-    for (const address of addresses) {
-      markersGeoJson.features.push({
-        properties: {
-          //cannot pass 'address' itself in here because Mapbox gets confused about circular reference
-          addressId: address.addressId,
-          streetName: address.streetName,
-          houseNumber: address.houseNumber,
-          documentCount: address.documentCount,
-        },
-        type: "Feature",
-        geometry: {
-          type: "Point",
-          coordinates: address.coordinates,
-        },
-      });
-    }
-    console.log("Finished parsing GeoJSON...", markersGeoJson);
-    return markersGeoJson;
+  resetFilter() {
+    const addresses: DataModel = store.getters["getAllData"].addresses;
+    store.commit("setFilteredAddresses", addresses);
   }
 
   private _parseGeoCoords(geo: string | undefined): LngLatLike {
@@ -358,12 +338,23 @@ export class DataRickService {
     return coords;
   }
 
+  updateFilterFromStore() {
+    this.filterAddresses(
+      store.getters["getAllData"].addresses,
+      store.getters["getSearchTerm"],
+      store.getters["getSearchOption"],
+      store.getters["getAllData"].sources
+    );
+  }
+
   filterAddresses(
     addresses: AddressModel[],
     searchTerm: string,
     searchOption: SearchOptionModel,
     selectedSources: SourceModel[]
-  ): AddressModel[] {
+  ) {
+    console.log("FIXME filterAddresses > searchOption", searchOption);
+
     let filteredAddresses = addresses.filter((address) => {
       for (const source of selectedSources) {
         if (source.addresses?.indexOf(address) != -1) {
@@ -415,6 +406,7 @@ export class DataRickService {
       }
     }
 
-    return filteredAddresses;
+    store.commit("setFilteredAddresses", filteredAddresses);
+    // return filteredAddresses;
   }
 }

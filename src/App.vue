@@ -1,40 +1,100 @@
 <script setup lang="ts">
-import { GlobalThemeOverrides } from "naive-ui";
 import { Ref, ref, watch } from "vue";
-
 import MapRick from "./components/MapRick.vue";
+import Search from "./components/Search.vue";
+import SourceSelect from "./components/SourceSelect.vue";
 import { DataRickService } from "./services/data-rick.service";
 import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
 import { SearchOptionModel } from "./models/search-option.model";
-import { AddressesGeoJsonModel } from "./models/addresses-geo-json.model";
 import { useStore } from "vuex";
+import { SourceModel } from "./models/source.model";
 const store = useStore();
-
-// const loadData = async () => {
-//
-// };
 
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
-  // loadData();
 
-  // watch(
-  //   () => store.getters["map/getFilteredGeoJson"],
-  //   (geoJson: AddressesGeoJsonModel | null) => {
-  //     console.log("cb");
-  //     // updateShownAddresses(map);
-  //   }
-  // );
+  new DataRickService().init();
 };
-//
-// const updateShownAddresses = async (map: mapboxgl.Map) => {
-//   await store.dispatch("map/updateShownAddressesInBounds", map.getBounds());
-// };
+
+const exampleFilter = () => {
+  const data = store.getters["getAllData"];
+
+  new DataRickService().filterAddresses(
+    data.addresses,
+    "willem",
+    SearchOptionModel.All,
+    data.sources
+  );
+};
+
+const resetExampleFilter = () => {
+  new DataRickService().resetFilter();
+};
+
+watch(
+  () => store.getters["getAllData"],
+  (allData: DataModel) => {
+    console.log("App allData changed");
+
+    //when allData is loaded then set filteredData to allData.addresses
+    //same as new DataRickService().resetFilter();
+    store.commit("setFilteredAddresses", allData.addresses);
+  }
+);
+
+watch(
+  () => store.getters["getFilteredAddresses"],
+  (filteredAddresses: AddressModel[]) => {
+    console.log("App getFilteredAddresses changed", filteredAddresses.length);
+  }
+);
+
+watch(
+  () => store.getters["getSearchTerm"],
+  (searchTerm) => {
+    console.log("App getSearchTerm", searchTerm);
+    new DataRickService().updateFilterFromStore();
+  }
+);
+
+watch(
+  () => store.getters["getSearchOption"],
+  (searchOption) => {
+    console.log("App getSearchOption", searchOption);
+    new DataRickService().updateFilterFromStore();
+  }
+);
+
+watch(
+  () => store.getters["getShownSourceIds"].keys(),
+  () => {
+    console.log(
+      "APP Updated selected source ID",
+      store.getters["getShownSourceIds"]
+    );
+  }
+);
+
+// watch(
+//   () => store.getters["getShownSourceIds"],
+//   (sourceIds) => {
+//     console.log("App getShownSourceIds", sourceIds);
+//     // new DataRickService().updateFilterFromStore();
+//   }
+// );
 </script>
 
 <template>
-  <MapRick ref="map" @onMapLoaded="onMapLoaded" data=""></MapRick>
+  <div class="md:grid md:grid-cols-6 h-[50vh] md:h-full">
+    <div class="md:col-span-4 h-full">
+      <div class="h-full">
+        <search class="absolute top-4 left-4 z-10"></search>
+        <source-select class="absolute top-28 left-4 z-10"></source-select>
+        <MapRick @onMapLoaded="onMapLoaded"></MapRick>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped></style>
