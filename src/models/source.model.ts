@@ -6,6 +6,8 @@ export type SourceModel = {
   label: string;
   description: string;
 
+  selected: boolean;
+
   documents: DocumentModel[];
   addresses: AddressModel[];
 };
