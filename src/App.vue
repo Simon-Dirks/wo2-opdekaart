@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, watch } from "vue";
+import { watch } from "vue";
 import MapRick from "./components/MapRick.vue";
 import Search from "./components/Search.vue";
 import SourceSelect from "./components/SourceSelect.vue";
@@ -8,7 +8,9 @@ import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
 import { SearchOptionModel } from "./models/search-option.model";
 import { useStore } from "vuex";
-import { SourceModel } from "./models/source.model";
+import NewSidebar from "./components/NewSidebar.vue";
+import PreviewItemModal from "./components/PreviewItemModal.vue";
+
 const store = useStore();
 
 const onMapLoaded = async () => {
@@ -86,12 +88,15 @@ watch(
 </script>
 
 <template>
+  <preview-item-modal></preview-item-modal>
+
   <div class="md:grid md:grid-cols-6 h-[50vh] md:h-full">
-    <div class="md:col-span-4 h-full">
+    <div class="md:col-span-6 h-full">
       <div class="h-full">
         <search class="absolute top-4 left-4 z-10"></search>
         <source-select class="absolute top-28 left-4 z-10"></source-select>
         <MapRick @onMapLoaded="onMapLoaded"></MapRick>
+        <new-sidebar></new-sidebar>
       </div>
     </div>
   </div>

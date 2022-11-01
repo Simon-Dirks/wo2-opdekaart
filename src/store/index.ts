@@ -1,11 +1,9 @@
-import { ActionContext, createStore } from "vuex";
-import { mapStoreModule } from "./map";
+import { createStore } from "vuex";
 import { previewModalModule } from "./preview-modal";
 import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
 import { SearchOptionModel } from "../models/search-option.model";
 import { DataModel } from "../models/data.model";
-import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
 
 export interface State {
   allData: DataModel | null;
@@ -19,10 +17,10 @@ export interface State {
 }
 
 export const store = createStore<State>({
-  // modules: {
-  //   map: mapStoreModule,
-  //   previewModal: previewModalModule,
-  // },
+  modules: {
+    //   map: mapStoreModule,
+    previewModal: previewModalModule,
+  },
   state() {
     return {
       allData: null,
@@ -40,6 +38,7 @@ export const store = createStore<State>({
       return state.allData;
     },
     getFilteredAddresses(state) {
+      console.log(state.filteredAddresses);
       return state.filteredAddresses;
     },
     // getSelectedItem(state) {

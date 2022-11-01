@@ -239,7 +239,7 @@ export class DataService {
 
       const document: DocumentModel = {
         id: documentId,
-        imageUrl: tripleStoreDocument.image,
+        image: tripleStoreDocument.image,
         label: tripleStoreDocument.label,
         people: peopleForDocuments[documentId],
         source: source,

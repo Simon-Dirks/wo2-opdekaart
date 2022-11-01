@@ -2,8 +2,8 @@
 import { useStore } from "vuex";
 import { computed, ComputedRef } from "vue";
 import { Close } from "@vicons/ionicons5";
-import DocumentSwiper from "./DocumentSwiper.vue";
 import { DocumentModel } from "../models/document.model";
+import DocumentSwiper from "./DocumentSwiper.vue";
 
 const store = useStore();
 const isShown: ComputedRef<boolean> = computed(

@@ -1,15 +1,16 @@
-import { PersonModel } from "./person.model";
 import { SourceModel } from "./source.model";
 import { AddressModel } from "./address.model";
 
 export type DocumentModel = {
   id: string;
-  source: SourceModel;
-  imageUrl?: string | null;
+  // source: SourceModel;
+  image?: string | null;
   label: string;
-  people: PersonModel[];
+  // people: PersonModel[];
 
   sourceItem: SourceModel; //this should replace the 'source' above
   addresses?: AddressModel[];
-  personAtAddressItems?: any; //this should get its own model { person:, address: } OR PersonModel gets an 'address' item
+  personAtAddressItems?: PersonAtAddressModel[]; //this should get its own model { person:, address: } OR PersonModel gets an 'address' item
 };
+
+export type PersonAtAddressModel = { person: any; address: any };

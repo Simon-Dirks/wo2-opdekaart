@@ -15,17 +15,10 @@
           class="w-full"
           :class="isShownFullscreen ? 'cursor-default' : 'cursor-pointer'"
         >
-          <div
-            class="absolute flex justify-center items-center w-full h-full bg-[rgba(0,0,0,0.5)] opacity-0 hover:opacity-100 transition-opacity text-white"
-            v-if="!isShownFullscreen"
-          >
-            <p class="p-0 m-0">{{ document.source.label }}</p>
-          </div>
-
           <div class="overflow-hidden">
             <img
               v-lazy="{
-                src: getImageUrl(document.imageUrl),
+                src: getImageUrl(document.image),
                 lifecycle: {
                   loaded: () => {
                     if (!swiper) {
@@ -49,6 +42,12 @@
               loading="lazy"
               ref="imageRef"
             />
+
+            <div v-if="!isShownFullscreen">
+              <p class="p-0 m-0 text-left">
+                Bron: {{ document.sourceItem.label }}
+              </p>
+            </div>
           </div>
         </button>
       </div>
@@ -61,7 +60,7 @@
             {{ document.label }}</a
           >
         </p>
-        <p>Bron: {{ document.source.label }}</p>
+        <p>Bron: {{ document.sourceItem.label }}</p>
         <button @click="onShareScanCommentsClicked">
           <em> Fout melden </em>
         </button>
@@ -78,14 +77,15 @@
       >
         <h2 class="text-2xl">Zoekresultaat</h2>
         <ul class="list-disc">
-          <li v-for="person in peopleMatchingSearch">
+          <li v-for="personAtAddress in peopleMatchingSearch">
             <button
-              @click="onPersonClicked(person.label)"
+              @click="onPersonClicked(personAtAddress.person.label)"
               class="text-left italic"
             >
               <!-- TODO: Make person label and address label clickable separately -->
-
-              {{ person.label }} ({{ person.addressLabel }})
+              {{ personAtAddress.person.label }} ({{
+                personAtAddress.address.label
+              }})
             </button>
           </li>
         </ul>
@@ -93,10 +93,14 @@
       <div>
         <h2 class="text-2xl">Personen</h2>
         <ul class="list-disc">
-          <li v-for="person in props.document.people">
-            <!-- TODO: Make person label and address label clickable separately -->
-            <button @click="onPersonClicked(person.label)" class="text-left">
-              {{ person.label }} ({{ person.addressLabel }})
+          <li v-for="personAtAddress in props.document.personAtAddressItems">
+            <button
+              @click="onPersonClicked(personAtAddress.person.label)"
+              class="text-left"
+            >
+              {{ personAtAddress.person.label }} ({{
+                personAtAddress.address.label
+              }})
             </button>
           </li>
         </ul>
@@ -108,9 +112,8 @@
 <script setup lang="ts">
 import { computed, ComputedRef, onMounted, PropType, ref, Ref } from "vue";
 import { useSwiper } from "swiper/vue";
-import { DocumentModel } from "../models/document.model";
+import { DocumentModel, PersonAtAddressModel } from "../models/document.model";
 import { useStore } from "vuex";
-import { PersonModel } from "../models/person.model";
 import Panzoom from "@panzoom/panzoom";
 import { SearchOptionModel } from "../models/search-option.model";
 import { UtilService } from "../services/util.service";
@@ -164,7 +167,8 @@ const getImageUrl = (imgUrl: string | undefined | null): string => {
 const swiper = useSwiper();
 
 const documentRefersToPeople: boolean =
-  props.document?.people && props.document.people.length > 0;
+  props.document?.personAtAddressItems !== undefined &&
+  props.document.personAtAddressItems.length > 0;
 
 const getDocumentUrl = (documentId: string): string => {
   if (!documentId) {
@@ -187,34 +191,46 @@ const onShareScanCommentsClicked = () => {
   alert("Fout melden");
 };
 
-const peopleMatchingSearch: ComputedRef<PersonModel[] | undefined> = computed(
-  () => {
-    if (props.document.people) {
+const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
+  computed(() => {
+    if (props.document.personAtAddressItems) {
       const search: string = store.getters["getSearchTerm"];
       if (!search) {
         return [];
       }
 
       const searchOption: SearchOptionModel = store.getters["getSearchOption"];
-      const matchingPeople: PersonModel[] = props.document.people.filter(
-        (person: PersonModel) => {
-          if (searchOption === SearchOptionModel.Addresses) {
-            return UtilService.labelMatchesSearch(person.addressLabel, search);
+      const matchingPeople: PersonAtAddressModel[] =
+        props.document.personAtAddressItems.filter(
+          (personAtAddressItem: PersonAtAddressModel) => {
+            if (searchOption === SearchOptionModel.Addresses) {
+              return UtilService.labelMatchesSearch(
+                personAtAddressItem.address.label,
+                search
+              );
+            }
+            if (searchOption === SearchOptionModel.People) {
+              return UtilService.labelMatchesSearch(
+                personAtAddressItem.person.label,
+                search
+              );
+            }
+            return (
+              UtilService.labelMatchesSearch(
+                personAtAddressItem.person.label,
+                search
+              ) ||
+              UtilService.labelMatchesSearch(
+                personAtAddressItem.address.label,
+                search
+              )
+            );
           }
-          if (searchOption === SearchOptionModel.People) {
-            return UtilService.labelMatchesSearch(person.label, search);
-          }
-          return (
-            UtilService.labelMatchesSearch(person.label, search) ||
-            UtilService.labelMatchesSearch(person.addressLabel, search)
-          );
-        }
-      );
+        );
 
       return matchingPeople;
     }
-  }
-);
+  });
 </script>
 
 <style>

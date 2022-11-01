@@ -6,8 +6,8 @@ import "swiper/css/scrollbar";
 import "swiper/css/keyboard";
 import "swiper/css/navigation";
 import { PropType } from "vue";
-import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
 import { DocumentModel } from "../models/document.model";
+import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
 
 const modules = [Scrollbar, Mousewheel, Keyboard, Navigation];
 
@@ -24,7 +24,7 @@ const props = defineProps({
 <template>
   <swiper
     :modules="modules"
-    :slides-per-view="isShownFullscreen ? 1 : 2"
+    :slides-per-view="isShownFullscreen ? 1 : 1"
     :space-between="10"
     :auto-height="true"
     :keyboard="{ enabled: isShownFullscreen, onlyInViewport: true }"
@@ -39,7 +39,7 @@ const props = defineProps({
   >
     <swiper-slide
       v-for="(document, idx) in props.documents"
-      :key="document.id + idx"
+      :key="document.docId + idx"
       class="h-full image-slide"
       v-if="props.documents"
     >
