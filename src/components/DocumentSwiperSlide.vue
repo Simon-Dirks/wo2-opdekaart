@@ -67,30 +67,30 @@
       class="col-span-6 overflow-y-auto max-h-[90vh] px-6 flex-initial md:col-span-2 p-4"
       v-if="isShownFullscreen"
     >
-      <div
-        v-if="peopleMatchingSearch && peopleMatchingSearch.length > 0"
-        class="mb-4"
-      >
-        <h2 class="text-2xl">Zoekresultaat</h2>
-        <div
-          class="grid grid-cols-2"
-          v-for="personAtAddress in peopleMatchingSearch"
-        >
-          <button
-            @click="onPersonClicked(personAtAddress.person.label)"
-            class="text-left italic"
-          >
-            {{ personAtAddress.person.label }}
-          </button>
+      <!--      <div-->
+      <!--        v-if="peopleMatchingSearch && peopleMatchingSearch.length > 0"-->
+      <!--        class="mb-4"-->
+      <!--      >-->
+      <!--        <h2 class="text-2xl">Zoekresultaat</h2>-->
+      <!--        <div-->
+      <!--          class="grid grid-cols-2"-->
+      <!--          v-for="personAtAddress in peopleMatchingSearch"-->
+      <!--        >-->
+      <!--          <button-->
+      <!--            @click="onPersonClicked(personAtAddress.person.label)"-->
+      <!--            class="text-left italic"-->
+      <!--          >-->
+      <!--            {{ personAtAddress.person.label }}-->
+      <!--          </button>-->
 
-          <button
-            @click="onPersonClicked(personAtAddress.address.label)"
-            class="text-left italic"
-          >
-            {{ personAtAddress.address.label }}
-          </button>
-        </div>
-      </div>
+      <!--          <button-->
+      <!--            @click="onPersonClicked(personAtAddress.address.label)"-->
+      <!--            class="text-left italic"-->
+      <!--          >-->
+      <!--            {{ personAtAddress.address.label }}-->
+      <!--          </button>-->
+      <!--        </div>-->
+      <!--      </div>-->
       <div>
         <div>
           <h1 v-if="shownAddress" class="text-2xl font-bold mb-6">
@@ -124,6 +124,13 @@
               <button
                 @click="onPersonClicked(personAtAddress.person.label)"
                 class="text-left"
+                :style="{
+                  textDecoration: personMatchesSearch(
+                    personAtAddress.person.personId
+                  )
+                    ? 'underline'
+                    : 'none',
+                }"
               >
                 {{ personAtAddress.person.label }}
               </button>
@@ -133,6 +140,13 @@
               <button
                 @click="onPersonClicked(personAtAddress.address.label)"
                 class="text-left"
+                :style="{
+                  textDecoration: personMatchesSearch(
+                    personAtAddress.person.personId
+                  )
+                    ? 'underline'
+                    : 'none',
+                }"
               >
                 {{ personAtAddress.address.label }}
               </button>
@@ -227,6 +241,20 @@ const onPersonClicked = (personLabel: string) => {
 
 const onShareScanCommentsClicked = () => {
   alert("Fout melden");
+};
+
+const personMatchesSearch = (personId: string): boolean => {
+  if (!peopleMatchingSearch.value) {
+    return true;
+  }
+
+  return (
+    peopleMatchingSearch.value.filter(
+      (personAtAddress: PersonAtAddressModel) => {
+        return personAtAddress.person.personId === personId;
+      }
+    ).length > 0
+  );
 };
 
 const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
