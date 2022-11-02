@@ -256,7 +256,7 @@ const personMatchesSearch = (personId: string): boolean => {
   return (
     peopleMatchingSearch.value.filter(
       (personAtAddress: PersonAtAddressModel) => {
-        return personAtAddress.person.personId === personId;
+        return personAtAddress.person?.personId === personId;
       }
     ).length > 0
   );
@@ -288,11 +288,11 @@ const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
             }
             return (
               UtilService.labelMatchesSearch(
-                personAtAddressItem.person.label,
+                personAtAddressItem.person?.label,
                 search
               ) ||
               UtilService.labelMatchesSearch(
-                personAtAddressItem.address.label,
+                personAtAddressItem.address?.label,
                 search
               )
             );
