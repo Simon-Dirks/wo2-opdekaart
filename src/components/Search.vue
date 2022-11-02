@@ -38,10 +38,14 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .n-input {
   display: inline-block;
   width: 17rem;
   border-radius: 0;
+}
+
+.n-input__input-el {
+  width: 17rem !important;
 }
 </style>
