@@ -4,6 +4,7 @@ import { watch } from "vue";
 import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
+import { DataRickService } from "../services/data-rick.service";
 
 const store = useStore();
 
@@ -102,6 +103,24 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     },
   });
 
+  map.on("click", "clusters", (e: any) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: ["clusters"],
+    });
+    // @ts-ignore
+    const clusterId = features[0].properties.cluster_id;
+    // @ts-ignore
+    // prettier-ignore
+    map.getSource("markers-source").getClusterExpansionZoom(clusterId, (err: any, zoom: any) => {
+            if (err) return;
+
+            map.easeTo({
+                center: (features[0].geometry as any).coordinates,
+                zoom: zoom,
+            });
+        });
+  });
+
   console.log("Map onMapLoaded...");
 
   watch(
@@ -117,6 +136,11 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
   );
 
   emit("onMapLoaded");
+};
+
+const onMapMoveEnd = (map: mapboxgl.Map) => {
+  store.commit("setMapBounds", map.getBounds());
+  new DataRickService().updateFilterFromStore();
 };
 
 // getGeoJSON
@@ -156,6 +180,7 @@ const getGeoJSON = (addresses: AddressModel[]) => {
     :zoom="10"
     :mapStyle="MAPBOX_LIGHT_STYLE"
     @loaded="onMapLoaded"
+    @moveend="onMapMoveEnd($event.target)"
   >
     <mapbox-navigation-control position="bottom-right" :show-compass="false" />
   </mapbox-map>

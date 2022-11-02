@@ -6,7 +6,7 @@ import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
 import { DocumentModel } from "../models/document.model";
 import { PersonModel } from "../models/person.model";
-import { LngLatLike } from "mapbox-gl";
+import { LngLatBounds, LngLatLike } from "mapbox-gl";
 import { TripleStoreAddressModel } from "../models/triple-store/triple-store-address.model";
 
 export class DataRickService {
@@ -343,7 +343,8 @@ export class DataRickService {
       store.getters["getAllData"].documents,
       store.getters["getSearchTerm"],
       store.getters["getSearchOption"],
-      store.getters["getShownSources"]
+      store.getters["getShownSources"],
+      store.getters["getMapBounds"]
     );
   }
 
@@ -373,9 +374,13 @@ export class DataRickService {
     documents: DocumentModel[],
     searchTerm: string,
     searchOption: SearchOptionModel,
-    selectedSources: SourceModel[]
+    selectedSources: SourceModel[],
+    mapBounds: LngLatBounds | null
   ) {
     //inline helper functions
+    const addressFitsInMapBounds = (address: AddressModel) => {
+      return mapBounds ? mapBounds.contains(address.coordinates) : true;
+    };
 
     const doesPersonContain = (person, searchTerm) => {
       return person.label?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -404,6 +409,9 @@ export class DataRickService {
       }
       return false;
     });
+
+    // filter addresses on map bounds
+    filteredAddresses = filteredAddresses.filter(addressFitsInMapBounds);
 
     //filter addresses on searchTerm
 

@@ -4,10 +4,13 @@ import { AddressModel } from "../models/address.model";
 import { SourceModel } from "../models/source.model";
 import { SearchOptionModel } from "../models/search-option.model";
 import { DataModel } from "../models/data.model";
+import { LngLatBounds } from "mapbox-gl";
+import { DocumentModel } from "../models/document.model";
 
 export interface State {
   allData: DataModel | null;
   filteredAddresses: AddressModel[] | null;
+  filteredDocuments: DocumentModel[] | null;
   // filteredAddressesById: { [name: string]: AddressModel } | null;
   selectedAddress: AddressModel | null;
   searchTerm: string;
@@ -15,6 +18,7 @@ export interface State {
   shownSourceIds: Set<string>;
   // shownSources: Set<SourceModel>;
   sources: SourceModel[];
+  mapBounds: LngLatBounds | null;
 }
 
 export const store = createStore<State>({
@@ -30,10 +34,11 @@ export const store = createStore<State>({
       filteredDocuments: null,
       selectedAddress: null,
       searchTerm: "",
+      searchOption: SearchOptionModel.All,
       shownSourceIds: new Set<string>([]),
       // shownSources: new Set<SourceModel>([]),
       sources: [],
-      searchOption: SearchOptionModel.All,
+      mapBounds: null,
     };
   },
   getters: {
@@ -74,6 +79,9 @@ export const store = createStore<State>({
         return getters.getSourceIdIsShown(source.sourceId);
       });
     },
+    getMapBounds(state): LngLatBounds | null {
+      return state.mapBounds;
+    },
   },
   mutations: {
     setAllData(state: State, allData: DataModel) {
@@ -97,6 +105,9 @@ export const store = createStore<State>({
     setSearchTerm(state: State, searchTerm: string) {
       console.log("setSearchTerm", searchTerm);
       state.searchTerm = searchTerm;
+    },
+    setMapBounds(state: State, mapBounds: LngLatBounds) {
+      state.mapBounds = mapBounds;
     },
     setShownSourceIds(state: State, shownSourceIds: Set<string>) {
       state.shownSourceIds = shownSourceIds;
