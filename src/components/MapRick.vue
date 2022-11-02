@@ -121,6 +121,12 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
         });
   });
 
+  map.on("click", "unclustered-point", (e: any) => {
+    e.preventDefault();
+
+    onMapAddressClicked(e);
+  });
+
   console.log("Map onMapLoaded...");
 
   watch(
@@ -141,6 +147,30 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
 const onMapMoveEnd = (map: mapboxgl.Map) => {
   store.commit("setMapBounds", map.getBounds());
   new DataRickService().updateFilterFromStore();
+};
+
+const onMapAddressClicked = (e: any) => {
+  const coordinates = e.features[0].geometry.coordinates.slice();
+  const map = e.target;
+  const address = e.features[0].properties;
+  const label = address?.streetName + " " + address?.houseNumber;
+  // const label: string = this._getAddressData(e).label;
+
+  // Ensure that if the map is zoomed out such that
+  // multiple copies of the feature are visible, the
+  // popup appears over the copy being pointed to.
+  while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+  }
+
+  new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: true,
+    closeOnMove: false,
+  })
+    .setLngLat(coordinates)
+    .setHTML(`${label}`)
+    .addTo(map);
 };
 
 // getGeoJSON
