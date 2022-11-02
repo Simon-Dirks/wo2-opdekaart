@@ -4,7 +4,6 @@ module.exports = {
         "./index.html",
         "./src/**/*.{vue,js,ts,jsx,tsx}",
     ], theme: {
-        colors: {},
         extend: {
             colors: {
                 primary: "#437f74",

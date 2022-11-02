@@ -2,7 +2,14 @@
 
 @font-face {
     font-family: 'AkzidenzGrotesk';
-    src: url('assets/fonts/AkzidGrtskNext-Med.woff') format('woff')
+    src: url('assets/fonts/AkzidGrtskNext-Regular.woff') format('woff');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'AkzidenzGrotesk';
+    src: url('assets/fonts/AkzidGrtskNext-Med.woff') format('woff');
+    font-weight: bold;
 }
 
 @tailwind base;

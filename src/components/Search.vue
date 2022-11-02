@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { MapService } from "../services/map.service";
 import { onMounted, Ref, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { SearchOptionModel } from "../models/search-option.model";
 
-// const mapService: MapService = new MapService();
+// const mapService: _mapService = new _mapService();
 const search: Ref<string> = ref("");
 const searchOption: Ref<SearchOptionModel> = ref(SearchOptionModel.All);
 

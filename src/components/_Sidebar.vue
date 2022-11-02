@@ -9,7 +9,7 @@ const previewItemsContainerRef: Ref<HTMLDivElement | null> = ref(null);
 
 const store = useStore();
 const selectedAddress: ComputedRef<AddressModel | null> = computed(
-  () => store.getters.getSelectedItem
+  () => store.getters.getSelectedAddress
 );
 
 const pageStartElemIdx: ComputedRef<number> = computed(

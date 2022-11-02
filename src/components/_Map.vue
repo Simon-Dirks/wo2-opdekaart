@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref, Ref, watch } from "vue";
+import { ref, Ref, watch } from "vue";
 import { MapboxMap, MapboxNavigationControl } from "vue-mapbox-ts";
-import { MapService } from "../services/map.service";
+import { _mapService } from "../services/_map.service";
 import Search from "./Search.vue";
 import { useStore } from "vuex";
 import SourceSelect from "./SourceSelect.vue";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
 import { AddressModel } from "../models/address.model";
-import { DataService } from "../services/data.service";
 // import { useLoadingBar } from "naive-ui";
 import IntroDialog from "./IntroDialog.vue";
 import Sidebar from "./_Sidebar.vue";
@@ -22,7 +21,7 @@ const MAPBOX_LIGHT_STYLE: string = "mapbox://styles/mapbox/light-v10";
 
 const store = useStore();
 
-const mapService: MapService = new MapService();
+const mapService: _mapService = new _mapService();
 
 const allAddresses: Ref<AddressModel[]> = ref([]);
 
