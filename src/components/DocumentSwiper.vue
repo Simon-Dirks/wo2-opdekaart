@@ -7,11 +7,13 @@ import "swiper/css/keyboard";
 import "swiper/css/navigation";
 import { PropType } from "vue";
 import { DocumentModel } from "../models/document.model";
+import { AddressModel } from "../models/address.model";
 import DocumentSwiperSlide from "./DocumentSwiperSlide.vue";
 
 const modules = [Scrollbar, Mousewheel, Keyboard, Navigation];
 
 const props = defineProps({
+  address: { type: Object as PropType<AddressModel | null>, required: false },
   documents: {
     type: Object as PropType<DocumentModel[] | undefined>,
     required: false,
@@ -44,6 +46,7 @@ const props = defineProps({
       v-if="props.documents"
     >
       <document-swiper-slide
+        :address="address"
         :is-shown-fullscreen="isShownFullscreen"
         :documents="documents"
         :document="document"

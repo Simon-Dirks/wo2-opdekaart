@@ -7,7 +7,7 @@ import SourceSelect from "./SourceSelect.vue";
 const search: Ref<string> = ref("");
 const store = useStore();
 
-const onSearchButtonClicked = () => {
+const onSearch = () => {
   console.log("Searching:", search.value);
   store.commit("setSearchTerm", search.value);
 };
@@ -30,17 +30,9 @@ onMounted(() => {
       class="rounded-lg mr-2"
       placeholder="Zoeken..."
       v-model:value="search"
-      @keyup.enter="onSearchButtonClicked"
+      @keyup.enter="onSearch"
+      v-debounce:300ms="onSearch"
     />
-
-    <n-button
-      primary
-      class="px-4 py-2 rounded-lg inline-block"
-      type="primary"
-      @click="onSearchButtonClicked"
-    >
-      Zoeken
-    </n-button>
 
     <source-select class="mt-4"></source-select>
   </div>
@@ -49,7 +41,7 @@ onMounted(() => {
 <style scoped>
 .n-input {
   display: inline-block;
-  width: 15rem;
+  width: 17rem;
   border-radius: 0;
 }
 </style>
