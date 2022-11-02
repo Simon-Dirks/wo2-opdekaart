@@ -114,7 +114,7 @@ section {
   width: 516px;
   height: 470px;
   /*border: 1px solid red;*/
-  background: rgba(67, 127, 116, 0.8);
+  background: rgba(67, 127, 116, 0.9);
 }
 dialog section {
   padding: 2rem;
