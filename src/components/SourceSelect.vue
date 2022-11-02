@@ -1,10 +1,36 @@
 <script setup lang="ts">
 import { useStore } from "vuex";
 import { InformationCircle } from "@vicons/ionicons5";
-import { computed, ComputedRef, watch } from "vue";
+import { computed, ComputedRef, ref, Ref, watch } from "vue";
 import { SourceModel } from "../models/source.model";
+import { SearchOptionModel } from "../models/search-option.model";
 
 const store = useStore();
+const searchOption: Ref<SearchOptionModel> = ref(SearchOptionModel.All);
+
+const searchOptions = [
+  {
+    value: SearchOptionModel.All,
+    label: "Alles",
+  },
+  {
+    value: SearchOptionModel.People,
+    label: "Personen",
+  },
+  {
+    value: SearchOptionModel.Addresses,
+    label: "Adressen",
+  },
+];
+
+watch(searchOption, (currentOption, prevOption) => {
+  console.log(
+    SearchOptionModel[prevOption],
+    "->",
+    SearchOptionModel[currentOption]
+  );
+  store.commit("setSearchOption", currentOption);
+});
 
 const sources: ComputedRef<SourceModel[]> = computed(
   () => store.getters["getSources"]
@@ -44,47 +70,77 @@ watch(
 </script>
 
 <template>
-  <div class="">
-    <n-card
-      class="bg-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.95)] transition-colors duration-500"
-    >
-      <n-collapse>
-        <n-collapse-item title="Bronnen" class="pr-4">
-          <n-button primary class="rounded-lg mr-2" @click="onToggleAllSources"
-            >{{ allSourcesAreSelected ? "Deselecteer" : "Selecteer" }} alles
-          </n-button>
+  <n-collapse class="text-white">
+    <n-collapse-item title="Zoekopties" class="pr-4">
+      <p class="text-white mt-2">Zoek naar:</p>
+      <n-radio-group
+        v-model:value="searchOption"
+        name="radiogroup"
+        class="bg-transparent px-4 py-2 rounded-lg transition-colors duration-500"
+      >
+        <n-space>
+          <n-radio
+            v-for="option in searchOptions"
+            :key="option.value"
+            :value="option.value"
+            :label="option.label"
+          />
+        </n-space>
+      </n-radio-group>
 
-          <div v-for="source in sources">
-            <n-checkbox
-              :id="source.sourceId"
-              @click="onSourceToggled(source.sourceId)"
-              :checked="shownSourceIds.has(source.sourceId)"
+      <p class="text-white mt-2">Bronnen:</p>
+
+      <div v-for="source in sources">
+        <n-checkbox
+          :id="source.sourceId"
+          @click="onSourceToggled(source.sourceId)"
+          :checked="shownSourceIds.has(source.sourceId)"
+        >
+          {{ source.label }}
+        </n-checkbox>
+
+        <n-tooltip trigger="hover">
+          <template #trigger>
+            <Icon
+              size="20"
+              class="relative top-[0.3rem] cursor-pointer text-[#9F9F9F] hover:text-black transition-colors duration-300"
             >
-              {{ source.label }}
-            </n-checkbox>
+              <InformationCircle />
+            </Icon>
+          </template>
+          <p
+            v-if="source.description"
+            v-text="source.description"
+            class="text-white"
+          ></p>
+          <p v-else>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            <br />
+            Ab asperiores assumenda, blanditiis, consequuntur corporis
+            doloremque dolores explicabo fuga in.
+          </p>
+        </n-tooltip>
+      </div>
 
-            <n-tooltip trigger="hover">
-              <template #trigger>
-                <Icon
-                  size="20"
-                  class="relative top-[0.3rem] cursor-pointer text-gray-500 hover:text-gray-800 transition-colors"
-                >
-                  <InformationCircle />
-                </Icon>
-              </template>
-              <p v-if="source.description" v-text="source.description"></p>
-              <p v-else>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                <br />
-                Ab asperiores assumenda, blanditiis, consequuntur corporis
-                doloremque dolores explicabo fuga in.
-              </p>
-            </n-tooltip>
-          </div>
-        </n-collapse-item>
-      </n-collapse>
-    </n-card>
-  </div>
+      <button
+        class="rounded-3xl px-4 py-2 bg-white hover:bg-black hover:text-white transition-colors duration-500 mt-4"
+        @click="onToggleAllSources"
+      >
+        {{ allSourcesAreSelected ? "Deselecteer" : "Selecteer" }} alles
+      </button>
+    </n-collapse-item>
+  </n-collapse>
 </template>
 
-<style scoped></style>
+<style>
+.n-collapse
+  .n-collapse-item
+  .n-collapse-item__content-wrapper
+  .n-collapse-item__content-inner {
+  padding: 0;
+}
+
+.n-radio-group {
+  padding: 0;
+}
+</style>

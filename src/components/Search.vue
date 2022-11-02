@@ -1,37 +1,11 @@
 <script setup lang="ts">
 import { onMounted, Ref, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { SearchOptionModel } from "../models/search-option.model";
+import SourceSelect from "./SourceSelect.vue";
 
 // const mapService: _mapService = new _mapService();
 const search: Ref<string> = ref("");
-const searchOption: Ref<SearchOptionModel> = ref(SearchOptionModel.All);
-
-const searchOptions = [
-  {
-    value: SearchOptionModel.All,
-    label: "Alles",
-  },
-  {
-    value: SearchOptionModel.People,
-    label: "Personen",
-  },
-  {
-    value: SearchOptionModel.Addresses,
-    label: "Adressen",
-  },
-];
-
 const store = useStore();
-
-watch(searchOption, (currentOption, prevOption) => {
-  console.log(
-    SearchOptionModel[prevOption],
-    "->",
-    SearchOptionModel[currentOption]
-  );
-  store.commit("setSearchOption", currentOption);
-});
 
 const onSearchButtonClicked = () => {
   console.log("Searching:", search.value);
@@ -50,40 +24,25 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="drop-shadow">
-    <div class="mb-1">
-      <n-input
-        type="text"
-        class="rounded-lg mr-2"
-        placeholder="Zoeken"
-        v-model:value="search"
-        @keyup.enter="onSearchButtonClicked"
-      />
+  <div class="bg-primary p-4">
+    <n-input
+      type="text"
+      class="rounded-lg mr-2"
+      placeholder="Zoeken..."
+      v-model:value="search"
+      @keyup.enter="onSearchButtonClicked"
+    />
 
-      <n-button
-        primary
-        class="px-4 py-2 rounded-lg inline-block"
-        type="primary"
-        @click="onSearchButtonClicked"
-      >
-        Zoeken
-      </n-button>
-    </div>
-
-    <n-radio-group
-      v-model:value="searchOption"
-      name="radiogroup"
-      class="bg-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.95)] px-4 py-2 rounded-lg transition-colors duration-500"
+    <n-button
+      primary
+      class="px-4 py-2 rounded-lg inline-block"
+      type="primary"
+      @click="onSearchButtonClicked"
     >
-      <n-space>
-        <n-radio
-          v-for="option in searchOptions"
-          :key="option.value"
-          :value="option.value"
-          :label="option.label"
-        />
-      </n-space>
-    </n-radio-group>
+      Zoeken
+    </n-button>
+
+    <source-select class="mt-4"></source-select>
   </div>
 </template>
 
@@ -91,5 +50,6 @@ onMounted(() => {
 .n-input {
   display: inline-block;
   width: 15rem;
+  border-radius: 0;
 }
 </style>

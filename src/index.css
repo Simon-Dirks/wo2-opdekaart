@@ -16,9 +16,9 @@
 @tailwind components;
 @tailwind utilities;
 
-.n-button {
-    background-color: var(--n-color);
-}
+/*.n-button {*/
+/*    background-color: var(--n-color);*/
+/*}*/
 
 html, body {
     font-family: 'AKZIDENZGROTESK', sans-serif;
@@ -26,4 +26,28 @@ html, body {
 
 .font-mono {
     font-family: 'Space Mono', monospace;
+}
+
+.n-collapse {
+    --n-divider-color: white !important;
+    --n-title-text-color: white !important;
+    --n-arrow-color: white !important;
+}
+
+.n-radio .n-radio__label, .n-checkbox .n-checkbox__label {
+    --n-text-color: white;
+}
+
+.n-checkbox {
+    --n-color-checked: theme("colors.white") !important;
+    --n-check-mark-color: theme("colors.black") !important;
+    --n-border-radius: 2px !important;
+    --n-border: none !important;
+    --n-border-checked: none !important;
+    --n-border-focus: none !important;
+}
+
+.n-radio__dot-wrapper {
+    --n-dot-color-active: theme("colors.black") !important;
+    --n-box-shadow-active: none !important;
 }

@@ -39,17 +39,25 @@ const onScroll = (e) => {
 
 <template>
   <div
-    class="fixed right-4 top-4 w-96 h-screen overflow-y-auto"
+    class="fixed right-0 top-0 w-96 pt-4 pr-4 h-screen overflow-y-auto"
     @scroll="onScroll($event)"
   >
-    <div class="text-lg mb-4 px-4 py-4 bg-primary z-10" v-if="!selectedAddress">
-      <h1 class="text-white">
-        {{ filteredAddresses?.length }} adres{{
-          filteredAddresses?.length !== 1 ? "sen" : ""
-        }}
-        en {{ getNumberOfDocuments() }} document{{
-          getNumberOfDocuments() !== 1 ? "en" : ""
-        }}
+    <div
+      class="text-lg mb-4 px-4 py-2 bg-black text-white z-10"
+      v-if="!selectedAddress"
+    >
+      <h1>
+        <span>
+          {{ filteredAddresses?.length }} adres{{
+            filteredAddresses?.length !== 1 ? "sen" : ""
+          }}
+        </span>
+
+        <span class="ml-4">
+          {{ getNumberOfDocuments() }} document{{
+            getNumberOfDocuments() !== 1 ? "en" : ""
+          }}
+        </span>
       </h1>
     </div>
 
