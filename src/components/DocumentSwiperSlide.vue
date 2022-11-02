@@ -118,7 +118,7 @@
           >
             <div>
               <button
-                @click="onPersonClicked(personAtAddress.person.label)"
+                @click="onPersonClicked(personAtAddress.person?.label)"
                 class="text-left"
                 :style="{
                   textDecoration: personMatchesSearch(
@@ -134,7 +134,7 @@
 
             <div>
               <button
-                @click="onPersonClicked(personAtAddress.address.label)"
+                @click="onPersonClicked(personAtAddress.address?.label)"
                 class="text-left"
                 :style="{
                   textDecoration: personMatchesSearch(
@@ -276,7 +276,7 @@ const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
           (personAtAddressItem: PersonAtAddressModel) => {
             if (searchOption === SearchOptionModel.Addresses) {
               return UtilService.labelMatchesSearch(
-                personAtAddressItem.address.label,
+                personAtAddressItem.address?.label,
                 search
               );
             }
