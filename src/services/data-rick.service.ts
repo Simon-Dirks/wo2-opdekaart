@@ -362,7 +362,7 @@ export class DataRickService {
     };
 
     const doesPersonContain = (person, searchTerm) => {
-      return person.label?.toLowerCase().includes(searchTerm.toLowerCase());
+      return person?.label?.toLowerCase().includes(searchTerm.toLowerCase());
     };
 
     const doesAnyPersonContain = (persons, searchTerm) => {

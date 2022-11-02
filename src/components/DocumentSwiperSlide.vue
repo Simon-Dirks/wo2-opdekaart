@@ -122,13 +122,13 @@
                 class="text-left"
                 :style="{
                   textDecoration: personMatchesSearch(
-                    personAtAddress.person.personId
+                    personAtAddress.person?.personId
                   )
                     ? 'underline'
                     : 'none',
                 }"
               >
-                {{ personAtAddress.person.label }}
+                {{ personAtAddress.person?.label }}
               </button>
             </div>
 
@@ -138,7 +138,7 @@
                 class="text-left"
                 :style="{
                   textDecoration: personMatchesSearch(
-                    personAtAddress.person.personId
+                    personAtAddress.person?.personId
                   )
                     ? 'underline'
                     : 'none',
@@ -154,10 +154,10 @@
 
         <button
           class="rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
-          @click="
-            window.confirm('Ziet u een fout? Laat het ons alstublieft weten.')
-          "
-        ></button>
+          @click="onShareScanCommentsClicked()"
+        >
+          Fout melden
+        </button>
       </div>
     </div>
   </div>
@@ -245,7 +245,7 @@ const onPersonClicked = (personLabel: string) => {
 };
 
 const onShareScanCommentsClicked = () => {
-  alert("Fout melden");
+  window.confirm("Ziet u een fout? Laat het ons alstublieft weten.");
 };
 
 const personMatchesSearch = (personId: string): boolean => {
