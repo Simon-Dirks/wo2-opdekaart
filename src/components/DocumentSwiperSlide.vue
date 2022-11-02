@@ -6,11 +6,8 @@
     v-if="document"
   >
     <div
-      class="col-span-6 h-full flex-initial bg-black"
-      :class="[
-        documentRefersToPeople ? 'md:col-start-3 md:col-span-4' : '',
-        isShownFullscreen ? 'p-4' : '',
-      ]"
+      class="col-span-6 h-full flex-initial bg-black md:col-start-3 md:col-span-4"
+      :class="[isShownFullscreen ? 'p-4' : '']"
     >
       <div class="flex-auto">
         <button
@@ -48,7 +45,7 @@
 
             <div v-if="!isShownFullscreen">
               <p class="p-0 m-0 text-left font-mono text-xs mt-2">
-                Bron: {{ document.sourceItem.label }}
+                {{ document.sourceItem.label }}
               </p>
             </div>
           </div>
@@ -59,7 +56,7 @@
         v-if="isShownFullscreen"
       >
         <p>
-          <a :href="getDocumentUrl(document.id)" target="_blank">
+          <a :href="getDocumentUrl(document.docId)" target="_blank">
             {{ document.label }}</a
           >
         </p>
@@ -68,7 +65,7 @@
 
     <div
       class="col-span-6 overflow-y-auto max-h-[90vh] px-6 flex-initial md:col-span-2 p-4"
-      v-if="isShownFullscreen && documentRefersToPeople"
+      v-if="isShownFullscreen"
     >
       <div
         v-if="peopleMatchingSearch && peopleMatchingSearch.length > 0"

@@ -135,9 +135,6 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     store.commit("deselectAddress");
   });
 
-  const nav = new mapboxgl.NavigationControl();
-  map.addControl(nav, "bottom-left");
-
   console.log("Map onMapLoaded...");
 
   watch(
@@ -228,7 +225,7 @@ const getGeoJSON = (addresses: AddressModel[]) => {
     @loaded="onMapLoaded"
     @moveend="onMapMoveEnd($event.target)"
   >
-    <mapbox-navigation-control position="bottom-right" :show-compass="false" />
+    <mapbox-navigation-control position="bottom-left" :show-compass="false" />
   </mapbox-map>
 </template>
 
