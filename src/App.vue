@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, Ref, watch } from "vue";
-import MapRick from "./components/MapRick.vue";
+import MapRick from "./components/NewMap.vue";
 import Search from "./components/Search.vue";
 import { DataRickService } from "./services/data-rick.service";
 import { DataModel } from "./models/data.model";
