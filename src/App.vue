@@ -2,7 +2,6 @@
 import { ref, Ref, watch } from "vue";
 import MapRick from "./components/MapRick.vue";
 import Search from "./components/Search.vue";
-import SourceSelect from "./components/SourceSelect.vue";
 import { DataRickService } from "./services/data-rick.service";
 import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
@@ -103,8 +102,7 @@ watch(
     <div class="md:col-span-6 h-full">
       <div class="h-full">
         <search class="absolute top-4 left-4 z-10"></search>
-        <source-select class="absolute top-28 left-4 z-10"></source-select>
-        <MapRick @onMapLoaded="onMapLoaded"></MapRick>
+        <map-rick @onMapLoaded="onMapLoaded"></map-rick>
         <new-sidebar></new-sidebar>
       </div>
     </div>

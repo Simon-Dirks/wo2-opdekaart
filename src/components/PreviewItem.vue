@@ -24,11 +24,9 @@ const props = defineProps({
         class="text-xs font-mono"
         v-if="props.address?.filteredDocuments.length === 1"
       >
-        #{{ props.index }}:
         {{ props.address.filteredDocuments.length }} document
       </p>
       <p class="text-xs font-mono" v-else>
-        #{{ props.index }}:
         {{ props.address.filteredDocuments.length }} documenten
       </p>
     </template>
