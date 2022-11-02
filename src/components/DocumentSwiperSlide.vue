@@ -282,7 +282,7 @@ const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
             }
             if (searchOption === SearchOptionModel.People) {
               return UtilService.labelMatchesSearch(
-                personAtAddressItem.person.label,
+                personAtAddressItem.person?.label,
                 search
               );
             }
