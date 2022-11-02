@@ -2,7 +2,9 @@ import { SourceModel } from "./source.model";
 import { AddressModel } from "./address.model";
 
 export type DocumentModel = {
-  id: string;
+  id: string; //old ?
+
+  docId: string;
   // source: SourceModel;
   image?: string | null;
   label: string;

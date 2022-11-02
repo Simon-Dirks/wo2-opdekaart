@@ -348,27 +348,6 @@ export class DataRickService {
     );
   }
 
-  // filterDocuments(
-  //   //this should make a subselection of documents based on wether searchTerm etc is part of an address or person on this document
-  //   documents: DocumentModel[],
-  //   searchTerm: string,
-  //   searchOption: SearchOptionModel,
-  //   selectedSources: SourceModel[]
-  // ) {
-  //   let filteredDocuments = documents.filter((doc) => {
-  //     for (const source of selectedSources) {
-  //       if (source.documents?.indexOf(doc) != -1) {
-  //         return true;
-  //       }
-  //     }
-  //     return false;
-  //   });
-  //
-  //   console.log("hoi!");
-  //
-  //   return filteredDocuments;
-  // }
-
   filterAddressesAndDocuments(
     addresses: AddressModel[],
     documents: DocumentModel[],

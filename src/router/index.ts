@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Map from "../components/_Map.vue";
+import NewMap from "../components/NewMap.vue";
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: Map,
+    component: NewMap,
   },
   {
     path: "/map",
     name: "Map",
-    component: Map,
+    component: NewMap,
   },
 ];
 
