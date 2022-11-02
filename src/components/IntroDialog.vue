@@ -7,6 +7,10 @@
       <!--          <h2>Utrechtse WO2 Kaart</h2>-->
       <!--        </slot>-->
       <!--      </header>-->
+      <img
+        src="https://hetutrechtsarchief.nl/images/1.Afbeeldingen/2018/Onderzoek/Wo_II.jpg"
+      />
+
       <section>
         <h1>Tweede wereldoorlog op de kaart</h1>
         <p>
@@ -15,13 +19,22 @@
           gebeurd op uw adres, in uw buurt of in uw omgeving? Via deze WO2 kaart
           kunt u zoeken in zo'n 20.000 Utrechtse adressen en personen.
         </p>
-        <img
-          v-if="isLoading"
-          src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"
-          width="200"
-        />
-        <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>
+        <!--        <img-->
+        <!--          v-if="isLoading"-->
+        <!--          src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"-->
+        <!--          width="200"-->
+        <!--        />-->
+        <!--        <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>-->
       </section>
+
+      <button
+        v-if="isLoading"
+        disabled
+        class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
+      >
+        De gegevens worden geladen...
+      </button>
+
       <button
         v-if="!isLoading"
         class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
@@ -46,6 +59,15 @@ export default {
 </script>
 
 <style scoped>
+img {
+  position: absolute;
+  left: -120px;
+  top: -80px;
+  width: 600px;
+  z-index: -1000;
+  /*margin-left: -100px;*/
+}
+
 dialog {
   position: fixed;
   top: 20vh;
@@ -57,18 +79,18 @@ dialog {
   /*border-radius: 12px;*/
   /*background: rgba(67, 127, 116, 0.9);*/
   border: none;
-  padding: 0;
   margin: 0;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 
 h1 {
   color: white;
   /*font-family: "Akzidenz-Grotesk Next";*/
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 45px;
   line-height: 52px;
+  margin-bottom: 80px;
 }
 div {
   position: fixed;
@@ -80,24 +102,37 @@ div {
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }
-section {
-  width: 516px;
-  height: 470px;
-  /*border: 1px solid red;*/
-  background: rgba(67, 127, 116, 0.9);
-}
-
 p {
   font-style: normal;
   font-weight: 400;
   color: white;
-  font-size: 23px;
+  font-size: 20px;
   line-height: 32px;
+}
+
+section {
+  width: 516px;
+  height: 470px;
+  /*border: 1px solid red;*/
+  background: rgba(67, 127, 116, 0.8);
+}
+dialog section {
+  padding: 2rem;
 }
 
 button {
   border-radius: 0;
   background-color: white;
+  color: black;
+  margin-top: 0;
+  padding: 1rem;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+button:hover {
+  color: black;
+  background-color: #dddddd;
 }
 
 header {
