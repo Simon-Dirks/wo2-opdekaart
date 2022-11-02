@@ -7,13 +7,16 @@ import PreviewItem from "./PreviewItem.vue";
 const store = useStore();
 const numShownAddresses: Ref<number> = ref(10);
 
-const filteredAddresses: ComputedRef<AddressModel[]> = computed(
-  () => store.getters["getFilteredAddresses"]
+const selectedAddress: ComputedRef<AddressModel | null> = computed(
+  () => store.getters.getSelectedAddress
 );
 
-const selectedAddress: ComputedRef<AddressModel | null> = computed(
-  () => store.getters.getSelectedItem
-);
+const filteredAddresses: ComputedRef<AddressModel[]> = computed(() => {
+  if (selectedAddress.value) {
+    return [selectedAddress.value];
+  }
+  return store.getters["getFilteredAddresses"];
+});
 
 const getNumberOfDocuments = (): number => {
   if (!filteredAddresses || !filteredAddresses.value) return 0;
@@ -32,11 +35,6 @@ const onScroll = (e) => {
     console.log("scrolled to bottom...");
   }
 };
-
-const myTest = (e) => {
-  console.log("test", filteredAddresses, numShownAddresses);
-  numShownAddresses.value += 10;
-};
 </script>
 
 <template>
@@ -44,18 +42,16 @@ const myTest = (e) => {
     class="fixed right-4 top-4 w-96 h-screen overflow-y-auto"
     @scroll="onScroll($event)"
   >
-    <p @click="myTest">test: klik om scroll te activeren</p>
-    <h1
-      class="text-lg mb-4 top-0 px-4 py-4 drop-shadow-2xl bg-slate-700 z-10"
-      v-if="!selectedAddress"
-    >
-      {{ filteredAddresses?.length }} adres{{
-        filteredAddresses?.length !== 1 ? "sen" : ""
-      }}
-      en {{ getNumberOfDocuments() }} document{{
-        getNumberOfDocuments() !== 1 ? "en" : ""
-      }}
-    </h1>
+    <div class="text-lg mb-4 px-4 py-4 bg-primary z-10" v-if="!selectedAddress">
+      <h1 class="text-white">
+        {{ filteredAddresses?.length }} adres{{
+          filteredAddresses?.length !== 1 ? "sen" : ""
+        }}
+        en {{ getNumberOfDocuments() }} document{{
+          getNumberOfDocuments() !== 1 ? "en" : ""
+        }}
+      </h1>
+    </div>
 
     <preview-item
       v-for="(address, index) in filteredAddresses.slice(0, numShownAddresses)"
@@ -63,7 +59,6 @@ const myTest = (e) => {
       :address="address"
       :index="index"
       :key="address.addressId"
-      @click="myTest"
     ></preview-item>
   </div>
 </template>

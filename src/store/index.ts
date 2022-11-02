@@ -54,7 +54,7 @@ export const store = createStore<State>({
     getFilteredDocuments(state) {
       return state.filteredDocuments;
     },
-    getSelectedItem(state) {
+    getSelectedAddress(state) {
       return state.selectedAddress;
     },
     getSearchTerm(state) {
@@ -118,6 +118,9 @@ export const store = createStore<State>({
     // },
     selectAddress(state: State, selectedAddress: AddressModel) {
       state.selectedAddress = selectedAddress;
+    },
+    deselectAddress(state: State) {
+      state.selectedAddress = null;
     },
     // deselectAddress(state: State) {
     //   state.selectedAddress = null;

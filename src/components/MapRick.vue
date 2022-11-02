@@ -127,6 +127,14 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
     onMapAddressClicked(e);
   });
 
+  map.on("click", (e: any) => {
+    if (e.defaultPrevented) {
+      return;
+    }
+
+    store.commit("deselectAddress");
+  });
+
   console.log("Map onMapLoaded...");
 
   watch(
@@ -171,6 +179,11 @@ const onMapAddressClicked = (e: any) => {
     .setLngLat(coordinates)
     .setHTML(`${label}`)
     .addTo(map);
+
+  store.commit(
+    "selectAddress",
+    store.getters["getAllData"].addressesById[address?.addressId]
+  );
 };
 
 // getGeoJSON
