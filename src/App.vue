@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { watch } from "vue";
+import { ref, Ref, watch } from "vue";
 import MapRick from "./components/MapRick.vue";
 import Search from "./components/Search.vue";
 import SourceSelect from "./components/SourceSelect.vue";
@@ -10,26 +10,30 @@ import { SearchOptionModel } from "./models/search-option.model";
 import { useStore } from "vuex";
 import NewSidebar from "./components/NewSidebar.vue";
 import PreviewItemModal from "./components/PreviewItemModal.vue";
+import IntroDialog from "./components/IntroDialog.vue";
 
 const store = useStore();
 
-const exampleFilter = () => {
-  const data = store.getters["getAllData"];
+const isLoading: Ref<boolean> = ref(true);
+const introDialogVisible: Ref<boolean> = ref(true);
 
-  console.log(data);
-
-  new DataRickService().filterAddressesAndDocuments(
-    data.addresses,
-    data.documents,
-    "willem",
-    SearchOptionModel.People,
-    data.sources
-  );
-};
-
-const resetExampleFilter = () => {
-  new DataRickService().resetFilter();
-};
+// const exampleFilter = () => {
+//   const data = store.getters["getAllData"];
+//
+//   console.log(data);
+//
+//   new DataRickService().filterAddressesAndDocuments(
+//     data.addresses,
+//     data.documents,
+//     "willem",
+//     SearchOptionModel.People,
+//     data.sources
+//   );
+// };
+//
+// const resetExampleFilter = () => {
+//   new DataRickService().resetFilter();
+// };
 
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
@@ -40,6 +44,8 @@ watch(
   () => store.getters["getAllData"],
   (allData: DataModel) => {
     console.log("App allData changed");
+
+    isLoading.value = false;
 
     // exampleFilter();
     //when allData is loaded then set filteredData to allData.addresses
@@ -103,6 +109,12 @@ watch(
       </div>
     </div>
   </div>
+
+  <intro-dialog
+    v-if="introDialogVisible"
+    :is-loading="isLoading"
+    @close="introDialogVisible = false"
+  />
 </template>
 
 <style scoped></style>

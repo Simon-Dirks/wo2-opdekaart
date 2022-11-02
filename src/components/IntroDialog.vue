@@ -2,12 +2,13 @@
   <teleport to="body">
     <div @click="$emit('close')"></div>
     <dialog open>
-      <header>
-        <slot name="header">
-          <h2>Utrechtse WO2 Kaart</h2>
-        </slot>
-      </header>
+      <!--      <header>-->
+      <!--        <slot name="header">-->
+      <!--          <h2>Utrechtse WO2 Kaart</h2>-->
+      <!--        </slot>-->
+      <!--      </header>-->
       <section>
+        <h1>Tweede wereldoorlog op de kaart</h1>
         <p>
           Zoekt u naar een persoon die in Utrecht leefde tijdens de
           oorlogsjaren? Bent u benieuwd wat tijdens de Tweede Wereldoorlog is
@@ -20,14 +21,14 @@
           width="200"
         />
         <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>
-        <button
-          v-if="!isLoading"
-          class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
-          @click="$emit('close')"
-        >
-          Naar de kaart!
-        </button>
       </section>
+      <button
+        v-if="!isLoading"
+        class="mt-4 bg-primary px-4 py-2 rounded-full text-white hover:bg-red-800 transition-colors"
+        @click="$emit('close')"
+      >
+        Naar de kaart!
+      </button>
       <!-- <menu>
           <slot name="actions">
             <base-button @click="$emit('close')">close</base-button>
@@ -45,29 +46,58 @@ export default {
 </script>
 
 <style scoped>
+dialog {
+  position: fixed;
+  top: 20vh;
+  left: 10%;
+  /*width: 80%;*/
+  background: transparent;
+
+  z-index: 1000;
+  /*border-radius: 12px;*/
+  /*background: rgba(67, 127, 116, 0.9);*/
+  border: none;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+h1 {
+  color: white;
+  /*font-family: "Akzidenz-Grotesk Next";*/
+  font-style: normal;
+  font-weight: 500;
+  font-size: 45px;
+  line-height: 52px;
+}
 div {
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   width: 100%;
-  border: 1px solid red;
+  /*border: 1px solid red;*/
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }
+section {
+  width: 516px;
+  height: 470px;
+  /*border: 1px solid red;*/
+  background: rgba(67, 127, 116, 0.9);
+}
 
-dialog {
-  position: fixed;
-  top: 20vh;
-  left: 10%;
-  width: 80%;
-  z-index: 1000;
-  border-radius: 12px;
-  border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  padding: 0;
-  margin: 0;
-  overflow: hidden;
+p {
+  font-style: normal;
+  font-weight: 400;
+  color: white;
+  font-size: 23px;
+  line-height: 32px;
+}
+
+button {
+  border-radius: 0;
+  background-color: white;
 }
 
 header {
