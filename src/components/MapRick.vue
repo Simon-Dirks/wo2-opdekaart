@@ -220,7 +220,7 @@ const getGeoJSON = (addresses: AddressModel[]) => {
     :center="[5.079400243080665, 52.09049473634017]"
     :maxZoom="20"
     :minZoom="4"
-    :zoom="10"
+    :zoom="7"
     :mapStyle="MAPBOX_LIGHT_STYLE"
     @loaded="onMapLoaded"
     @moveend="onMapMoveEnd($event.target)"
