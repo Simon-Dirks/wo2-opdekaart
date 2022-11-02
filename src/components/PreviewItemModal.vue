@@ -4,6 +4,7 @@ import { computed, ComputedRef } from "vue";
 import { Close } from "@vicons/ionicons5";
 import { DocumentModel } from "../models/document.model";
 import DocumentSwiper from "./DocumentSwiper.vue";
+import { AddressModel } from "../models/address.model";
 
 const store = useStore();
 const isShown: ComputedRef<boolean> = computed(
@@ -14,6 +15,10 @@ const shownDocuments: ComputedRef<DocumentModel[]> = computed(
 );
 const initialSlideIndex: ComputedRef<number> = computed(
   () => store.getters["previewModal/getInitialSlideIndex"]
+);
+
+const shownAddress: ComputedRef<AddressModel> = computed(
+  () => store.getters["previewModal/getShownAddress"]
 );
 const closeModal = () => store.dispatch("previewModal/close");
 </script>
@@ -43,6 +48,7 @@ const closeModal = () => store.dispatch("previewModal/close");
       </button>
 
       <document-swiper
+        :address="shownAddress"
         :documents="shownDocuments"
         :isShownFullscreen="true"
         :initial-slide="initialSlideIndex"

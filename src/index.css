@@ -50,6 +50,6 @@ html, body {
 .n-radio__dot-wrapper {
     --n-dot-color-active: theme("colors.black") !important;
     --n-box-shadow-active: none !important;
-    --n-box-shadow-focus: inset 0 0 0 1px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.3);
-    --n-box-shadow-hover: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+    --n-box-shadow-focus: inset 0 0 0 1px rgba(54, 54, 54, 0.3), 0 0 0 1px rgba(54, 54, 54, 0.3);
+    --n-box-shadow-hover: inset 0 0 0 1px rgba(54, 54, 54, 0.3);
 }

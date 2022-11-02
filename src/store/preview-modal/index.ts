@@ -1,8 +1,10 @@
 import { DocumentModel } from "../../models/document.model";
 import { ActionContext } from "vuex";
 import { State } from "../index";
+import { AddressModel } from "../../models/address.model";
 
 interface PreviewModalState {
+  shownAddress: AddressModel | null;
   shownDocuments: DocumentModel[];
   isShown: boolean;
   initialSlideIndex: number;
@@ -20,22 +22,32 @@ export const previewModalModule = {
     show: (
       context: ActionContext<PreviewModalState, State>,
       {
+        address,
         documents,
         initialSlideIndex,
-      }: { documents: DocumentModel[]; initialSlideIndex: number }
+      }: {
+        address: AddressModel | null;
+        documents: DocumentModel[];
+        initialSlideIndex: number;
+      }
     ) => {
       context.commit("setIsShown", true);
+      context.commit("setShownAddress", address);
       context.commit("setShownDocuments", documents);
       context.commit("setInitialSlideIndex", initialSlideIndex);
     },
     close: (context: ActionContext<PreviewModalState, State>) => {
       context.commit("setIsShown", false);
       context.commit("setInitialSlideIndex", 0);
+      context.commit("setShownAddress", null);
     },
   },
   getters: {
     getIsShown(state: PreviewModalState) {
       return state.isShown;
+    },
+    getShownAddress(state: PreviewModalState) {
+      return state.shownAddress;
     },
     getShownDocuments(state: PreviewModalState) {
       return state.shownDocuments;
@@ -53,6 +65,12 @@ export const previewModalModule = {
     },
     setIsShown: (state: PreviewModalState, isShown: boolean) => {
       state.isShown = isShown;
+    },
+    setShownAddress: (
+      state: PreviewModalState,
+      address: AddressModel | null
+    ) => {
+      state.shownAddress = address;
     },
     setInitialSlideIndex: (
       state: PreviewModalState,

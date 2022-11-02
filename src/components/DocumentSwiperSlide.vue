@@ -55,7 +55,7 @@
         </button>
       </div>
       <div
-        class="text-center drop-shadow flex-[0_1_20px]"
+        class="text-left drop-shadow flex-[0_1_20px]"
         v-if="isShownFullscreen"
       >
         <p>
@@ -63,15 +63,11 @@
             {{ document.label }}</a
           >
         </p>
-        <p class="font-mono">Bron: {{ document.sourceItem.label }}</p>
-        <button @click="onShareScanCommentsClicked">
-          <em> Fout melden </em>
-        </button>
       </div>
     </div>
 
     <div
-      class="col-span-6 max-h-[90vh] overflow-y-auto flex-initial md:col-span-2 p-4"
+      class="col-span-6 overflow-y-auto max-h-[90vh] px-6 flex-initial md:col-span-2 p-4"
       v-if="isShownFullscreen && documentRefersToPeople"
     >
       <div
@@ -99,24 +95,52 @@
         </div>
       </div>
       <div>
-        <h2 class="text-2xl">Personen</h2>
-        <div
-          class="grid grid-cols-2"
-          v-for="personAtAddress in props.document.personAtAddressItems"
-        >
-          <button
-            @click="onPersonClicked(personAtAddress.person.label)"
-            class="text-left"
-          >
-            {{ personAtAddress.person.label }}
-          </button>
+        <div>
+          <h1 v-if="shownAddress" class="text-2xl font-bold mb-6">
+            {{ shownAddress?.label }}
+          </h1>
+        </div>
 
-          <button
-            @click="onPersonClicked(personAtAddress.address.label)"
-            class="text-left"
+        <div class="mb-8 text-sm">
+          <p class="font-bold">{{ document.sourceItem.label }}</p>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. At
+            deserunt esse facilis hic, inventore quo similique soluta. Excepturi
+            ipsum perferendis quos. Accusantium eaque enim error iusto minima
+            quod voluptas voluptates.
+          </p>
+          <!--          <button @click="onShareScanCommentsClicked">-->
+          <!--            <em> Fout melden </em>-->
+          <!--          </button>-->
+        </div>
+        <div class="grid grid-cols-2">
+          <h2 class="font-bold mb-1">Persoon</h2>
+          <h2 class="font-bold mb-1">Adres</h2>
+        </div>
+
+        <div>
+          <div
+            class="grid grid-cols-2"
+            v-for="personAtAddress in props.document.personAtAddressItems"
           >
-            {{ personAtAddress.address.label }}
-          </button>
+            <div>
+              <button
+                @click="onPersonClicked(personAtAddress.person.label)"
+                class="text-left"
+              >
+                {{ personAtAddress.person.label }}
+              </button>
+            </div>
+
+            <div>
+              <button
+                @click="onPersonClicked(personAtAddress.address.label)"
+                class="text-left"
+              >
+                {{ personAtAddress.address.label }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -131,6 +155,7 @@ import { useStore } from "vuex";
 import Panzoom from "@panzoom/panzoom";
 import { SearchOptionModel } from "../models/search-option.model";
 import { UtilService } from "../services/util.service";
+import { AddressModel } from "../models/address.model";
 
 const imageRef: Ref<any> = ref(null);
 const store = useStore();
@@ -147,6 +172,7 @@ onMounted(() => {
 });
 
 const props = defineProps({
+  address: { type: Object as PropType<AddressModel | null>, required: false },
   documents: {
     type: Object as PropType<DocumentModel[] | undefined>,
     required: true,
@@ -158,6 +184,7 @@ const props = defineProps({
 
 const openModal = () => {
   store.dispatch("previewModal/show", {
+    address: props.address,
     documents: props.documents,
     initialSlideIndex: props.slideIndex ?? 0,
   });
@@ -245,6 +272,10 @@ const peopleMatchingSearch: ComputedRef<PersonAtAddressModel[] | undefined> =
       return matchingPeople;
     }
   });
+
+const shownAddress: ComputedRef<AddressModel> = computed(
+  () => store.getters["previewModal/getShownAddress"]
+);
 </script>
 
 <style>

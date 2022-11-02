@@ -32,6 +32,7 @@ const props = defineProps({
     </template>
 
     <document-swiper
+      :address="props.address"
       :documents="props.address.filteredDocuments"
       :is-shown-fullscreen="false"
       class="mt-4"

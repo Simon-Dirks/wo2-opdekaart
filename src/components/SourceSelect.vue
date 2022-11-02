@@ -103,7 +103,7 @@ watch(
           <template #trigger>
             <Icon
               size="20"
-              class="relative top-[0.3rem] cursor-pointer text-[#9F9F9F] hover:text-black transition-colors duration-300"
+              class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
             >
               <InformationCircle />
             </Icon>
@@ -123,7 +123,7 @@ watch(
       </div>
 
       <button
-        class="rounded-3xl px-4 py-2 bg-white hover:bg-black hover:text-white transition-colors duration-500 mt-4"
+        class="rounded-3xl px-4 py-1 bg-white hover:bg-black hover:text-white transition-colors duration-500 mt-4"
         @click="onToggleAllSources"
       >
         {{ allSourcesAreSelected ? "Deselecteer" : "Selecteer" }} alles
