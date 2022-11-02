@@ -98,19 +98,15 @@
           </h1>
         </div>
 
-        <div class="mb-8 text-sm">
+        <div class="mb-6 text-sm">
           <p class="font-bold">{{ document.sourceItem.label }}</p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. At
-            deserunt esse facilis hic, inventore quo similique soluta. Excepturi
-            ipsum perferendis quos. Accusantium eaque enim error iusto minima
-            quod voluptas voluptates.
+          <!--          <p>{{ document.sourceItem.sourceId }}</p>-->
+          <p v-if="document.sourceItem.description">
+            {{ document.sourceItem.description }}
           </p>
-          <!--          <button @click="onShareScanCommentsClicked">-->
-          <!--            <em> Fout melden </em>-->
-          <!--          </button>-->
         </div>
-        <div class="grid grid-cols-2">
+
+        <div v-if="documentRefersToPeople" class="grid grid-cols-2">
           <h2 class="font-bold mb-1">Persoon</h2>
           <h2 class="font-bold mb-1">Adres</h2>
         </div>
@@ -153,6 +149,15 @@
             </div>
           </div>
         </div>
+
+        <div class="mb-8 text-sm mt-5">{{ document.label }}</div>
+
+        <button
+          class="rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
+          @click="
+            window.confirm('Ziet u een fout? Laat het ons alstublieft weten.')
+          "
+        ></button>
       </div>
     </div>
   </div>
