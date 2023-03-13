@@ -2,7 +2,7 @@
 import { ref, Ref, watch } from "vue";
 import MapRick from "./components/NewMap.vue";
 import Search from "./components/Search.vue";
-import { DataRickService } from "./services/data-rick.service";
+import { DataRickService } from "./services/data-service
 import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
 import { SearchOptionModel } from "./models/search-option.model";

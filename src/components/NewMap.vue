@@ -4,7 +4,7 @@ import { watch } from "vue";
 import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
-import { DataRickService } from "../services/data-rick.service";
+import { DataRickService } from "../services/data-service
 
 const store = useStore();
 
