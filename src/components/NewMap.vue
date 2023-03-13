@@ -17,7 +17,7 @@ const MAPBOX_LIGHT_STYLE: string = "mapbox://styles/mapbox/light-v10";
 const emit = defineEmits(["onMapLoaded"]);
 
 const onMapLoaded = async (map: mapboxgl.Map) => {
-  console.log("MapRick onMapLoaded");
+  console.log("onMapLoaded");
   map.dragRotate.disable();
 
   // @ts-ignore
@@ -88,10 +88,10 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
       "text-field": [
         "format",
         ["get", "streetName"],
-        { "font-scale": 0.8 },
+        { "font-scale": 0.6 },
         " ",
         ["get", "houseNumber"],
-        { "font-scale": 0.8 },
+        { "font-scale": 0.6 },
       ],
 
       // 'get', 'streetName'],
@@ -154,6 +154,7 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
 
 const onMapMoveEnd = (map: mapboxgl.Map) => {
   store.commit("setMapBounds", map.getBounds());
+  store.commit("deselectAddress");
   new DataRickService().updateFilterFromStore();
 };
 
@@ -161,9 +162,11 @@ const onMapAddressClicked = (e: any) => {
   const coordinates = e.features[0].geometry.coordinates.slice();
   const map = e.target;
   const address = e.features[0].properties;
-  const label = address?.streetName + " " + address?.houseNumber;
-  // const label: string = this._getAddressData(e).label;
-
+  let label = address?.streetName
+  if (address?.houseNumber!="" && address?.houseNumber!=".") {
+    label += " " + address?.houseNumber;
+  }
+  
   // Ensure that if the map is zoomed out such that
   // multiple copies of the feature are visible, the
   // popup appears over the copy being pointed to.
