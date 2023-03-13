@@ -52,13 +52,12 @@
         </button>
       </div>
       <div
-        class="text-left drop-shadow flex-[0_1_20px]"
+        class="text-center drop-shadow flex-[0_1_20px]"
         v-if="isShownFullscreen"
       >
         <p>
-          <a :href="getDocumentUrl(document.docId)" target="_blank">
-            {{ document.label }}</a
-          >
+          <a :href="getDocumentUrl(document.docId)" target="_blank" style="text-decoration: underline;">
+            Bekijk dit document op de website van Het Utrechts Archief</a>
         </p>
       </div>
     </div>
@@ -119,13 +118,10 @@
             <div>
               <button
                 @click="onPersonClicked(personAtAddress.person?.label)"
-                class="text-left"
-                :style="{
-                  textDecoration: personMatchesSearch(
-                    personAtAddress.person?.personId
-                  )
-                    ? 'underline'
-                    : 'none',
+                class="text-left search-person" 
+                :class="{
+                  'highlight': personMatchesSearch(personAtAddress.person?.personId),
+                  'no-search': personAtAddress.person?.label==='Geanonimiseerde persoonsvermelding'
                 }"
               >
                 {{ personAtAddress.person?.label }}
@@ -135,14 +131,7 @@
             <div>
               <button
                 @click="onPersonClicked(personAtAddress.address?.label)"
-                class="text-left"
-                :style="{
-                  textDecoration: personMatchesSearch(
-                    personAtAddress.person?.personId
-                  )
-                    ? 'underline'
-                    : 'none',
-                }"
+                class="text-left search-address" :class="{'highlight': personMatchesSearch(personAtAddress.person?.personId)}"
               >
                 {{ personAtAddress.address.label }}
               </button>
@@ -156,7 +145,7 @@
           class="rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
           @click="onShareScanCommentsClicked()"
         >
-          Fout melden
+          Reactie versturen
         </button>
       </div>
     </div>
@@ -208,7 +197,8 @@ const openModal = () => {
 
 const getImageUrl = (imgUrl: string | undefined | null): string => {
   if (!imgUrl) {
-    return "https://via.placeholder.com/350x150";
+    return "https://wo2kaart.hualab.nl/assets/afbeelding-niet-zichtbaar.png";
+    // "https://via.placeholder.com/350x150";
   }
 
   const imgId: string = imgUrl.replace(
@@ -245,7 +235,23 @@ const onPersonClicked = (personLabel: string) => {
 };
 
 const onShareScanCommentsClicked = () => {
-  window.confirm("Ziet u een fout? Laat het ons alstublieft weten.");
+  const link = props.document.docId.replace("/id/doc/","/collectie/");
+  const subject = `Reactie op de WO2 kaart applicatie`;
+  const message = `Beste medewerker van Het Utrechts Archief,
+
+[type hier uw bericht]
+
+Toegang: ${props.document.label.replace("document in archieftoegang ","")}
+Archiefstuk: ${link}
+
+Met vriendelijke groet,
+
+[uw naam]`
+
+  if (window.confirm("Heeft u een tip of wilt u iets anders kwijt? Laat het ons weten door te e-mailen naar reactie@hetutrechtsarchief.nl.")) {
+    location.href = "mailto:reactie@hetutrechtsarchief.nl?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(message);
+  }
+
 };
 
 const personMatchesSearch = (personId: string): boolean => {
@@ -324,5 +330,24 @@ const shownAddress: ComputedRef<AddressModel> = computed(
   transition: -o-transform ease 200ms;
   transition: -webkit-transform ease 200ms;
   transition: transform ease 200ms;
+}
+
+.highlight {
+  background-color: yellow;
+  opacity: 0.9;
+  color: black;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 1px;
+  /* margin-right: 1px; */
+}
+
+.search-address:hover, .search-person:hover {
+  text-decoration: underline;
+}
+
+.no-search:hover {
+  text-decoration: none;
+  cursor: default;
 }
 </style>
