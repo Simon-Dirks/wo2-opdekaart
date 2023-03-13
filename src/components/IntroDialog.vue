@@ -63,7 +63,7 @@ dialog {
   z-index: 1000;
   /*border-radius: 12px;*/
   /*background: rgba(67, 127, 116, 0.9);*/
-  border: 1px solid red;
+  /* border: 1px solid red; */
   margin: 0;
   /*overflow: hidden;*/
 }
@@ -83,7 +83,7 @@ div {
   left: 0;
   height: 100vh;
   width: 100%;
-  border: 1px solid yellow;
+  /* border: 1px solid yellow; */
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }
