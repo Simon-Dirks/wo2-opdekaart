@@ -2,11 +2,6 @@
   <teleport to="body">
     <div @click="$emit('close')"></div>
     <dialog open>
-      <!--      <header>-->
-      <!--        <slot name="header">-->
-      <!--          <h2>Utrechtse WO2 Kaart</h2>-->
-      <!--        </slot>-->
-      <!--      </header>-->
       <img
         src="https://hetutrechtsarchief.nl/images/1.Afbeeldingen/2018/Onderzoek/Wo_II.jpg"
       />
@@ -17,14 +12,8 @@
           Zoekt u naar een persoon die in Utrecht leefde tijdens de
           oorlogsjaren? Bent u benieuwd wat tijdens de Tweede Wereldoorlog is
           gebeurd op uw adres, in uw buurt of in uw omgeving? Via deze WO2 kaart
-          kunt u zoeken in zo'n 20.000 Utrechtse adressen en personen.
+          kunt u zoeken in zo'n 5.500 adressen en 19.000 documenten.
         </p>
-        <!--        <img-->
-        <!--          v-if="isLoading"-->
-        <!--          src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif"-->
-        <!--          width="200"-->
-        <!--        />-->
-        <!--        <p v-if="isLoading">De gegevens worden geladen. Even geduld a.u.b.</p>-->
       </section>
 
       <button
@@ -42,11 +31,7 @@
       >
         Naar de kaart!
       </button>
-      <!-- <menu>
-          <slot name="actions">
-            <base-button @click="$emit('close')">close</base-button>
-          </slot>
-        </menu> -->
+      
     </dialog>
   </teleport>
 </template>
@@ -78,7 +63,7 @@ dialog {
   z-index: 1000;
   /*border-radius: 12px;*/
   /*background: rgba(67, 127, 116, 0.9);*/
-  border: none;
+  border: 1px solid red;
   margin: 0;
   /*overflow: hidden;*/
 }
@@ -90,7 +75,7 @@ h1 {
   font-weight: bold;
   font-size: 45px;
   line-height: 52px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
 }
 div {
   position: fixed;
@@ -98,7 +83,7 @@ div {
   left: 0;
   height: 100vh;
   width: 100%;
-  /*border: 1px solid red;*/
+  border: 1px solid yellow;
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }
@@ -111,8 +96,9 @@ p {
 }
 
 section {
-  width: 516px;
-  height: 470px;
+  max-width: 516px;
+  /* width: 516px;
+  height: 470px; */
   /*border: 1px solid red;*/
   background: rgba(67, 127, 116, 0.9);
 }
@@ -162,5 +148,14 @@ menu {
     left: calc(50% - 20rem);
     width: 40rem;
   }
+}
+
+@media (max-height: 600px) {
+  button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
 }
 </style>
