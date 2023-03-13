@@ -2,7 +2,7 @@
 import { ref, Ref, watch } from "vue";
 import MapRick from "./components/NewMap.vue";
 import Search from "./components/Search.vue";
-import { DataRickService } from "./services/data-service
+import { DataService } from "./services/data-service";
 import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
 import { SearchOptionModel } from "./models/search-option.model";
@@ -36,7 +36,7 @@ const introDialogVisible: Ref<boolean> = ref(true);
 
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
-  new DataRickService().init();
+  new DataService().init();
 };
 
 watch(
@@ -63,7 +63,7 @@ watch(
   () => store.getters["getSearchTerm"],
   (searchTerm) => {
     console.log("App getSearchTerm", searchTerm);
-    new DataRickService().updateFilterFromStore();
+    new DataService().updateFilterFromStore();
   }
 );
 
@@ -71,7 +71,7 @@ watch(
   () => store.getters["getSearchOption"],
   (searchOption) => {
     console.log("App getSearchOption", searchOption);
-    new DataRickService().updateFilterFromStore();
+    new DataService().updateFilterFromStore();
   }
 );
 
@@ -82,7 +82,7 @@ watch(
       "APP Updated selected source ID",
       store.getters["getShownSourceIds"]
     );
-    new DataRickService().updateFilterFromStore();
+    new DataService().updateFilterFromStore();
   }
 );
 
@@ -90,7 +90,7 @@ watch(
 //   () => store.getters["getShownSourceIds"],
 //   (sourceIds) => {
 //     console.log("App getShownSourceIds", sourceIds);
-//     // new DataRickService().updateFilterFromStore();
+//     // new DataService().updateFilterFromStore();
 //   }
 // );
 </script>

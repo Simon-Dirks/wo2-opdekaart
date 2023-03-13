@@ -9,8 +9,8 @@ import { PersonModel } from "../models/person.model";
 import { LngLatBounds, LngLatLike } from "mapbox-gl";
 import { TripleStoreAddressModel } from "../models/triple-store/triple-store-address.model";
 
-export class DataRickService {
-  private static _instance: DataRickService;
+export class DataService {
+  private static _instance: DataService;
 
   private readonly BASE_URL =
     "https://api.data.netwerkdigitaalerfgoed.nl/queries/hetutrechtsarchief/";
@@ -31,10 +31,10 @@ export class DataRickService {
     this.BASE_URL + "wo2-persoon-op-adres-per-document" + this.POSTFIX;
 
   constructor() {
-    if (DataRickService._instance) {
-      return DataRickService._instance;
+    if (DataService._instance) {
+      return DataService._instance;
     }
-    DataRickService._instance = this;
+    DataService._instance = this;
   }
 
   private async _fetch(url): Promise<any> {

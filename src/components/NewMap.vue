@@ -4,7 +4,7 @@ import { watch } from "vue";
 import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
 import { AddressesGeoJsonModel } from "../models/addresses-geo-json.model";
-import { DataRickService } from "../services/data-service
+import { DataService } from "../services/data-service";
 
 const store = useStore();
 
@@ -155,7 +155,7 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
 const onMapMoveEnd = (map: mapboxgl.Map) => {
   store.commit("setMapBounds", map.getBounds());
   store.commit("deselectAddress");
-  new DataRickService().updateFilterFromStore();
+  new DataService().updateFilterFromStore();
 };
 
 const onMapAddressClicked = (e: any) => {
@@ -177,7 +177,7 @@ const onMapAddressClicked = (e: any) => {
   new mapboxgl.Popup({
     closeButton: false,
     closeOnClick: true,
-    closeOnMove: false,
+    closeOnMove: true
   })
     .setLngLat(coordinates)
     .setHTML(`${label}`)
