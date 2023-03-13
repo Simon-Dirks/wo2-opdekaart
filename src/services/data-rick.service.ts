@@ -215,6 +215,10 @@ export class DataRickService {
       const doc = documentsById[item.docId];
       const address = addressesById[item.addressId];
 
+      if (!doc) {
+        console.log("doc not found: " + item.docId);
+      }
+
       //store address in list with address for certain document
       if (!doc.addresses) doc.addresses = [];
       doc.addresses.push(address);
