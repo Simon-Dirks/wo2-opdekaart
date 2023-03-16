@@ -232,4 +232,5 @@ const getGeoJSON = (addresses: AddressModel[]) => {
   </mapbox-map>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

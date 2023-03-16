@@ -179,7 +179,7 @@ export class DataService {
         (tripleStoreAddress: TripleStoreAddressModel) => ({
           [tripleStoreAddress.addressId]: {
             addressId: tripleStoreAddress.addressId,
-            label: tripleStoreAddress.label,
+            label: tripleStoreAddress.label.replace("-BS",""), //hack
             place: tripleStoreAddress.woonplaats,
             streetName: tripleStoreAddress.straatnaam,
             houseLetter: tripleStoreAddress.huisletter,

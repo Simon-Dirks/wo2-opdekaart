@@ -36,7 +36,9 @@ const props = defineProps({
     class="h-full px-12"
     :style="{
       '--swiper-navigation-size': '1rem',
-      '--swiper-navigation-color': 'white',
+      '--swiper-navigation-color': 'black',
+      // '--swiper-navigation-top-offset': '50%',
+      // '--swiper-navigation-sides-offset': '10px'    
     }"
   >
     <swiper-slide

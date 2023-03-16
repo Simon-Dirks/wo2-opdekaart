@@ -28,6 +28,7 @@
                     swiper.updateAutoHeight();
                   },
                   error: (el) => {
+                    
                     if (!swiper) {
                       return;
                     }
@@ -92,28 +93,22 @@
       <!--      </div>-->
       <div>
         <div>
-          <h1 v-if="shownAddress" class="text-2xl font-bold mb-6">
+          <h1 v-if="shownAddress" class="text-2xl font-bold mb-3">
             {{ shownAddress?.label }}
           </h1>
         </div>
 
-        <div class="mb-6 text-sm">
-          <p class="font-bold">{{ document.sourceItem.label }}</p>
-          <!--          <p>{{ document.sourceItem.sourceId }}</p>-->
-          <p v-if="document.sourceItem.description">
-            {{ document.sourceItem.description }}
-          </p>
-        </div>
+        <div class="underline-links mb-3 text-sm mt-0" v-html="getClickableLabel(document.label)"></div>
 
         <div v-if="documentRefersToPeople" class="grid grid-cols-2">
           <h2 class="font-bold mb-1">Persoon</h2>
           <h2 class="font-bold mb-1">Adres</h2>
         </div>
 
-        <div>
+        <div class="details-section">
           <div
-            class="grid grid-cols-2"
-            v-for="personAtAddress in props.document.personAtAddressItems"
+            class="grid grid-cols-2 row"
+            v-for="(personAtAddress, index) in props.document.personAtAddressItems" :key="index" :class="getRowClass(index)"
           >
             <div>
               <button
@@ -139,13 +134,28 @@
           </div>
         </div>
 
-        <div class="mb-8 text-sm mt-5">{{ document.label }}</div>
+        <div class="mt-4 mb-6 text-sm">
+          <p class="font-bold">{{ document.sourceItem.label }}</p>
+          <!--          <p>{{ document.sourceItem.sourceId }}</p>-->
+          <p v-if="document.sourceItem.description">
+            {{ document.sourceItem.description }}
+          </p>
+        </div>
 
         <button
-          class="rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
+          class="button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
+          @click="closePanel()"
+        >
+          <Icon size="15" class="icon"><Close /></Icon>
+          <span class="text">Venster sluiten</span>
+        </button>
+
+        <button
+          class="button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
           @click="onShareScanCommentsClicked()"
         >
-          Reactie versturen
+          <Icon size="15" class="icon"><Mail /></Icon>
+          <span class="text">Reactie versturen</span>
         </button>
       </div>
     </div>
@@ -153,6 +163,7 @@
 </template>
 
 <script setup lang="ts">
+import { InformationCircle, Close, Mail } from "@vicons/ionicons5";
 import { computed, ComputedRef, onMounted, PropType, ref, Ref } from "vue";
 import { useSwiper } from "swiper/vue";
 import { DocumentModel, PersonAtAddressModel } from "../models/document.model";
@@ -211,6 +222,17 @@ const getImageUrl = (imgUrl: string | undefined | null): string => {
   return url + imgId;
 };
 
+const getClickableLabel = (str:String ): String => {
+  return str;
+  // const regex = /\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?/g;
+  // const match = str.match(regex);
+  // if (match) {
+  //   return str.replace(regex, `<a href="https://hualab.nl/${match[0]}" target="_blank">${match[0]}</a>`);
+  // } else {
+  //   return str;
+  // }
+}
+
 const swiper = useSwiper();
 
 const documentRefersToPeople: boolean =
@@ -233,6 +255,15 @@ const onPersonClicked = (personLabel: string) => {
   store.commit("setSearchTerm", personLabel);
   store.dispatch("previewModal/close");
 };
+
+const closePanel = () => {
+  store.dispatch("previewModal/close");
+}
+
+const getRowClass = (index) => {
+  return index % 2 === 0 ? 'even-row' : 'odd-row';
+}
+
 
 const onShareScanCommentsClicked = () => {
   const link = props.document.docId.replace("/id/doc/","/collectie/");
@@ -339,7 +370,6 @@ const shownAddress: ComputedRef<AddressModel> = computed(
   padding-left: 5px;
   padding-right: 5px;
   margin-bottom: 1px;
-  /* margin-right: 1px; */
 }
 
 .search-address:hover, .search-person:hover {
@@ -350,4 +380,47 @@ const shownAddress: ComputedRef<AddressModel> = computed(
   text-decoration: none;
   cursor: default;
 }
+
+.button-with-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0.5rem;
+}
+
+.icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+.details-section {
+  max-height:40vh; 
+  overflow-y: scroll; 
+  /* background-color: #70938b; */
+  /* padding: .5rem; */
+}
+
+.details-section .row {
+  margin-bottom: 2px;
+  padding-left: 4px;
+  background-color: #618e81;  
+
+  /* max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; */
+} 
+
+.details-section .even-row {
+  /* background-color: #709a8f;   */
+}
+
+.details-section .odd-row {
+  /* background-color: #5c8178; */
+  /* background-color: #709a8f;   */
+}
+
+.underline-links a {
+  text-decoration: underline;
+}
+
 </style>
