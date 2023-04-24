@@ -16,6 +16,9 @@ const MAPBOX_LIGHT_STYLE: string = "mapbox://styles/mapbox/light-v10";
 
 const emit = defineEmits(["onMapLoaded"]);
 
+const mapCenter = [5.079400243080665, 52.09049473634017];
+const mapZoom: number = 7;
+
 const onMapLoaded = async (map: mapboxgl.Map) => {
   console.log("onMapLoaded");
   map.dragRotate.disable();
@@ -138,8 +141,7 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
   console.log("Map onMapLoaded...");
 
   watch(
-    () => store.getters["getFilteredAddresses"],
-    (filteredAddresses: AddressModel[]) => {
+    () => store.getters["getFilteredAddresses"], (filteredAddresses: AddressModel[]) => {
       console.log("Map getFilteredAddresses changed", filteredAddresses.length);
 
       const geoJSON = getGeoJSON(filteredAddresses);
@@ -148,6 +150,15 @@ const onMapLoaded = async (map: mapboxgl.Map) => {
       (map.getSource("markers-source") as any).setData(geoJSON);
     }
   );
+
+  watch(() => store.getters["getSearchTerm"], (searchTerm: string) => {
+      // search.value = searchTerm;
+      console.log("map onSearch", searchTerm);
+      map.easeTo({
+          center: mapCenter,
+          zoom: mapZoom,
+      });
+  });
 
   emit("onMapLoaded");
 };
@@ -220,10 +231,10 @@ const getGeoJSON = (addresses: AddressModel[]) => {
 <template>
   <mapbox-map
     :accessToken="MAPBOX_TOKEN"
-    :center="[5.079400243080665, 52.09049473634017]"
+    :center="mapCenter"
     :maxZoom="20"
     :minZoom="4"
-    :zoom="7"
+    :zoom="mapZoom"
     :mapStyle="MAPBOX_LIGHT_STYLE"
     @loaded="onMapLoaded"
     @moveend="onMapMoveEnd($event.target)"
