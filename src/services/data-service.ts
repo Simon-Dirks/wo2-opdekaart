@@ -437,6 +437,10 @@ export class DataService {
       address.filteredDocuments = address.documents.filter(
         (doc: DocumentModel) => {
 
+          // is doc in one the selected sources?
+          if (selectedSources.indexOf(doc.sourceItem)==-1) return false;
+
+          // daarna pas personen en search options etc controleren
           const persons = doc.personAtAddressItems
             ? doc.personAtAddressItems.map(
                 (personAddressItem) => personAddressItem.person
