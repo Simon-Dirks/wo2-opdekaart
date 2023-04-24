@@ -16,24 +16,6 @@ const store = useStore();
 const isLoading: Ref<boolean> = ref(true);
 const introDialogVisible: Ref<boolean> = ref(true);
 
-// const exampleFilter = () => {
-//   const data = store.getters["getAllData"];
-//
-//   console.log(data);
-//
-//   new DataRickService().filterAddressesAndDocuments(
-//     data.addresses,
-//     data.documents,
-//     "willem",
-//     SearchOptionModel.People,
-//     data.sources
-//   );
-// };
-//
-// const resetExampleFilter = () => {
-//   new DataRickService().resetFilter();
-// };
-
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
   new DataService().init();
