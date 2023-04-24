@@ -179,7 +179,7 @@ export class DataService {
         (tripleStoreAddress: TripleStoreAddressModel) => ({
           [tripleStoreAddress.addressId]: {
             addressId: tripleStoreAddress.addressId,
-            label: tripleStoreAddress.label.replace("-BS",""), //hack
+            label: tripleStoreAddress.label.replace("-BS",""), //fix
             place: tripleStoreAddress.woonplaats,
             streetName: tripleStoreAddress.straatnaam,
             houseLetter: tripleStoreAddress.huisletter,
@@ -267,6 +267,10 @@ export class DataService {
         return false;
       });
     }
+
+    // for (const source of sources) {
+    //   console.log(source.label, "docs=",source.documents.length,"adresses=",source.addresses.length )
+    // }
 
     //parse geo coords from string to LatLonLike
     for (const address of addresses) {
@@ -360,6 +364,7 @@ export class DataService {
     selectedSources: SourceModel[],
     mapBounds: LngLatBounds | null
   ) {
+
     //inline helper functions
     const addressFitsInMapBounds = (address: AddressModel) => {
       return mapBounds ? mapBounds.contains(address.coordinates) : true;
@@ -383,16 +388,16 @@ export class DataService {
       return address.label?.toLowerCase().includes(searchTerm.toLowerCase());
     };
 
-    //filter on source
     let filteredAddresses = addresses.filter((address) => {
       for (const source of selectedSources) {
+        // console.log("source",source,"source.addresses",source.addresses)
         if (source.addresses?.indexOf(address) != -1) {
           return true;
         }
       }
       return false;
     });
-
+   
     // filter addresses on map bounds
     filteredAddresses = filteredAddresses.filter(addressFitsInMapBounds);
 
@@ -431,6 +436,7 @@ export class DataService {
     for (const address of filteredAddresses) {
       address.filteredDocuments = address.documents.filter(
         (doc: DocumentModel) => {
+
           const persons = doc.personAtAddressItems
             ? doc.personAtAddressItems.map(
                 (personAddressItem) => personAddressItem.person
@@ -447,10 +453,9 @@ export class DataService {
             if (doesAnyPersonContain(persons, searchTerm)) return true;
           } else if (searchOption === SearchOptionModel.Addresses) {
             if (doesAddressContain(address, searchTerm)) return true;
-          }
+          }          
         }
       );
-
       // .length = 0; //clear array
       // for (const doc of address.documents) {
       //
@@ -464,51 +469,5 @@ export class DataService {
 
     store.commit("setFilteredAddresses", filteredAddresses);
 
-    // console.log(filteredAddresses[0]);
-
-    // const filteredAddressesById = {};
-    //
-    // for (const address of filteredAddresses) {
-    //   address.filteredDocuments = []; //make filteredDocuments empty for address. will be filled again later
-    //   filteredAddressesById[address.addressId] = address;
-    // }
-    //
-    //
-    // //filter documents by filteredAddresses
-    // let filteredDocuments = documents.filter((doc) => {
-    //   if (!doc.addresses) return false;
-    //   for (const docAddress of doc.addresses) {
-    //     const filteredAddress = filteredAddressesById[docAddress.addressId];
-    //     if (filteredAddress) {
-    //       filteredAddress.filteredDocuments.push(doc);
-    //       return true;
-    //     }
-    //   }
-    //   return false;
-    // });
-    //
-    // // console.log("filteredDocuments", filteredDocuments.length);
-    // //
-    // console.log("filteredAddresses0", filteredAddresses);
-    // //filter by person name
-    // if (searchOption === SearchOptionModel.People) {
-    //   filteredDocuments = filteredDocuments.filter((doc) => {
-    //     if (!doc.personAtAddressItems) return false;
-    //
-    //     for (const personAddressItem of doc.personAtAddressItems) {
-    //       const person = personAddressItem.person;
-    //
-    //       if (doesPersonContain(person, searchTerm)) {
-    //         return true;
-    //       }
-    //     }
-    //     return false;
-    //   });
-    // }
-
-    // console.log("filteredDocuments", filteredDocuments);
-    //
-    // store.commit("setFilteredDocuments", filteredDocuments);
-    // return filteredAddresses;
   }
 }
