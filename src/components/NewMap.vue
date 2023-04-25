@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import mapboxgl from "mapbox-gl";
+import { LngLatLike } from "mapbox-gl";
 import { watch } from "vue";
 import { useStore } from "vuex";
 import { AddressModel } from "../models/address.model";
@@ -16,7 +17,7 @@ const MAPBOX_LIGHT_STYLE: string = "mapbox://styles/mapbox/light-v10";
 
 const emit = defineEmits(["onMapLoaded"]);
 
-const mapCenter = [5.079400243080665, 52.09049473634017];
+const mapCenter: LngLatLike = [5.079400243080665, 52.09049473634017];
 const mapZoom: number = 7;
 
 const onMapLoaded = async (map: mapboxgl.Map) => {
