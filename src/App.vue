@@ -79,7 +79,7 @@ watch(
 <template>
   <preview-item-modal></preview-item-modal>
 
-  <div class="md:grid md:grid-cols-6 h-[50vh] md:h-full">
+  <div class="md:grid md:grid-cols-6 h-[70vh] md:h-full">
     <div class="md:col-span-6 h-full">
       <div class="h-full">
         <search class="absolute top-4 left-4 z-10"></search>
