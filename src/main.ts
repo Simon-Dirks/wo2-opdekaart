@@ -21,7 +21,7 @@ app.use(VueLazyLoad, {
   loading:
     "https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif",
     // error: "https://via.placeholder.com/350x150",
-    error: "https://wo2kaart.hualab.nl/assets/afbeelding-niet-zichtbaar.png",
+    error: "https://wo2kaart.hetutrechtsarchief.nl/assets/afbeelding-niet-zichtbaar.png",
   lifecycle: {
     error: (el: any) => {
       // console.warn(el);
