@@ -43,7 +43,7 @@ const onScroll = (e) => {
     @scroll="onScroll($event)"
   >
     <div
-      class="text-lg mb-4 px-4 py-2 bg-black text-white z-10"
+      class="text-lg sm:mb-4 px-4 py-2 bg-black text-white z-10"
       v-if="!selectedAddress"
     >
       <h1>
