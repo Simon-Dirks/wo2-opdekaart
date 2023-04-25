@@ -1,7 +1,7 @@
 <template>
   <teleport to="body">
     <div @click="$emit('close')"></div>
-    <dialog open>
+    <dialog open class="w-full sm:w-[50%] left-0 right-0 mx-auto">
       <img
         src="https://hetutrechtsarchief.nl/images/1.Afbeeldingen/2018/Onderzoek/Wo_II.jpg"
       />
@@ -65,7 +65,7 @@ dialog {
   /*border-radius: 12px;*/
   /*background: rgba(67, 127, 116, 0.9);*/
   /* border: 1px solid red; */
-  margin: 0;
+  /*margin: 0;*/
   /*overflow: hidden;*/
 }
 
@@ -101,7 +101,7 @@ p {
 section {
   max-width: 516px;
   /* width: 516px;
-                                                                              height: 470px; */
+                                                                                                                              height: 470px; */
   /*border: 1px solid red;*/
   background: rgba(67, 127, 116, 0.9);
 }
@@ -145,20 +145,5 @@ menu {
   display: flex;
   justify-content: flex-end;
   margin: 0;
-}
-
-@media (min-width: 768px) {
-  dialog {
-    left: calc(50% - 20rem);
-    width: 40rem;
-  }
-}
-
-@media (max-height: 600px) {
-  button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
 }
 </style>
