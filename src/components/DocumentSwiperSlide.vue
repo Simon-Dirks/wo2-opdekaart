@@ -162,7 +162,7 @@
         </div>
 
         <button
-          class="button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
+          class="mb-2 button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
           @click="closePanel()"
         >
           <Icon size="15" class="icon">
@@ -436,9 +436,9 @@ const shownAddress: ComputedRef<AddressModel> = computed(
   background-color: #618e81;
 
   /* max-width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis; */
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis; */
 }
 
 .details-section .even-row {
