@@ -7,8 +7,10 @@
       />
 
       <section>
-        <h1>Tweede wereldoorlog op de kaart</h1>
-        <p>
+        <h1 class="text-lg mb-2 sm:text-5xl sm:mb-8 sm:leading-[3.5rem]">
+          Tweede wereldoorlog op de kaart
+        </h1>
+        <p class="text-sm sm:text-lg">
           Zoekt u naar een persoon die in Utrecht leefde tijdens de
           oorlogsjaren? Bent u benieuwd wat tijdens de Tweede Wereldoorlog is
           gebeurd op uw adres, in uw buurt of in uw omgeving? Via deze WO2 kaart
@@ -31,7 +33,6 @@
       >
         Naar de kaart!
       </button>
-      
     </dialog>
   </teleport>
 </template>
@@ -56,7 +57,7 @@ img {
 dialog {
   position: fixed;
   top: 20vh;
-  left: 10%;
+  /*left: 10%;*/
   /*width: 80%;*/
   background: transparent;
 
@@ -73,10 +74,11 @@ h1 {
   /*font-family: "Akzidenz-Grotesk Next";*/
   font-style: normal;
   font-weight: bold;
-  font-size: 45px;
-  line-height: 52px;
-  margin-bottom: 40px;
+  /*font-size: 45px;*/
+  /*line-height: 52px;*/
+  /*margin-bottom: 40px;*/
 }
+
 div {
   position: fixed;
   top: 0;
@@ -87,21 +89,23 @@ div {
   background-color: rgba(0, 0, 0, 0.75);
   z-index: 10;
 }
+
 p {
   font-style: normal;
   font-weight: 400;
   color: white;
-  font-size: 20px;
-  line-height: 32px;
+  /*font-size: 20px;*/
+  /*line-height: 32px;*/
 }
 
 section {
   max-width: 516px;
   /* width: 516px;
-  height: 470px; */
+                                                                              height: 470px; */
   /*border: 1px solid red;*/
   background: rgba(67, 127, 116, 0.9);
 }
+
 dialog section {
   padding: 2rem;
 }
@@ -156,6 +160,5 @@ menu {
     right: 10px;
     top: 10px;
   }
-
 }
 </style>

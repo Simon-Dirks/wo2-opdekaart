@@ -5,7 +5,6 @@ import Search from "./components/Search.vue";
 import { DataService } from "./services/data-service";
 import { DataModel } from "./models/data.model";
 import { AddressModel } from "./models/address.model";
-import { SearchOptionModel } from "./models/search-option.model";
 import { useStore } from "vuex";
 import NewSidebar from "./components/NewSidebar.vue";
 import PreviewItemModal from "./components/PreviewItemModal.vue";
@@ -89,7 +88,6 @@ watch(
       </div>
     </div>
   </div>
-
   <intro-dialog
     v-if="introDialogVisible"
     :is-loading="isLoading"

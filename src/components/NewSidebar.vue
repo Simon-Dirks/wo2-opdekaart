@@ -39,7 +39,7 @@ const onScroll = (e) => {
 
 <template>
   <div
-    class="fixed right-0 top-0 w-96 pt-4 pr-4 h-screen overflow-y-auto"
+    class="sm:block sm:fixed sm:right-0 sm:top-0 sm:w-96 sm:pt-4 sm:pr-4 sm:h-screen overflow-y-auto"
     @scroll="onScroll($event)"
   >
     <div

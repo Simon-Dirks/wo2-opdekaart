@@ -28,7 +28,6 @@
                     swiper.updateAutoHeight();
                   },
                   error: (el) => {
-                    
                     if (!swiper) {
                       return;
                     }
@@ -57,8 +56,13 @@
         v-if="isShownFullscreen"
       >
         <p>
-          <a :href="getDocumentUrl(document.docId)" target="_blank" style="text-decoration: underline;">
-            Bekijk dit document op de website van Het Utrechts Archief</a>
+          <a
+            :href="getDocumentUrl(document.docId)"
+            target="_blank"
+            style="text-decoration: underline"
+          >
+            Bekijk dit document op de website van Het Utrechts Archief</a
+          >
         </p>
       </div>
     </div>
@@ -98,7 +102,10 @@
           </h1>
         </div>
 
-        <div class="underline-links mb-3 text-sm mt-0" v-html="getClickableLabel(document.label)"></div>
+        <div
+          class="underline-links mb-3 text-sm mt-0"
+          v-html="getClickableLabel(document.label)"
+        ></div>
 
         <div v-if="documentRefersToPeople" class="grid grid-cols-2">
           <h2 class="font-bold mb-1">Persoon</h2>
@@ -108,15 +115,22 @@
         <div class="details-section">
           <div
             class="grid grid-cols-2 row"
-            v-for="(personAtAddress, index) in props.document.personAtAddressItems" :key="index" :class="getRowClass(index)"
+            v-for="(personAtAddress, index) in props.document
+              .personAtAddressItems"
+            :key="index"
+            :class="getRowClass(index)"
           >
             <div>
               <button
                 @click="onPersonClicked(personAtAddress.person?.label)"
-                class="text-left search-person" 
+                class="text-left search-person"
                 :class="{
-                  'highlight': personMatchesSearch(personAtAddress.person?.personId),
-                  'no-search': personAtAddress.person?.label==='Geanonimiseerde persoonsvermelding'
+                  highlight: personMatchesSearch(
+                    personAtAddress.person?.personId
+                  ),
+                  'no-search':
+                    personAtAddress.person?.label ===
+                    'Geanonimiseerde persoonsvermelding',
                 }"
               >
                 {{ personAtAddress.person?.label }}
@@ -126,7 +140,12 @@
             <div>
               <button
                 @click="onPersonClicked(personAtAddress.address?.label)"
-                class="text-left search-address" :class="{'highlight': personMatchesSearch(personAtAddress.person?.personId)}"
+                class="text-left search-address"
+                :class="{
+                  highlight: personMatchesSearch(
+                    personAtAddress.person?.personId
+                  ),
+                }"
               >
                 {{ personAtAddress.address.label }}
               </button>
@@ -146,7 +165,9 @@
           class="button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
           @click="closePanel()"
         >
-          <Icon size="15" class="icon"><Close /></Icon>
+          <Icon size="15" class="icon">
+            <Close />
+          </Icon>
           <span class="text">Venster sluiten</span>
         </button>
 
@@ -154,7 +175,9 @@
           class="button-with-icon rounded-3xl px-4 py-1 text-black bg-white hover:bg-black hover:text-white transition-colors duration-500"
           @click="onShareScanCommentsClicked()"
         >
-          <Icon size="15" class="icon"><Mail /></Icon>
+          <Icon size="15" class="icon">
+            <Mail />
+          </Icon>
           <span class="text">Reactie versturen</span>
         </button>
       </div>
@@ -163,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import { InformationCircle, Close, Mail } from "@vicons/ionicons5";
+import { Close, Mail } from "@vicons/ionicons5";
 import { computed, ComputedRef, onMounted, PropType, ref, Ref } from "vue";
 import { useSwiper } from "swiper/vue";
 import { DocumentModel, PersonAtAddressModel } from "../models/document.model";
@@ -172,6 +195,7 @@ import Panzoom from "@panzoom/panzoom";
 import { SearchOptionModel } from "../models/search-option.model";
 import { UtilService } from "../services/util.service";
 import { AddressModel } from "../models/address.model";
+import imageNotVisiblePlaceholder from "../assets/afbeelding-niet-zichtbaar.png";
 
 const imageRef: Ref<any> = ref(null);
 const store = useStore();
@@ -208,7 +232,7 @@ const openModal = () => {
 
 const getImageUrl = (imgUrl: string | undefined | null): string => {
   if (!imgUrl) {
-    return "https://wo2kaart.hualab.nl/assets/afbeelding-niet-zichtbaar.png";
+    return imageNotVisiblePlaceholder;
     // "https://via.placeholder.com/350x150";
   }
 
@@ -222,7 +246,7 @@ const getImageUrl = (imgUrl: string | undefined | null): string => {
   return url + imgId;
 };
 
-const getClickableLabel = (str:String ): String => {
+const getClickableLabel = (str: String): String => {
   return str;
   // const regex = /\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?/g;
   // const match = str.match(regex);
@@ -231,7 +255,7 @@ const getClickableLabel = (str:String ): String => {
   // } else {
   //   return str;
   // }
-}
+};
 
 const swiper = useSwiper();
 
@@ -258,31 +282,37 @@ const onPersonClicked = (personLabel: string) => {
 
 const closePanel = () => {
   store.dispatch("previewModal/close");
-}
+};
 
 const getRowClass = (index) => {
-  return index % 2 === 0 ? 'even-row' : 'odd-row';
-}
-
+  return index % 2 === 0 ? "even-row" : "odd-row";
+};
 
 const onShareScanCommentsClicked = () => {
-  const link = props.document.docId.replace("/id/doc/","/collectie/");
+  const link = props.document.docId.replace("/id/doc/", "/collectie/");
   const subject = `Reactie op de WO2 kaart applicatie`;
   const message = `Beste medewerker van Het Utrechts Archief,
 
 [type hier uw bericht]
 
-Toegang: ${props.document.label.replace("document in archieftoegang ","")}
+Toegang: ${props.document.label.replace("document in archieftoegang ", "")}
 Archiefstuk: ${link}
 
 Met vriendelijke groet,
 
-[uw naam]`
+[uw naam]`;
 
-  if (window.confirm("Heeft u een tip of wilt u iets anders kwijt? Laat het ons weten door te e-mailen naar reactie@hetutrechtsarchief.nl.")) {
-    location.href = "mailto:reactie@hetutrechtsarchief.nl?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(message);
+  if (
+    window.confirm(
+      "Heeft u een tip of wilt u iets anders kwijt? Laat het ons weten door te e-mailen naar reactie@hetutrechtsarchief.nl."
+    )
+  ) {
+    location.href =
+      "mailto:reactie@hetutrechtsarchief.nl?subject=" +
+      encodeURIComponent(subject) +
+      "&body=" +
+      encodeURIComponent(message);
   }
-
 };
 
 const personMatchesSearch = (personId: string): boolean => {
@@ -372,7 +402,8 @@ const shownAddress: ComputedRef<AddressModel> = computed(
   margin-bottom: 1px;
 }
 
-.search-address:hover, .search-person:hover {
+.search-address:hover,
+.search-person:hover {
   text-decoration: underline;
 }
 
@@ -393,8 +424,8 @@ const shownAddress: ComputedRef<AddressModel> = computed(
 }
 
 .details-section {
-  max-height:40vh; 
-  overflow-y: scroll; 
+  max-height: 40vh;
+  overflow-y: scroll;
   /* background-color: #70938b; */
   /* padding: .5rem; */
 }
@@ -402,13 +433,13 @@ const shownAddress: ComputedRef<AddressModel> = computed(
 .details-section .row {
   margin-bottom: 2px;
   padding-left: 4px;
-  background-color: #618e81;  
+  background-color: #618e81;
 
   /* max-width: 100%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis; */
-} 
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; */
+}
 
 .details-section .even-row {
   /* background-color: #709a8f;   */
@@ -422,5 +453,4 @@ const shownAddress: ComputedRef<AddressModel> = computed(
 .underline-links a {
   text-decoration: underline;
 }
-
 </style>

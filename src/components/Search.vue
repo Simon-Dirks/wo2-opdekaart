@@ -38,7 +38,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg-primary p-4">
+  <div class="bg-primary p-2 sm:p-4">
     <n-input
       type="text"
       class="rounded-lg mr-2"
@@ -48,7 +48,7 @@ onMounted(() => {
       v-debounce:300ms="onSearch"
     />
 
-    <source-select class="mt-4"></source-select>
+    <source-select class="mt-2 sm:mt-4"></source-select>
   </div>
 </template>
 
@@ -57,6 +57,7 @@ onMounted(() => {
   display: inline-block;
   width: 17rem;
   border-radius: 0;
+  /*--n-height: 1.7rem !important;*/
 }
 
 .n-input__input-el {
