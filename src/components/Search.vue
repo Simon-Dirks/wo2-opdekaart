@@ -46,13 +46,25 @@ onMounted(() => {
   <div class="bg-primary p-2 sm:p-4">
     <h2 class="text-white font-bold mb-2">
       Utrechtse WO2-bronnen op de kaart
-      <Icon
-        @click="showColofon()"
-        size="20"
-        class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
-      >
-        <InformationCircle />
-      </Icon>
+
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <Icon
+            size="20"
+            class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
+          >
+            <InformationCircle @click="showColofon" />
+          </Icon>
+        </template>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+          <br />
+          Ab
+          <button @click="showColofon"><u>colofon knop</u></button>
+          assumenda, blanditiis, consequuntur corporis doloremque dolores
+          explicabo fuga in.
+        </p>
+      </n-tooltip>
     </h2>
     <n-input
       type="text"
@@ -77,5 +89,9 @@ onMounted(() => {
 
 .n-input__input-el {
   width: 17rem !important;
+}
+
+.v-binder-follower-container {
+  z-index: 20 !important;
 }
 </style>

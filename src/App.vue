@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref, Ref, watch } from "vue";
+import { ref, Ref, watch } from "vue";
 import MapRick from "./components/NewMap.vue";
 import Search from "./components/Search.vue";
 import { DataService } from "./services/data-service";
@@ -15,9 +15,6 @@ const store = useStore();
 
 const isLoading: Ref<boolean> = ref(true);
 const introDialogVisible: Ref<boolean> = ref(true);
-const colofonDialogVisible: ComputedRef<boolean> = computed(
-  () => store.getters["getColofonDialogVisible"]
-);
 
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
@@ -97,7 +94,8 @@ watch(
     :is-loading="isLoading"
     @close="introDialogVisible = false"
   />
-  <colofon-dialog v-if="colofonDialogVisible" />
+
+  <colofon-dialog />
 </template>
 
-<style scoped></style>
+<style></style>
