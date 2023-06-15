@@ -28,8 +28,8 @@ const onSearch = () => {
 };
 
 const showColofon = () => {
-  console.log("show colofon")
-}
+  store.commit("setColofonDialogVisible", true);
+};
 
 onMounted(() => {
   watch(
@@ -43,15 +43,16 @@ onMounted(() => {
 </script>
 
 <template>
-
   <div class="bg-primary p-2 sm:p-4">
-    <h2>Utrechtse WO2-bronnen op de kaart
-      <Icon @click="showColofon()"
-          size="20"
-          class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
-        >
-          <InformationCircle />
-        </Icon>
+    <h2 class="text-white font-bold mb-2">
+      Utrechtse WO2-bronnen op de kaart
+      <Icon
+        @click="showColofon()"
+        size="20"
+        class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
+      >
+        <InformationCircle />
+      </Icon>
     </h2>
     <n-input
       type="text"
@@ -76,16 +77,5 @@ onMounted(() => {
 
 .n-input__input-el {
   width: 17rem !important;
-}
-h2 {
-  color: white;
-  /*font-family: "Akzidenz-Grotesk Next";*/
-  font-style: normal;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-h2 span {
-  font-weight: normal;
-  text-decoration: underline;
 }
 </style>

@@ -19,6 +19,7 @@ export interface State {
   // shownSources: Set<SourceModel>;
   sources: SourceModel[];
   mapBounds: LngLatBounds | null;
+  colofonDialogVisible: boolean;
 }
 
 export const store = createStore<State>({
@@ -39,6 +40,7 @@ export const store = createStore<State>({
       // shownSources: new Set<SourceModel>([]),
       sources: [],
       mapBounds: null,
+      colofonDialogVisible: false,
     };
   },
   getters: {
@@ -81,6 +83,9 @@ export const store = createStore<State>({
     },
     getMapBounds(state): LngLatBounds | null {
       return state.mapBounds;
+    },
+    getColofonDialogVisible(state): boolean {
+      return state.colofonDialogVisible;
     },
   },
   mutations: {
@@ -127,6 +132,9 @@ export const store = createStore<State>({
     // },
     setSources(state: State, sources: SourceModel[]) {
       state.sources = sources;
+    },
+    setColofonDialogVisible(state: State, visible: boolean) {
+      state.colofonDialogVisible = visible;
     },
   },
 });
