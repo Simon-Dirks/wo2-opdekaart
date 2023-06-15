@@ -16,6 +16,9 @@
           gebeurd op uw adres, in uw buurt of in uw omgeving? Via deze WO2 kaart
           kunt u zoeken in zo'n 5.500 adressen en 19.000 documenten.
         </p>
+        <p class="text-sm sm:text-lg mt-5">
+          Meer informatie over dit project en belangrijke tips over hoe de gegevens te interpreteren vindt u in onze <u>Colofon</u>.
+        </p>
       </section>
 
       <button

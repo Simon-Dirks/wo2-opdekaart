@@ -3,6 +3,7 @@ import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
 import { useStore } from "vuex";
 import SourceSelect from "./SourceSelect.vue";
 import { SearchOptionModel } from "../models/search-option.model";
+import { InformationCircle } from "@vicons/ionicons5";
 
 // const mapService: _mapService = new _mapService();
 const search: Ref<string> = ref("");
@@ -26,6 +27,10 @@ const onSearch = () => {
   store.commit("setSearchTerm", search.value);
 };
 
+const showColofon = () => {
+  console.log("show colofon")
+}
+
 onMounted(() => {
   watch(
     () => store.getters["getSearchTerm"],
@@ -38,7 +43,16 @@ onMounted(() => {
 </script>
 
 <template>
+
   <div class="bg-primary p-2 sm:p-4">
+    <h2>Utrechtse WO2-bronnen op de kaart
+      <Icon @click="showColofon()"
+          size="20"
+          class="relative top-[0.3rem] cursor-pointer text-[#e3e3e3] hover:text-white transition-colors duration-300"
+        >
+          <InformationCircle />
+        </Icon>
+    </h2>
     <n-input
       type="text"
       class="rounded-lg mr-2"
@@ -62,5 +76,16 @@ onMounted(() => {
 
 .n-input__input-el {
   width: 17rem !important;
+}
+h2 {
+  color: white;
+  /*font-family: "Akzidenz-Grotesk Next";*/
+  font-style: normal;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+h2 span {
+  font-weight: normal;
+  text-decoration: underline;
 }
 </style>

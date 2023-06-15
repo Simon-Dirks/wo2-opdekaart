@@ -9,11 +9,13 @@ import { useStore } from "vuex";
 import NewSidebar from "./components/NewSidebar.vue";
 import PreviewItemModal from "./components/PreviewItemModal.vue";
 import IntroDialog from "./components/IntroDialog.vue";
+import ColofonDialog from "./components/ColofonDialog.vue";
 
 const store = useStore();
 
 const isLoading: Ref<boolean> = ref(true);
 const introDialogVisible: Ref<boolean> = ref(true);
+const colofonDialogVisible: Ref<boolean> = ref(true);
 
 const onMapLoaded = async () => {
   console.log("App.onMapLoaded");
@@ -79,7 +81,7 @@ watch(
 <template>
   <preview-item-modal></preview-item-modal>
 
-  <div class="md:grid md:grid-cols-6 h-[70vh] md:h-full">
+  <div class="md:grid md:grid-cols-6 h-[60vh] md:h-full">
     <div class="md:col-span-6 h-full">
       <div class="h-full">
         <search class="absolute top-4 left-4 z-10"></search>
@@ -93,6 +95,10 @@ watch(
     :is-loading="isLoading"
     @close="introDialogVisible = false"
   />
+  <!-- <colofon-dialog
+    v-if="colofonDialogVisible"
+    @close="colofonDialogVisible = false"
+  /> -->
 </template>
 
 <style scoped></style>
